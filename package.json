@@ -1,0 +1,8 @@
+{
+  "name": "gryphoon",
+  "type": "module",
+  "packageManager": "yarn@4.10.3",
+  "workspaces": [
+    "infrastructure"
+  ]
+}
