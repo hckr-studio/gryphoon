@@ -3,6 +3,8 @@
   "type": "module",
   "packageManager": "yarn@4.10.3",
   "workspaces": [
-    "infrastructure"
+    "infrastructure",
+    "gryphoon.works",
+    "www.gryphoon.works"
   ]
 }

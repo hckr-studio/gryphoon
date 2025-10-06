@@ -1,0 +1,246 @@
+:root {
+  --main-font: system-ui, sans-serif;
+  -moz-text-size-adjust: none;
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+  font-size: 100%;
+  color-scheme: light dark;
+  interpolate-size: allow-keywords;
+}
+
+body {
+  font-family: var(--main-font, sans-serif);
+  font-kerning: normal;
+  font-variant-numeric: lining-nums slashed-zero;
+  font-variant-ligatures: common-ligatures contextual;
+  -webkit-font-feature-settings: "kern", "liga", "clig", "calt", "lnum", "zero";
+  font-feature-settings: "kern", "liga", "clig", "calt", "lnum", "zero";
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: geometricPrecision;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+}
+
+p, ul, ol, dl {
+  text-wrap: pretty;
+}
+
+abbr {
+  font-variant-caps: all-petite-caps;
+}
+
+sup, sub {
+  font-size: inherit;
+  vertical-align: baseline;
+  font-variant-position: super;
+}
+
+sub {
+  font-variant-position: sub;
+}
+
+@property --lqip {
+  inherits: false;
+  syntax: "<integer>";
+}
+
+[style*="--lqip:"] {
+  --lqip-ca: mod(round(down, calc((var(--lqip) + pow(2, 19)) / pow(2, 18))), 4);
+  --lqip-cb: mod(round(down, calc((var(--lqip) + pow(2, 19)) / pow(2, 16))), 4);
+  --lqip-cc: mod(round(down, calc((var(--lqip) + pow(2, 19)) / pow(2, 14))), 4);
+  --lqip-cd: mod(round(down, calc((var(--lqip) + pow(2, 19)) / pow(2, 12))), 4);
+  --lqip-ce: mod(round(down, calc((var(--lqip) + pow(2, 19)) / pow(2, 10))), 4);
+  --lqip-cf: mod(round(down, calc((var(--lqip) + pow(2, 19)) / pow(2, 8))), 4);
+  --lqip-ll: mod(round(down, calc((var(--lqip) + pow(2, 19)) / pow(2, 6))), 4);
+  --lqip-aaa: mod(round(down, calc((var(--lqip) + pow(2, 19)) / pow(2, 3))), 8);
+  --lqip-bbb: mod(calc(var(--lqip) + pow(2, 19)), 8);
+  --lqip-ca-clr: hsl(0 0% calc(var(--lqip-ca) / 3 * 60% + 20%));
+  --lqip-cb-clr: hsl(0 0% calc(var(--lqip-cb) / 3 * 60% + 20%));
+  --lqip-cc-clr: hsl(0 0% calc(var(--lqip-cc) / 3 * 60% + 20%));
+  --lqip-cd-clr: hsl(0 0% calc(var(--lqip-cd) / 3 * 60% + 20%));
+  --lqip-ce-clr: hsl(0 0% calc(var(--lqip-ce) / 3 * 60% + 20%));
+  --lqip-cf-clr: hsl(0 0% calc(var(--lqip-cf) / 3 * 60% + 20%));
+  --lqip-base-clr: oklab(
+    calc(var(--lqip-ll) / 3 * 0.6 + 0.2) calc(var(--lqip-aaa) / 8 * 0.7 - 0.35)
+      calc((var(--lqip-bbb) + 1) / 8 * 0.7 - 0.35)
+  );
+  --lqip-stop10: 2%;
+  --lqip-stop20: 8%;
+  --lqip-stop30: 18%;
+  --lqip-stop40: 32%;
+  background-blend-mode:
+    hard-light, hard-light, hard-light, hard-light, hard-light, hard-light,
+    normal;
+  background-image:
+    radial-gradient(
+      50% 75% at 16.67% 25%,
+      var(--lqip-ca-clr),
+      rgb(from var(--lqip-ca-clr) r g b / calc(100% - var(--lqip-stop10))) 10%,
+      rgb(from var(--lqip-ca-clr) r g b / calc(100% - var(--lqip-stop20))) 20%,
+      rgb(from var(--lqip-ca-clr) r g b / calc(100% - var(--lqip-stop30))) 30%,
+      rgb(from var(--lqip-ca-clr) r g b / calc(100% - var(--lqip-stop40))) 40%,
+      rgb(from var(--lqip-ca-clr) r g b / calc(var(--lqip-stop40))) 60%,
+      rgb(from var(--lqip-ca-clr) r g b / calc(var(--lqip-stop30))) 70%,
+      rgb(from var(--lqip-ca-clr) r g b / calc(var(--lqip-stop20))) 80%,
+      rgb(from var(--lqip-ca-clr) r g b / calc(var(--lqip-stop10))) 90%,
+      transparent
+    ),
+    radial-gradient(
+      50% 75% at 50% 25%,
+      var(--lqip-cb-clr),
+      rgb(from var(--lqip-cb-clr) r g b / calc(100% - var(--lqip-stop10))) 10%,
+      rgb(from var(--lqip-cb-clr) r g b / calc(100% - var(--lqip-stop20))) 20%,
+      rgb(from var(--lqip-cb-clr) r g b / calc(100% - var(--lqip-stop30))) 30%,
+      rgb(from var(--lqip-cb-clr) r g b / calc(100% - var(--lqip-stop40))) 40%,
+      rgb(from var(--lqip-cb-clr) r g b / calc(var(--lqip-stop40))) 60%,
+      rgb(from var(--lqip-cb-clr) r g b / calc(var(--lqip-stop30))) 70%,
+      rgb(from var(--lqip-cb-clr) r g b / calc(var(--lqip-stop20))) 80%,
+      rgb(from var(--lqip-cb-clr) r g b / calc(var(--lqip-stop10))) 90%,
+      transparent
+    ),
+    radial-gradient(
+      50% 75% at 83.33% 25%,
+      var(--lqip-cc-clr),
+      rgb(from var(--lqip-cc-clr) r g b / calc(100% - var(--lqip-stop10))) 10%,
+      rgb(from var(--lqip-cc-clr) r g b / calc(100% - var(--lqip-stop20))) 20%,
+      rgb(from var(--lqip-cc-clr) r g b / calc(100% - var(--lqip-stop30))) 30%,
+      rgb(from var(--lqip-cc-clr) r g b / calc(100% - var(--lqip-stop40))) 40%,
+      rgb(from var(--lqip-cc-clr) r g b / calc(var(--lqip-stop40))) 60%,
+      rgb(from var(--lqip-cc-clr) r g b / calc(var(--lqip-stop30))) 70%,
+      rgb(from var(--lqip-cc-clr) r g b / calc(var(--lqip-stop20))) 80%,
+      rgb(from var(--lqip-cc-clr) r g b / calc(var(--lqip-stop10))) 90%,
+      transparent
+    ),
+    radial-gradient(
+      50% 75% at 16.67% 75%,
+      var(--lqip-cd-clr),
+      rgb(from var(--lqip-cd-clr) r g b / calc(100% - var(--lqip-stop10))) 10%,
+      rgb(from var(--lqip-cd-clr) r g b / calc(100% - var(--lqip-stop20))) 20%,
+      rgb(from var(--lqip-cd-clr) r g b / calc(100% - var(--lqip-stop30))) 30%,
+      rgb(from var(--lqip-cd-clr) r g b / calc(100% - var(--lqip-stop40))) 40%,
+      rgb(from var(--lqip-cd-clr) r g b / calc(var(--lqip-stop40))) 60%,
+      rgb(from var(--lqip-cd-clr) r g b / calc(var(--lqip-stop30))) 70%,
+      rgb(from var(--lqip-cd-clr) r g b / calc(var(--lqip-stop20))) 80%,
+      rgb(from var(--lqip-cd-clr) r g b / calc(var(--lqip-stop10))) 90%,
+      transparent
+    ),
+    radial-gradient(
+      50% 75% at 50% 75%,
+      var(--lqip-ce-clr),
+      rgb(from var(--lqip-ce-clr) r g b / calc(100% - var(--lqip-stop10))) 10%,
+      rgb(from var(--lqip-ce-clr) r g b / calc(100% - var(--lqip-stop20))) 20%,
+      rgb(from var(--lqip-ce-clr) r g b / calc(100% - var(--lqip-stop30))) 30%,
+      rgb(from var(--lqip-ce-clr) r g b / calc(100% - var(--lqip-stop40))) 40%,
+      rgb(from var(--lqip-ce-clr) r g b / calc(var(--lqip-stop40))) 60%,
+      rgb(from var(--lqip-ce-clr) r g b / calc(var(--lqip-stop30))) 70%,
+      rgb(from var(--lqip-ce-clr) r g b / calc(var(--lqip-stop20))) 80%,
+      rgb(from var(--lqip-ce-clr) r g b / calc(var(--lqip-stop10))) 90%,
+      transparent
+    ),
+    radial-gradient(
+      50% 75% at 83.33% 75%,
+      var(--lqip-cf-clr),
+      rgb(from var(--lqip-cf-clr) r g b / calc(100% - var(--lqip-stop10))) 10%,
+      rgb(from var(--lqip-cf-clr) r g b / calc(100% - var(--lqip-stop20))) 20%,
+      rgb(from var(--lqip-cf-clr) r g b / calc(100% - var(--lqip-stop30))) 30%,
+      rgb(from var(--lqip-cf-clr) r g b / calc(100% - var(--lqip-stop40))) 40%,
+      rgb(from var(--lqip-cf-clr) r g b / calc(var(--lqip-stop40))) 60%,
+      rgb(from var(--lqip-cf-clr) r g b / calc(var(--lqip-stop30))) 70%,
+      rgb(from var(--lqip-cf-clr) r g b / calc(var(--lqip-stop20))) 80%,
+      rgb(from var(--lqip-cf-clr) r g b / calc(var(--lqip-stop10))) 90%,
+      transparent
+    ), linear-gradient(0deg, var(--lqip-base-clr), var(--lqip-base-clr));
+}
+
+table {
+  font-variant-numeric: tabular-nums slashed-zero;
+}
+
+input,
+textarea,
+button,
+::file-selector-button,
+select,
+meter,
+progress {
+  color: inherit;
+  font: inherit;
+  box-sizing: border-box;
+}
+
+input:not([type="file"], [type="range"], [type="checkbox"][switch]),
+textarea,
+button,
+::file-selector-button,
+select {
+  border: 1px solid currentColor;
+  background-color: transparent;
+}
+
+:where(abbr[title]) {
+  cursor: help;
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+}
+
+:where(audio, iframe, img, svg, video) {
+  max-block-size: 100%;
+  max-inline-size: 100%;
+}
+
+:where(label):has(+ :where(textarea, input, select)) {
+  display: block;
+}
+
+:where(textarea:not([rows])) {
+  min-block-size: 6em;
+}
+
+:where(button, input, select, textarea) {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+@view-transition {
+  navigation: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+
+  /* enable transitions */
+  [popover],
+  dialog,
+  ::backdrop {
+    transition:
+      display 300ms allow-discrete,
+      overlay 300ms allow-discrete,
+      opacity 300ms;
+    opacity: 0;
+  }
+
+  /* IN */
+  :popover-open,
+  :popover-open::backdrop,
+  [open],
+  [open]::backdrop {
+    opacity: 1;
+  }
+
+  /* OUT */
+  @starting-style {
+    :popover-open,
+    :popover-open::backdrop,
+    [open],
+    [open]::backdrop {
+      opacity: 0;
+    }
+  }
+}
