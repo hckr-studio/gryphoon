@@ -27,7 +27,7 @@ const admin = new cloudflare.PagesProject(
     },
     buildConfig: {
       buildCommand: "yarn build",
-      destinationDir: "../.blendid/gryphoon.work",
+      destinationDir: "public",
       rootDir: "gryphoon.work",
     },
     deploymentConfigs: {
@@ -79,7 +79,7 @@ const web = new cloudflare.PagesProject(
     },
     buildConfig: {
       buildCommand: "yarn build",
-      destinationDir: "../.blendid/www.gryphoon.work",
+      destinationDir: "public",
       rootDir: "www.gryphoon.work",
     },
     deploymentConfigs: {
