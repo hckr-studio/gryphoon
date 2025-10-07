@@ -770,12 +770,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@gryphoon/admin@workspace:gryphoon.work":
+  version: 0.0.0-use.local
+  resolution: "@gryphoon/admin@workspace:gryphoon.work"
+  dependencies:
+    "@hckr_/blendid": "npm:^9.6.5"
+  languageName: unknown
+  linkType: soft
+
 "@gryphoon/infrastructure@workspace:infrastructure":
   version: 0.0.0-use.local
   resolution: "@gryphoon/infrastructure@workspace:infrastructure"
   dependencies:
     "@pulumi/cloudflare": "npm:^6.10.0"
     "@pulumi/pulumi": "npm:^3.0.0"
+  languageName: unknown
+  linkType: soft
+
+"@gryphoon/web@workspace:www.gryphoon.work":
+  version: 0.0.0-use.local
+  resolution: "@gryphoon/web@workspace:www.gryphoon.work"
+  dependencies:
+    "@hckr_/blendid": "npm:^9.6.5"
   languageName: unknown
   linkType: soft
 
@@ -3992,14 +4008,6 @@ __metadata:
   checksum: 10c0/062c6806f6b5dc60de2ca4f1f4e75aa759253fc050cc114fc3189343502143722941062f445a7bdef1865ede5c4a3a629f6362bf031204501a5fc61bb5c1528b
   languageName: node
   linkType: hard
-
-"gryphoon.works@workspace:gryphoon.works":
-  version: 0.0.0-use.local
-  resolution: "gryphoon.works@workspace:gryphoon.works"
-  dependencies:
-    "@hckr_/blendid": "npm:^9.6.5"
-  languageName: unknown
-  linkType: soft
 
 "gryphoon@workspace:.":
   version: 0.0.0-use.local
@@ -8440,14 +8448,6 @@ __metadata:
   checksum: 10c0/e8c850a8e3e74eeadadb8ad23c9d9d63e4e792bd10f4836ed74189ef6e996763959f1249c5650e232f3c77c11169d239cbfc8342fc70f3fe401407d23810505d
   languageName: node
   linkType: hard
-
-"www.gryphoon.works@workspace:www.gryphoon.works":
-  version: 0.0.0-use.local
-  resolution: "www.gryphoon.works@workspace:www.gryphoon.works"
-  dependencies:
-    "@hckr_/blendid": "npm:^9.6.5"
-  languageName: unknown
-  linkType: soft
 
 "xtend@npm:>=4.0.0 <4.1.0-0, xtend@npm:~4.0.1":
   version: 4.0.2

@@ -4,7 +4,7 @@
   "packageManager": "yarn@4.10.3",
   "workspaces": [
     "infrastructure",
-    "gryphoon.works",
-    "www.gryphoon.works"
+    "gryphoon.work",
+    "www.gryphoon.work"
   ]
 }
