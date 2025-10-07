@@ -1,6 +1,6 @@
 export default {
   src: "./src",
-  dest: "./.blendid/public",
+  dest: "../.blendid/www.gryphoon.works",
 
   html: {
     src: "html",
