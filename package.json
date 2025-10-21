@@ -1,10 +1,16 @@
 {
   "name": "gryphoon",
+  "version": "4.0.0",
   "type": "module",
   "packageManager": "yarn@4.10.3",
   "workspaces": [
-    "infrastructure",
     "gryphoon.work",
+    "gryphoon.work/functions",
+    "infrastructure",
+    "workers/*",
     "www.gryphoon.work"
-  ]
+  ],
+  "devDependencies": {
+    "wrangler": "4.44.0"
+  }
 }

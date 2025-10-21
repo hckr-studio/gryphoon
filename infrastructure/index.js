@@ -34,7 +34,20 @@ const admin = new cloudflare.PagesProject(
       preview: {},
       production: {
         compatibilityDate: "2025-10-01",
-        envVars: {},
+        envVars: {
+          ROLLBAR_TOKEN: { type: "secret_text", value: config.require("admin-rollbar-token") },
+          SEMANTIC_EXTRACTOR_SECRET: { type: "secret_text", value: config.require("semantic-extractor-secret") },
+        },
+        serviceBindings: [
+          {
+            name: "extractor",
+            service: "hckr-semantic-extractor",
+          },
+          {
+            name: "articlesShare",
+            service: "gryphoon-articles-share",
+          }
+        ],
       },
     },
   },

@@ -2,3 +2,7 @@ environment:
   - rarous-cloudflare
 config:
   pulumi:template: javascript
+  gryphoon:admin-rollbar-token:
+    secure: AAABAC+gcp/9jx1UAUrb5f/d7tHrgo+7uVqtcxXA3t7oQgfe2DB0hn9MlYRH4hFsl/Z9VW4A7LK6HCV/MrAOpw==
+  gryphoon:semantic-extractor-secret:
+    secure: AAABAFnnXrJfqqbiLrrRUWhy0XrcSPNowWa6l4VdE6Antvo2vz6pOIJKqaMFETjibuZFsaZ2loiCB1g0PvRraGZRbWO2ygSx8TlkpKbEzsBd+S4c3fexitoslXszqFqG

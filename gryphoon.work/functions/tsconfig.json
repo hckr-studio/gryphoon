@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "lib": ["ES2023"],
+    "types": [
+      "@cloudflare/workers-types",
+      "@gryphoon/admin-functions",
+      "@gryphoon/articles-share"
+    ]
+  }
+}
