@@ -99,8 +99,9 @@ export class ArticlesShare extends DurableObject {
    */
   async updateIndex(tag, item) {
     const index = await this.getIndex(tag);
+    const entry = item ?? tag;
     const indexByUrl = new Map(index.map(x => [x.url, x]));
-    indexByUrl.set(item.url, item);
+    indexByUrl.set(entry.url, entry);
     const sortedIndex = Array.from(indexByUrl.values()).sort((a, b) => b.published.localeCompare(a.published));
     return this.putIndex(tag, sortedIndex);
   }

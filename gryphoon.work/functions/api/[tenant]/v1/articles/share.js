@@ -24,9 +24,10 @@ export async function onRequestPost({ request, env, params }) {
  */
 export async function onRequestPut({ request, env, params }) {
   const data = await request.json();
-  const articles = await env.articlesShare.getByName(params.tenant);
   const key = data.entry.url;
   console.log({ tenant: params.tenant, key, data });
+
+  const articles = await env.articlesShare.getByName(params.tenant);
   await articles.putArticle(key, data);
   return new Response();
 }
