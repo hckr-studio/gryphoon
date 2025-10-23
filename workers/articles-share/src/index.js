@@ -48,7 +48,23 @@ export class ArticlesShare extends DurableObject {
    * @returns {Promise<void>}
    */
   async putArticle(key, data) {
-    return this.ctx.storage.put(`articles/entries/${key}`, data);
+    await this.ctx.storage.put(`articles/entries/${key}`, data);
+
+    const { entry } = data;
+
+    await this.updateIndex({
+      url: key,
+      published: entry.published
+    });
+
+    const tags = await this.getTags();
+    const tagsSet = new Set(tags);
+    const articleTags = entry.tags?.split(",")?.map(x => x.trim().toLowerCase()) ?? [];
+    await this.putTags(Array.from(tagsSet.union(new Set(articleTags))).filter(Boolean));
+    await Promise.all(articleTags.map(tag => this.updateIndex(tag, {
+      url: key,
+      published: entry.published
+    })));
   }
 
   async getTags() {
@@ -68,16 +84,16 @@ export class ArticlesShare extends DurableObject {
   }
 
   /**
-   * @param {String} tag
+   * @param {String} [tag]
    * @param data
    * @returns {Promise<void>}
    */
   async putIndex(tag, data) {
-    return this.ctx.storage.put(indexKey(tag), data);
+    return this.ctx.storage.put(indexKey(tag), data ?? tag);
   }
 
   /**
-   * @param {String} tag
+   * @param {String} [tag]
    * @param item
    * @returns {Promise<void>}
    */

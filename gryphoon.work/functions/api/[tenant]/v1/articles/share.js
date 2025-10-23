@@ -1,19 +1,3 @@
-async function updateIndexes(articles, key, entry) {
-  await articles.updateIndex({
-    url: key,
-    published: entry.published
-  });
-
-  const tags = await articles.getTags();
-  const tagsSet = new Set(tags);
-  const articleTags = entry.tags?.split(",")?.map(x => x.trim().toLowerCase()) ?? [];
-  await articles.putTags(Array.from(tagsSet.union(new Set(articleTags))).filter(Boolean));
-  await Promise.all(articleTags.map(tag => articles.updateIndex(tag, {
-    url: key,
-    published: entry.published
-  })));
-}
-
 /**
  * @param {EventContext<Env>} context
  * @returns {Promise<Response>}
@@ -31,7 +15,6 @@ export async function onRequestPost({ request, env, params }) {
   }, article);
   data.stats = data.stats ?? { clicks: 0, likes: 0 };
   await articles.putArticle(key, data);
-  await updateIndexes(articles, key, data.entry);
   return Response.redirect(new URL("/app/", request.url).href);
 }
 
@@ -45,6 +28,5 @@ export async function onRequestPut({ request, env, params }) {
   const key = data.entry.url;
   console.log({ tenant: params.tenant, key, data });
   await articles.putArticle(key, data);
-  await updateIndexes(articles, key, data.entry);
   return new Response();
 }
