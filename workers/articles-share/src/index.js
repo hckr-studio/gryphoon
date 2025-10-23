@@ -21,6 +21,10 @@ function indexKey(tag) {
   return typeof tag === "string" ? `articles/index/byTag/${tag}` : "articles/index";
 }
 
+function articleKey(url) {
+  return `articles/entries/${url}`;
+}
+
 /** A Durable Object's behavior is defined in an exported JavaScript class */
 export class ArticlesShare extends DurableObject {
   /**
@@ -39,32 +43,25 @@ export class ArticlesShare extends DurableObject {
    * @returns {Promise}
    */
   async getArticle(key) {
-    return (await this.ctx.storage.get(`articles/entries/${key}`)) ?? {};
+    return (await this.ctx.storage.get(articleKey(key))) ?? {};
   }
 
   /**
-   * @param {String} key
+   * @param {String} url
    * @param data
    * @returns {Promise<void>}
    */
-  async putArticle(key, data) {
-    await this.ctx.storage.put(`articles/entries/${key}`, data);
+  async putArticle(url, data) {
+    await this.ctx.storage.put(articleKey(url), data);
 
-    const { entry } = data;
+    const { entry: { published, tags } } = data;
+    await this.updateIndex({ url, published });
 
-    await this.updateIndex({
-      url: key,
-      published: entry.published
-    });
-
-    const tags = await this.getTags();
-    const tagsSet = new Set(tags);
-    const articleTags = entry.tags?.split(",")?.map(x => x.trim().toLowerCase()) ?? [];
+    const allTags = await this.getTags();
+    const tagsSet = new Set(allTags);
+    const articleTags = tags?.split(",")?.map(x => x.trim().toLowerCase()) ?? [];
     await this.putTags(Array.from(tagsSet.union(new Set(articleTags))).filter(Boolean));
-    await Promise.all(articleTags.map(tag => this.updateIndex(tag, {
-      url: key,
-      published: entry.published
-    })));
+    await Promise.all(articleTags.map(tag => this.updateIndex(tag, { url, published })));
   }
 
   async getTags() {
@@ -99,8 +96,8 @@ export class ArticlesShare extends DurableObject {
    */
   async updateIndex(tag, item) {
     const index = await this.getIndex(tag);
+    const indexByUrl = new Map(index.filter(x => x.url).map(x => [x.url, x]));
     const entry = item ?? tag;
-    const indexByUrl = new Map(index.map(x => [x.url, x]));
     indexByUrl.set(entry.url, entry);
     const sortedIndex = Array.from(indexByUrl.values()).sort((a, b) => b.published.localeCompare(a.published));
     return this.putIndex(tag, sortedIndex);
