@@ -38,14 +38,13 @@ const admin = new cloudflare.PagesProject(
           ROLLBAR_TOKEN: { type: "secret_text", value: config.require("admin-rollbar-token") },
           SEMANTIC_EXTRACTOR_SECRET: { type: "secret_text", value: config.require("semantic-extractor-secret") },
         },
+        durableObjectNamespaces: {
+          "articlesShare": { namespaceId: "5c1a30b5e63642378d4ac78168bdf5ce" }
+        },
         serviceBindings: [
           {
             name: "extractor",
             service: "hckr-semantic-extractor",
-          },
-          {
-            name: "articlesShare",
-            service: "gryphoon-articles-share",
           }
         ],
       },
