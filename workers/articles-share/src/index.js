@@ -21,7 +21,7 @@ function indexKey(tag) {
   return typeof tag === "string" ? `articles/index/byTag/${tag}` : "articles/index";
 }
 
-/** A Durable Object's behavior is defined in an exported Javascript class */
+/** A Durable Object's behavior is defined in an exported JavaScript class */
 export class ArticlesShare extends DurableObject {
   /**
    * The constructor is invoked once upon creation of the Durable Object, i.e. the first call to
@@ -34,10 +34,19 @@ export class ArticlesShare extends DurableObject {
     super(ctx, env);
   }
 
+  /**
+   * @param {String} key
+   * @returns {Promise}
+   */
   async getArticle(key) {
     return (await this.ctx.storage.get(`articles/entries/${key}`)) ?? {};
   }
 
+  /**
+   * @param {String} key
+   * @param data
+   * @returns {Promise<void>}
+   */
   async putArticle(key, data) {
     return this.ctx.storage.put(`articles/entries/${key}`, data);
   }
@@ -50,14 +59,28 @@ export class ArticlesShare extends DurableObject {
     return this.ctx.storage.put("articles/tags", data);
   }
 
+  /**
+   * @param {String} tag
+   * @returns {Promise<unknown>}
+   */
   async getIndex(tag) {
     return (await this.ctx.storage.get(indexKey(tag))) ?? [];
   }
 
+  /**
+   * @param {String} tag
+   * @param data
+   * @returns {Promise<void>}
+   */
   async putIndex(tag, data) {
     return this.ctx.storage.put(indexKey(tag), data);
   }
 
+  /**
+   * @param {String} tag
+   * @param item
+   * @returns {Promise<void>}
+   */
   async updateIndex(tag, item) {
     const index = await this.getIndex(tag);
     const indexByUrl = new Map(index.map(x => [x.url, x]));
