@@ -35,10 +35,15 @@ export async function onRequestPost({ request, env, params }) {
   return Response.redirect(new URL("/app/", request.url).href);
 }
 
+/**
+ * @param {EventContext<Env>} context
+ * @returns {Promise<Response>}
+ */
 export async function onRequestPut({ request, env, params }) {
   const data = await request.json();
   const articles = await env.articlesShare.getByName(params.tenant);
   const key = data.entry.url;
+  console.log({ tenant: params.tenant, key, data });
   await articles.putArticle(key, data);
   await updateIndexes(articles, key, data.entry);
   return new Response();
