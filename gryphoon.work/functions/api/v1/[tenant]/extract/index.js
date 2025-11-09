@@ -8,7 +8,7 @@ export async function onRequestGet({ request, env, params }) {
 
   const articles = await env.articlesShare.getByName(params.tenant);
   const data = await articles.getArticle(url);
-  if (data) return Response.json(data);
+  if (data) return Response.json(data.entry);
 
   const urlParams = new URLSearchParams({
     tenants: params.tenant,
