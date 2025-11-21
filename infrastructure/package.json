@@ -3,6 +3,6 @@
   "main": "index.js",
   "dependencies": {
     "@pulumi/cloudflare": "6.11.0",
-    "@pulumi/pulumi": "3.207.0"
+    "@pulumi/pulumi": "3.208.0"
   }
 }
