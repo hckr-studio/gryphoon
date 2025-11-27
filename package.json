@@ -11,6 +11,6 @@
     "www.gryphoon.work"
   ],
   "devDependencies": {
-    "wrangler": "4.50.0"
+    "wrangler": "4.51.0"
   }
 }
