@@ -11,6 +11,7 @@
     "www.gryphoon.work"
   ],
   "devDependencies": {
+    "@biomejs/biome": "2.3.8",
     "wrangler": "4.54.0"
   }
 }
