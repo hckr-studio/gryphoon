@@ -61,9 +61,9 @@ export class ArticlesShare extends DurableObject {
 
     const allTags = await this.getTags();
     const tagsSet = new Set(allTags);
-    const articleTags = tags?.split(",")?.map((x) => x.trim().toLowerCase()) ?? [];
+    const articleTags = tags?.split(",")?.map(x => x.trim().toLowerCase()) ?? [];
     await this.putTags(Array.from(tagsSet.union(new Set(articleTags))).filter(Boolean));
-    await Promise.all(articleTags.map((tag) => this.updateIndex(tag, { url, published })));
+    await Promise.all(articleTags.map(tag => this.updateIndex(tag, { url, published })));
   }
 
   async getTags() {
@@ -98,7 +98,7 @@ export class ArticlesShare extends DurableObject {
    */
   async updateIndex(tag, item) {
     const index = await this.getIndex(tag);
-    const indexByUrl = new Map(index.filter((x) => x.url).map((x) => [x.url, x]));
+    const indexByUrl = new Map(index.filter(x => x.url).map(x => [x.url, x]));
     const entry = item ?? tag;
     indexByUrl.set(entry.url, entry);
     const sortedIndex = Array.from(indexByUrl.values()).sort((a, b) => b.published.localeCompare(a.published));
