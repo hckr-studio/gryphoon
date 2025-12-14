@@ -82,9 +82,7 @@ sub {
   --lqip-stop20: 8%;
   --lqip-stop30: 18%;
   --lqip-stop40: 32%;
-  background-blend-mode:
-    hard-light, hard-light, hard-light, hard-light, hard-light, hard-light,
-    normal;
+  background-blend-mode: hard-light, hard-light, hard-light, hard-light, hard-light, hard-light, normal;
   background-image:
     radial-gradient(
       50% 75% at 16.67% 25%,

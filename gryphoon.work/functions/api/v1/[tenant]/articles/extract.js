@@ -15,7 +15,5 @@ export async function onRequestGet({ request, env, params }) {
     url,
     token: env.SEMANTIC_EXTRACTOR_SECRET,
   });
-  return env.extractor.fetch(
-    `https://gryphoon.work/api/v1/${params.tenant}/articles/extract?${urlParams}`,
-  );
+  return env.extractor.fetch(`https://gryphoon.work/api/v1/${params.tenant}/articles/extract?${urlParams}`);
 }

@@ -4,10 +4,6 @@
     "module": "esnext",
     "moduleResolution": "nodenext",
     "lib": ["ES2023"],
-    "types": [
-      "@cloudflare/workers-types",
-      "@gryphoon/admin-functions",
-      "@gryphoon/articles-share"
-    ]
+    "types": ["@cloudflare/workers-types", "@gryphoon/admin-functions", "@gryphoon/articles-share"]
   }
 }

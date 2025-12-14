@@ -6,14 +6,8 @@ import { comp, drop, iterator, map, take } from "@thi.ng/transducers";
  */
 export async function onRequestGet({ env, request, params }) {
   const { searchParams } = new URL(request.url);
-  const pageIndex = Math.max(
-    0,
-    Number.parseInt(searchParams.get("page") ?? "0", 10),
-  );
-  const pageSize = Math.max(
-    0,
-    Number.parseInt(searchParams.get("pageSize") ?? "24", 10),
-  );
+  const pageIndex = Math.max(0, Number.parseInt(searchParams.get("page") ?? "0", 10));
+  const pageSize = Math.max(0, Number.parseInt(searchParams.get("pageSize") ?? "24", 10));
   const tag = searchParams.get("tag");
 
   const articles = await env.articlesShare.getByName(params.tenant);
