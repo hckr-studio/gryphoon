@@ -4,11 +4,15 @@ import * as pulumi from "@pulumi/pulumi";
 const config = new pulumi.Config();
 const cloudflareAccountId = config.require("cloudflare-accountId");
 
-const zone = new cloudflare.Zone("gryphoon", {
-  account: { id: cloudflareAccountId },
-  name: "gryphoon.work",
-  type: "full"
-}, { protect: true });
+const zone = new cloudflare.Zone(
+  "gryphoon",
+  {
+    account: { id: cloudflareAccountId },
+    name: "gryphoon.work",
+    type: "full",
+  },
+  { protect: true },
+);
 
 const admin = new cloudflare.PagesProject(
   "gryphoon-admin",
@@ -35,17 +39,23 @@ const admin = new cloudflare.PagesProject(
       production: {
         compatibilityDate: "2025-10-01",
         envVars: {
-          ROLLBAR_TOKEN: { type: "secret_text", value: config.require("admin-rollbar-token") },
-          SEMANTIC_EXTRACTOR_SECRET: { type: "secret_text", value: config.require("semantic-extractor-secret") },
+          ROLLBAR_TOKEN: {
+            type: "secret_text",
+            value: config.require("admin-rollbar-token"),
+          },
+          SEMANTIC_EXTRACTOR_SECRET: {
+            type: "secret_text",
+            value: config.require("semantic-extractor-secret"),
+          },
         },
         durableObjectNamespaces: {
-          "articlesShare": { namespaceId: "5c1a30b5e63642378d4ac78168bdf5ce" }
+          articlesShare: { namespaceId: "5c1a30b5e63642378d4ac78168bdf5ce" },
         },
         serviceBindings: [
           {
             name: "extractor",
             service: "hckr-semantic-extractor",
-          }
+          },
         ],
       },
     },

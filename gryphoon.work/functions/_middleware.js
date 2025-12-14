@@ -12,5 +12,3 @@ export const onRequest = [
   rollbar,
   // TODO: authorization
 ];
-
-

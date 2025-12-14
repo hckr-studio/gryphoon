@@ -18,7 +18,9 @@ import { DurableObject } from "cloudflare:workers";
  */
 
 function indexKey(tag) {
-  return typeof tag === "string" ? `articles/index/byTag/${tag}` : "articles/index";
+  return typeof tag === "string"
+    ? `articles/index/byTag/${tag}`
+    : "articles/index";
 }
 
 function articleKey(url) {
@@ -54,14 +56,21 @@ export class ArticlesShare extends DurableObject {
   async putArticle(url, data) {
     await this.ctx.storage.put(articleKey(url), data);
 
-    const { entry: { published, tags } } = data;
+    const {
+      entry: { published, tags },
+    } = data;
     await this.updateIndex({ url, published });
 
     const allTags = await this.getTags();
     const tagsSet = new Set(allTags);
-    const articleTags = tags?.split(",")?.map(x => x.trim().toLowerCase()) ?? [];
-    await this.putTags(Array.from(tagsSet.union(new Set(articleTags))).filter(Boolean));
-    await Promise.all(articleTags.map(tag => this.updateIndex(tag, { url, published })));
+    const articleTags =
+      tags?.split(",")?.map((x) => x.trim().toLowerCase()) ?? [];
+    await this.putTags(
+      Array.from(tagsSet.union(new Set(articleTags))).filter(Boolean),
+    );
+    await Promise.all(
+      articleTags.map((tag) => this.updateIndex(tag, { url, published })),
+    );
   }
 
   async getTags() {
@@ -96,10 +105,14 @@ export class ArticlesShare extends DurableObject {
    */
   async updateIndex(tag, item) {
     const index = await this.getIndex(tag);
-    const indexByUrl = new Map(index.filter(x => x.url).map(x => [x.url, x]));
+    const indexByUrl = new Map(
+      index.filter((x) => x.url).map((x) => [x.url, x]),
+    );
     const entry = item ?? tag;
     indexByUrl.set(entry.url, entry);
-    const sortedIndex = Array.from(indexByUrl.values()).sort((a, b) => b.published.localeCompare(a.published));
+    const sortedIndex = Array.from(indexByUrl.values()).sort((a, b) =>
+      b.published.localeCompare(a.published),
+    );
     return this.putIndex(tag, sortedIndex);
   }
 }

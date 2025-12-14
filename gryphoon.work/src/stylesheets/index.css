@@ -22,11 +22,19 @@ body {
   text-rendering: geometricPrecision;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   text-wrap: balance;
 }
 
-p, ul, ol, dl {
+p,
+ul,
+ol,
+dl {
   text-wrap: pretty;
 }
 
@@ -34,7 +42,8 @@ abbr {
   font-variant-caps: all-petite-caps;
 }
 
-sup, sub {
+sup,
+sub {
   font-size: inherit;
   vertical-align: baseline;
   font-variant-position: super;

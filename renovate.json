@@ -1,32 +1,21 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended",
-    ":dependencyDashboard",
-    "schedule:daily"
-  ],
+  "extends": ["config:recommended", ":dependencyDashboard", "schedule:daily"],
   "automerge": true,
   "automergeType": "pr",
   "automergeStrategy": "rebase",
   "packageRules": [
     {
       "groupName": "pulumi",
-      "matchPackageNames": [
-        "@pulumi/{/,}**"
-      ]
+      "matchPackageNames": ["@pulumi/{/,}**"]
     },
     {
       "groupName": "thi.ng",
-      "matchPackageNames": [
-        "@thi.ng/{/,}**"
-      ]
+      "matchPackageNames": ["@thi.ng/{/,}**"]
     },
     {
       "groupName": "cloudflare",
-      "matchPackageNames": [
-        "@cloudflare/{/,}**",
-        "/wrangler/"
-      ]
+      "matchPackageNames": ["@cloudflare/{/,}**", "/wrangler/"]
     }
   ],
   "lockFileMaintenance": {

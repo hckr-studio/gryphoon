@@ -5,9 +5,15 @@ import { comp, drop, iterator, map, take } from "@thi.ng/transducers";
  * @returns {Promise<Response>}
  */
 export async function onRequestGet({ env, request, params }) {
-  const searchParams = new URLSearchParams(request.url);
-  const pageIndex = Math.max(0, Number.parseInt(searchParams.get("page") ?? "0", 10));
-  const pageSize = Math.max(0, Number.parseInt(searchParams.get("pageSize") ?? "24", 10));
+  const { searchParams } = new URL(request.url);
+  const pageIndex = Math.max(
+    0,
+    Number.parseInt(searchParams.get("page") ?? "0", 10),
+  );
+  const pageSize = Math.max(
+    0,
+    Number.parseInt(searchParams.get("pageSize") ?? "24", 10),
+  );
   const tag = searchParams.get("tag");
 
   const articles = await env.articlesShare.getByName(params.tenant);
@@ -16,9 +22,9 @@ export async function onRequestGet({ env, request, params }) {
     comp(
       drop(pageIndex * pageSize),
       take(pageSize),
-      map(({ url }) => articles.getArticle(url))
+      map(({ url }) => articles.getArticle(url)),
     ),
-    data
+    data,
   );
   const result = await Promise.all(pagedEntries);
   return Response.json({
@@ -26,8 +32,8 @@ export async function onRequestGet({ env, request, params }) {
       pageIndex,
       pageSize,
       totalItems: data.length,
-      pagesCount: Math.ceil(data.length / pageSize)
+      pagesCount: Math.ceil(data.length / pageSize),
     },
-    entries: result
+    entries: result,
   });
 }
