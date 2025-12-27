@@ -3,11 +3,14 @@
  */
 export async function onRequestGet({ request, env, next }) {
   const response = await next();
+  console.log({ url: request.url, status: response.status });
   if (response.status === 404) {
     const resp = await env.ASSETS.fetch(new URL("/rev-manifest.json", request.url));
     const revManifest = await resp.json();
+    console.log(JSON.stringify(revManifest));
     const { pathname } = new URL(request.url);
     const revPath = revManifest[pathname.substring(1)];
+    console.log({ pathname, revPath });
     if (revPath)
       return new Response(null, {
         status: 302,
