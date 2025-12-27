@@ -4,7 +4,7 @@
 export async function onRequestGet({ request, env, next }) {
   const response = await next();
   console.log({ url: request.url, status: response.status });
-  if (response.status === 404) {
+  if (response.status === 404 || response.status === 304) {
     const resp = await env.ASSETS.fetch(new URL("/rev-manifest.json", request.url));
     const revManifest = await resp.json();
     console.log(JSON.stringify(revManifest));
