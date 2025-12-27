@@ -2,7 +2,7 @@
  * @param {Window} globalScope
  * @return {typeof FeedPagination}
  */
-export function defFeedPagination({ HTMLElement, customElements }) {
+export function defPagination({ HTMLElement, customElements }) {
   class FeedPagination extends HTMLElement {
     static register(tagName = "gryphoon-pagination") {
       if (customElements.get(tagName)) return;
@@ -69,5 +69,5 @@ export function defFeedPagination({ HTMLElement, customElements }) {
 }
 
 if (globalThis.window?.customElements) {
-  defFeedPagination(window).register();
+  defPagination(window).register();
 }

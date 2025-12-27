@@ -4,7 +4,7 @@ import { processTypo } from "@hckr_/blendid/lib/texy.mjs";
  * @param {Window} globalScope
  * @return {typeof ArticlesFeed}
  */
-export function defArticlesFeed({ HTMLElement, customElements }) {
+export function defFeed({ HTMLElement, customElements }) {
   class ArticlesFeed extends HTMLElement {
     #itemTemplate;
     #itemsCount;
@@ -188,5 +188,5 @@ export function defArticlesFeed({ HTMLElement, customElements }) {
 }
 
 if (globalThis.window?.customElements) {
-  defArticlesFeed(window).register();
+  defFeed(window).register();
 }
