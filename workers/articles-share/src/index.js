@@ -75,7 +75,7 @@ export class ArticlesShare extends DurableObject {
   }
 
   /**
-   * @param {String} tag
+   * @param {String} [tag]
    * @returns {Promise<unknown>}
    */
   async getIndex(tag) {
