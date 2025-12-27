@@ -16,7 +16,16 @@ export function defArticlesFeed({ HTMLElement, customElements }) {
     }
 
     get endpoint() {
-      return this.getAttribute("endpoint");
+      if (this.hasAttribute("endpoint")) {
+        return this.getAttribute("endpoint");
+      }
+      if (this.hasAttribute("tenant")) {
+        return `https://gryphoon.work/api/v1/${this.tenant}/articles/`;
+      }
+    }
+
+    get tenant() {
+      return this.getAttribute("tenant");
     }
 
     get lang() {
