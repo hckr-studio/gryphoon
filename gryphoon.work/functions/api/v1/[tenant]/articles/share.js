@@ -7,6 +7,8 @@ export async function onRequestPost({ request, env, params }) {
   const article = Object.fromEntries(formData);
   const key = article.url;
 
+  console.log({ key, article, params });
+
   const articles = await env.articlesShare.getByName(params.tenant);
   const data = await articles.getArticle(key);
   data.entry = Object.assign(
