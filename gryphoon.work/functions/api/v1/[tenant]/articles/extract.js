@@ -5,12 +5,10 @@
 export async function onRequestGet({ request, env, params }) {
   const { searchParams } = new URL(request.url);
   const url = searchParams.get("url");
-  console.log({ url, params });
 
   const articles = await env.articlesShare.getByName(params.tenant);
   const data = await articles.getArticle(url);
   if (data && Object.keys(data).length) {
-    console.log({ url, data });
     return Response.json(data.entry);
   }
 
