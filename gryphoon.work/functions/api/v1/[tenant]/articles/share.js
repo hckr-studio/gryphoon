@@ -9,6 +9,8 @@ export async function onRequestPost({ request, env, params }) {
 
   console.log({ key, article, params });
 
+  if (!key) return new Response(null, { status: 400 });
+
   const articles = await env.articlesShare.getByName(params.tenant);
   const data = await articles.getArticle(key);
   data.entry = Object.assign(
