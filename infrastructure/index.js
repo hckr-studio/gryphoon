@@ -51,12 +51,12 @@ const admin = new cloudflare.PagesProject(
         durableObjectNamespaces: {
           articlesShare: { namespaceId: "5c1a30b5e63642378d4ac78168bdf5ce" },
         },
-        serviceBindings: [
-          {
-            name: "extractor",
+        services: {
+          extractor: {
             service: "hckr-semantic-extractor",
+            environment: "production",
           },
-        ],
+        },
       },
     },
   },
