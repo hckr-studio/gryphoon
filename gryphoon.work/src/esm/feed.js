@@ -109,7 +109,10 @@ export function defFeed({ HTMLElement, customElements }) {
      */
     renderItem(entry, formatter) {
       const item = this.#itemTemplate.content.cloneNode(true);
-      const locale = (entry.lang || this.lang).split("-").at(0);
+      let locale = (entry.lang || this.lang).split("-").at(0);
+      if (locale === "undefined") {
+        locale = undefined;
+      }
       const article = item.querySelector("article");
 
       if (entry.rating) {
