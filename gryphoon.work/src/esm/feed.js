@@ -158,7 +158,11 @@ export function defFeed({ HTMLElement, customElements }) {
       const image = item.querySelector("img");
       if (image) {
         if (entry.image) {
-          image.src += entry.image;
+          if (image.src) {
+            image.src += encodeURIComponent(entry.image);
+          } else {
+            image.src = entry.image;
+          }
         } else {
           image.remove();
         }
