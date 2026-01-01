@@ -160,7 +160,7 @@ export function defFeed({ HTMLElement, customElements }) {
         if (entry.image) {
           if (image.src) {
             image.src += encodeURIComponent(entry.image);
-            image.onerror = "this.src=" + entry.image;
+            image.onerror = `this.onerror=null;this.src='${entry.image}'`;
           } else {
             image.src = entry.image;
           }
