@@ -1188,6 +1188,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@gryphoon/components@workspace:packages/components":
+  version: 0.0.0-use.local
+  resolution: "@gryphoon/components@workspace:packages/components"
+  languageName: unknown
+  linkType: soft
+
 "@gryphoon/infrastructure@workspace:infrastructure":
   version: 0.0.0-use.local
   resolution: "@gryphoon/infrastructure@workspace:infrastructure"

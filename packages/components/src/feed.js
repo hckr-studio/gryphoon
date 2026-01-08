@@ -1,0 +1,207 @@
+import { processTypo } from "@hckr_/blendid/lib/texy.mjs";
+
+/**
+ * @param {Window} globalScope
+ * @return {typeof ArticlesFeed}
+ */
+export function defFeed({ HTMLElement, HTMLTimeElement, HTMLMetaElement, customElements }) {
+  class ArticlesFeed extends HTMLElement {
+    #itemTemplate;
+    #itemsCount;
+
+    static register(tagName = "gryphoon-feed") {
+      if (customElements.get(tagName)) return;
+      this.tagName = tagName;
+      customElements.define(tagName, this);
+    }
+
+    get endpoint() {
+      if (this.hasAttribute("endpoint")) {
+        return this.getAttribute("endpoint");
+      }
+      if (this.hasAttribute("tenant")) {
+        return `https://gryphoon.work/api/v1/${this.tenant}/articles/`;
+      }
+    }
+
+    get tenant() {
+      return this.getAttribute("tenant");
+    }
+
+    get lang() {
+      return this.getAttribute("lang") ?? this.ownerDocument.documentElement.lang ?? "cs";
+    }
+
+    get loaded() {
+      return this.hasAttribute("loaded");
+    }
+
+    set loaded(isLoaded) {
+      this.toggleAttribute("loaded", Boolean(isLoaded));
+    }
+
+    set data(data) {
+      if (this.loaded) return;
+      this.appendChild(this.renderFeed(data));
+      this.loaded = true;
+    }
+
+    async loadDataFromApi(url) {
+      if (this.loaded) return;
+      const searchParams = Object.entries({
+        page: this.pageIndex,
+        pageSize: this.pageSize,
+        tag: this.tag,
+      }).filter(([k, v]) => v);
+      const resp = await fetch(`${url ?? this.endpoint}?${new URLSearchParams(searchParams)}`, {
+        headers: { Accept: "application/json" },
+      });
+      const { pagination, entries } = await resp.json();
+      this.data = entries;
+      this.itemsCount = pagination.totalItems;
+    }
+
+    connectedCallback() {
+      this.setAttribute("role", "feed");
+      this.#itemTemplate = this.querySelector("template");
+      this.addEventListener("click", e => {
+        if (e.target.classList.contains("u-url")) {
+          this.sendClickBeacon(e.target);
+        }
+      });
+    }
+
+    sendClickBeacon({ href }) {
+      const params = new URLSearchParams({ url: href, event: "clicks" });
+      navigator.sendBeacon(this.endpoint + "beacon", params);
+    }
+
+    get pageIndex() {
+      const val = this.dataset.pageIndex ?? "0";
+      return Number.parseInt(val, 10);
+    }
+
+    get pageSize() {
+      const val = this.dataset.pageSize ?? "0";
+      return Number.parseInt(val, 10);
+    }
+
+    get itemsCount() {
+      return this.#itemsCount;
+    }
+
+    set itemsCount(count) {
+      this.#itemsCount = count;
+    }
+
+    renderFeed(data) {
+      const formatter = new Intl.DateTimeFormat(this.lang, { day: "numeric", month: "long", year: "numeric" });
+      const items = this.ownerDocument.createDocumentFragment();
+      for (const { entry } of data) {
+        items.appendChild(this.renderItem(entry, formatter));
+      }
+      return items;
+    }
+
+    /**
+     * @param {*} entry
+     * @param {Intl.DateTimeFormat} formatter
+     */
+    renderItem(entry, formatter) {
+      const item = this.#itemTemplate.content.cloneNode(true);
+      let locale = (entry.lang || this.lang).split("-").at(0);
+      if (locale === "undefined") {
+        locale = undefined;
+      }
+      const article = item.querySelector("article");
+
+      if (entry.rating) {
+        article.dataset.rating = entry.rating;
+      }
+      if (entry.lang) {
+        article.lang = entry.lang;
+      }
+
+      const a = item.querySelector("[itemprop=url]");
+      a.href = entry.link ?? entry.url;
+      a.textContent = processTypo(entry.title, { locale });
+
+      const published = item.querySelector("[itemprop=published]");
+      if (published) {
+        if (published instanceof HTMLTimeElement) {
+          published.datetime = entry.published;
+          published.textContent = formatter.format(new Date(entry.published));
+        }
+        else if (published instanceof HTMLMetaElement) {
+          published.content = entry.published;
+        } else {
+          published.textContent = formatter.format(new Date(entry.published));
+        }
+      }
+
+      const author = item.querySelector("[itemprop=author] [itemprop=name]");
+      if (author) {
+        if (entry.author) {
+          author.textContent = entry.author;
+        } else {
+          author.remove();
+        }
+      }
+
+      const description = item.querySelector("[itemprop=abstract]");
+      if (description) {
+        if (entry.description) {
+          description.textContent = processTypo(entry.description, { locale });
+        } else {
+          description.remove();
+        }
+      }
+
+      const hostname = item.querySelector("code");
+      if (hostname) {
+        hostname.textContent = entry.hostname;
+      }
+
+      const image = item.querySelector("[itemprop=thumbnailUrl], img");
+      if (image) {
+        if (entry.image) {
+          if (image.src) {
+            image.src += encodeURIComponent(entry.image);
+            image.setAttribute("onerror", `this.onerror=null;this.src='${entry.image}'`);
+          } else {
+            image.src = entry.image;
+          }
+        } else {
+          image.remove();
+        }
+      }
+
+      const tags = item.querySelector(".tags");
+      if (tags) {
+        if (entry.tags) {
+          const ul = tags.querySelector("ul");
+          const li = tags.querySelector("li");
+          const items = this.ownerDocument.createDocumentFragment();
+          for (const tag of entry.tags.split(",")) {
+            const item = li.cloneNode(true);
+            const link = item.querySelector("a");
+            link.textContent = tag.trim();
+            link.href += encodeURIComponent(tag.trim().toLowerCase());
+            items.appendChild(item);
+          }
+          ul.replaceChildren(items);
+        } else {
+          tags.remove();
+        }
+      }
+
+      return item;
+    }
+  }
+
+  return ArticlesFeed;
+}
+
+if (globalThis.window?.customElements) {
+  defFeed(window).register();
+}
