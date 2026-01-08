@@ -4,7 +4,7 @@ import { processTypo } from "@hckr_/blendid/lib/texy.mjs";
  * @param {Window} globalScope
  * @return {typeof ArticlesFeed}
  */
-export function defFeed({ HTMLElement, customElements }) {
+export function defFeed({ HTMLElement, HTMLTimeElement, HTMLMetaElement, customElements }) {
   class ArticlesFeed extends HTMLElement {
     #itemTemplate;
     #itemsCount;
@@ -128,8 +128,15 @@ export function defFeed({ HTMLElement, customElements }) {
 
       const published = item.querySelector("[itemprop=published]");
       if (published) {
-        published.datetime = entry.published;
-        published.textContent = formatter.format(new Date(entry.published));
+        if (published instanceof HTMLTimeElement) {
+          published.datetime = entry.published;
+          published.textContent = formatter.format(new Date(entry.published));
+        }
+        else if (published instanceof HTMLMetaElement) {
+          published.content = entry.published;
+        } else {
+          published.textContent = formatter.format(new Date(entry.published));
+        }
       }
 
       const author = item.querySelector("[itemprop=author] [itemprop=name]");
@@ -155,7 +162,7 @@ export function defFeed({ HTMLElement, customElements }) {
         hostname.textContent = entry.hostname;
       }
 
-      const image = item.querySelector("img");
+      const image = item.querySelector("[itemprop=thumbnailUrl], img");
       if (image) {
         if (entry.image) {
           if (image.src) {
