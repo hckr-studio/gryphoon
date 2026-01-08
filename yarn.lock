@@ -1176,6 +1176,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@gryphoon/admin@workspace:gryphoon.work"
   dependencies:
+    "@gryphoon/components": "workspace:*"
     "@hckr_/blendid": "npm:9.6.8"
   languageName: unknown
   linkType: soft
@@ -1188,7 +1189,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@gryphoon/components@workspace:packages/components":
+"@gryphoon/components@workspace:*, @gryphoon/components@workspace:packages/components":
   version: 0.0.0-use.local
   resolution: "@gryphoon/components@workspace:packages/components"
   languageName: unknown
