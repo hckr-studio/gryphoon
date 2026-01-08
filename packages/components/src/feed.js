@@ -1,10 +1,32 @@
 import { processTypo } from "@hckr_/blendid/lib/texy.mjs";
 
+function setDateContent(el, date, { formatter,  HTMLTimeElement, HTMLMetaElement }) {
+  if (!el) return;
+  if (el instanceof HTMLTimeElement) {
+    el.dateTime = date;
+    el.textContent = formatter.format(new Date(date));
+  } else if (el instanceof HTMLMetaElement) {
+    el.content = date;
+  } else {
+    el.textContent = formatter.format(new Date(date));
+  }
+}
+
+function setDataValue(el, value, {HTMLMetaElement, HTMLDataElement}) {
+  if (el instanceof HTMLMetaElement) {
+    el.content = value;
+  } else if (el instanceof HTMLDataElement) {
+    el.value = value;
+  } else if (el) {
+    el.textContent = value;
+  }
+}
+
 /**
  * @param {Window} globalScope
  * @return {typeof ArticlesFeed}
  */
-export function defFeed({ HTMLElement, HTMLTimeElement, HTMLMetaElement, customElements }) {
+export function defFeed({ HTMLElement, HTMLDataElement, HTMLTimeElement, HTMLMetaElement, customElements }) {
   class ArticlesFeed extends HTMLElement {
     #itemTemplate;
     #itemsCount;
@@ -127,17 +149,7 @@ export function defFeed({ HTMLElement, HTMLTimeElement, HTMLMetaElement, customE
       a.textContent = processTypo(entry.title, { locale });
 
       const published = item.querySelector("[itemprop=published]");
-      if (published) {
-        if (published instanceof HTMLTimeElement) {
-          published.datetime = entry.published;
-          published.textContent = formatter.format(new Date(entry.published));
-        }
-        else if (published instanceof HTMLMetaElement) {
-          published.content = entry.published;
-        } else {
-          published.textContent = formatter.format(new Date(entry.published));
-        }
-      }
+      setDateContent(published, entry.published, {formatter, HTMLTimeElement, HTMLMetaElement});
 
       const author = item.querySelector("[itemprop=author] [itemprop=name]");
       if (author) {
@@ -194,6 +206,11 @@ export function defFeed({ HTMLElement, HTMLTimeElement, HTMLMetaElement, customE
           tags.remove();
         }
       }
+
+      const reviewPublished = item.querySelector("[itemprop=review] [itemprop=datePublished]");
+      setDateContent(reviewPublished, entry.published, {formatter, HTMLTimeElement, HTMLMetaElement});
+      const reviewRating = item.querySelector("[itemprop=review] [itemprop=ratingValue]");
+      setDataValue(reviewRating, entry.rating, {HTMLMetaElement, HTMLDataElement});
 
       return item;
     }
