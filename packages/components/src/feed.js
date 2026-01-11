@@ -174,14 +174,19 @@ export function defFeed({ HTMLElement, HTMLDataElement, HTMLTimeElement, HTMLMet
         hostname.textContent = entry.hostname;
       }
 
-      const image = item.querySelector("[itemprop=thumbnailUrl], img");
+      const image = item.querySelector("[itemprop=thumbnailUrl]");
       if (image) {
         if (entry.image) {
           if (image.src) {
             image.src += encodeURIComponent(entry.image);
-            image.setAttribute("onerror", `this.onerror=null;this.src='${entry.image}'`);
           } else {
             image.src = entry.image;
+          }
+          if (image.data.fallbackSrc) {
+            image.setAttribute("onerror", `this.onerror=null;this.src='${image.data.fallbackSrc}'`);
+          }
+          else {
+            image.setAttribute("onerror", `this.onerror=null;this.src='${entry.image}'`);
           }
         } else {
           image.remove();
