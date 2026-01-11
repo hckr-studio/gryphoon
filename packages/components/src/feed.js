@@ -182,8 +182,8 @@ export function defFeed({ HTMLElement, HTMLDataElement, HTMLTimeElement, HTMLMet
           } else {
             image.src = entry.image;
           }
-          if (image.data.fallbackSrc) {
-            image.setAttribute("onerror", `this.onerror=null;this.src='${image.data.fallbackSrc}'`);
+          if (image.dataset.fallbackSrc) {
+            image.setAttribute("onerror", `this.onerror=null;this.src='${image.dataset.fallbackSrc}'`);
           }
           else {
             image.setAttribute("onerror", `this.onerror=null;this.src='${entry.image}'`);
