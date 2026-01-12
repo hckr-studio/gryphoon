@@ -4,7 +4,7 @@
   "dependencies": {
     "@hckr_/cloudflare-pages-plugin-rollbar": "1.1.4",
     "@thi.ng/transducers": "9.6.20",
-    "feed": "5.1.0"
+    "feed": "5.2.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "4.20260111.0",
