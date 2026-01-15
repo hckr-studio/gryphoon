@@ -174,7 +174,7 @@ export function defFeed({ HTMLElement, HTMLDataElement, HTMLTimeElement, HTMLMet
         hostname.textContent = entry.hostname;
       }
 
-      const image = item.querySelector("[itemprop=thumbnailUrl]");
+      const image = item.querySelector("[itemprop=thumbnailUrl], img");
       if (image) {
         if (entry.image) {
           if (image.src) {
