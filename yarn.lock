@@ -1197,7 +1197,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@gryphoon/infrastructure@workspace:infrastructure"
   dependencies:
-    "@pulumi/cloudflare": "npm:6.12.0"
+    "@pulumi/cloudflare": "npm:6.13.0"
     "@pulumi/pulumi": "npm:3.216.0"
   languageName: unknown
   linkType: soft
@@ -2111,12 +2111,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pulumi/cloudflare@npm:6.12.0":
-  version: 6.12.0
-  resolution: "@pulumi/cloudflare@npm:6.12.0"
+"@pulumi/cloudflare@npm:6.13.0":
+  version: 6.13.0
+  resolution: "@pulumi/cloudflare@npm:6.13.0"
   dependencies:
     "@pulumi/pulumi": "npm:^3.142.0"
-  checksum: 10c0/af68b8921f62a1ba5f37267546f6eb12bdc3d56f8cf368cd0ccaa43f31eb3be5c219e07afd643ce0f95ae726012c94bcbe6c99494be73170c7bd8a8454933dc9
+  checksum: 10c0/cd81609e2d37f798b64507591b819218598cbbd599da15f0676b5ddd5d0a48cfd385d918a7971f726d2a2232f12df68d0614595301bfc87a8091f2baaea6b7fe
   languageName: node
   linkType: hard
 
