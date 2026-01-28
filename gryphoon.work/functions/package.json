@@ -7,7 +7,7 @@
     "feed": "5.2.0"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "4.20260127.0",
+    "@cloudflare/workers-types": "4.20260128.0",
     "@gryphoon/articles-share": "workspace:*"
   }
 }
