@@ -11,6 +11,7 @@ export async function onRequestGet({ env, request, params }) {
   const tag = searchParams.get("tag");
 
   const articles = await env.articlesShare.getByName(params.tenant);
+  const feed = await articles.getFeed();
   const data = await articles.getIndex(tag);
   const pagedEntries = iterator(
     comp(
@@ -20,14 +21,15 @@ export async function onRequestGet({ env, request, params }) {
     ),
     data,
   );
-  const result = await Promise.all(pagedEntries);
+  const entries = await Promise.all(pagedEntries);
   return Response.json({
+    feed,
+    entries,
     pagination: {
       pageIndex,
       pageSize,
       totalItems: data.length,
       pagesCount: Math.ceil(data.length / pageSize),
     },
-    entries: result,
   });
 }
