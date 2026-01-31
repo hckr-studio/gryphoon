@@ -1,6 +1,6 @@
 import { processTypo } from "@hckr_/blendid/lib/texy.mjs";
 
-function setDateContent(el, date, { formatter,  HTMLTimeElement, HTMLMetaElement }) {
+function setDateContent(el, date, { formatter, HTMLTimeElement, HTMLMetaElement }) {
   if (!el) return;
   if (el instanceof HTMLTimeElement) {
     el.dateTime = date;
@@ -12,7 +12,7 @@ function setDateContent(el, date, { formatter,  HTMLTimeElement, HTMLMetaElement
   }
 }
 
-function setDataValue(el, value, {HTMLMetaElement, HTMLDataElement}) {
+function setDataValue(el, value, { HTMLMetaElement, HTMLDataElement }) {
   if (el instanceof HTMLMetaElement) {
     el.content = value;
   } else if (el instanceof HTMLDataElement) {
@@ -149,7 +149,7 @@ export function defFeed({ HTMLElement, HTMLDataElement, HTMLTimeElement, HTMLMet
       a.textContent = processTypo(entry.title, { locale });
 
       const published = item.querySelector("[itemprop=published]");
-      setDateContent(published, entry.published, {formatter, HTMLTimeElement, HTMLMetaElement});
+      setDateContent(published, entry.published, { formatter, HTMLTimeElement, HTMLMetaElement });
 
       const author = item.querySelector("[itemprop=author] [itemprop=name]");
       if (author) {
@@ -184,8 +184,7 @@ export function defFeed({ HTMLElement, HTMLDataElement, HTMLTimeElement, HTMLMet
           }
           if (image.dataset.fallbackSrc) {
             image.setAttribute("onerror", `this.onerror=null;this.src='${image.dataset.fallbackSrc}'`);
-          }
-          else {
+          } else {
             image.setAttribute("onerror", `this.onerror=null;this.src='${entry.image}'`);
           }
         } else {
@@ -213,9 +212,9 @@ export function defFeed({ HTMLElement, HTMLDataElement, HTMLTimeElement, HTMLMet
       }
 
       const reviewPublished = item.querySelector("[itemprop=review] [itemprop=datePublished]");
-      setDateContent(reviewPublished, entry.published, {formatter, HTMLTimeElement, HTMLMetaElement});
+      setDateContent(reviewPublished, entry.published, { formatter, HTMLTimeElement, HTMLMetaElement });
       const reviewRating = item.querySelector("[itemprop=review] [itemprop=ratingValue]");
-      setDataValue(reviewRating, entry.rating, {HTMLMetaElement, HTMLDataElement});
+      setDataValue(reviewRating, entry.rating, { HTMLMetaElement, HTMLDataElement });
 
       return item;
     }
