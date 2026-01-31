@@ -27,7 +27,7 @@ async function rssFeed(feedInit, items) {
       title: entry.title,
       link: entry.link ?? entry.url,
       description: entry.description,
-      enclosure: entry.image ? { url: entry.image } : undefined,
+      //enclosure: entry.image ? { url: entry.image } : undefined,
     });
   }
   return new Response(feed.rss2(), {
