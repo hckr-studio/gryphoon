@@ -45,7 +45,7 @@ async function rssFeed(feedInit, items) {
  */
 export async function onRequestGet({ request, env, params }) {
   const { searchParams } = new URL(request.url);
-  const pageSize = Math.max(0, Number.parseInt(searchParams.get("page") ?? "0", 10));
+  const pageSize = Math.max(0, Number.parseInt(searchParams.get("page") ?? "10", 10));
   const tag = searchParams.get("tag");
 
   const articles = await env.articlesShare.getByName(params.tenant);
