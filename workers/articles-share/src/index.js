@@ -65,7 +65,7 @@ export class ArticlesShare extends DurableObject {
     await this.putTags(Array.from(tagsSet.union(new Set(articleTags))).filter(Boolean));
     await Promise.all(articleTags.map(tag => this.updateIndex(tag, { url, published })));
   }
-  
+
   async getFeed() {
     return (await this.ctx.storage.get("articles/feed")) ?? {};
   }
