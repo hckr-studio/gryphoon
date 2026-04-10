@@ -1032,7 +1032,7 @@ __metadata:
   resolution: "@gryphoon/admin@workspace:gryphoon.work"
   dependencies:
     "@gryphoon/components": "workspace:*"
-    "@hckr_/blendid": "npm:9.6.10"
+    "@hckr_/blendid": "npm:9.6.11"
   languageName: unknown
   linkType: soft
 
@@ -1063,7 +1063,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@gryphoon/web@workspace:www.gryphoon.work"
   dependencies:
-    "@hckr_/blendid": "npm:9.6.10"
+    "@hckr_/blendid": "npm:9.6.11"
   languageName: unknown
   linkType: soft
 
@@ -1083,9 +1083,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hckr_/blendid@npm:9.6.10":
-  version: 9.6.10
-  resolution: "@hckr_/blendid@npm:9.6.10"
+"@hckr_/blendid@npm:9.6.11":
+  version: 9.6.11
+  resolution: "@hckr_/blendid@npm:9.6.11"
   dependencies:
     "@csstools/postcss-gamut-mapping": "npm:3.0.2"
     "@lokesh.dhakar/quantize": "npm:1.4.0"
@@ -1137,7 +1137,7 @@ __metadata:
     vite: "npm:8.0.1"
   bin:
     blendid: bin/blendid.js
-  checksum: 10c0/00457f32e2b0c644fc4f8a17167652dcb4f5a9ba45ffb796033e2ac0d8d05d7e7fb7bc228168d73c8d8a3004bd25ab1e03836fe62162540b898e0f26ea8df13e
+  checksum: 10c0/379b83617d1e50549ef3562f303879fb753f7a7c2e573cecbf34dbfe73db0dbc48ab8e6ae540b871c328e6a393e6297205d48be669e6216ddce589821c85f118
   languageName: node
   linkType: hard
 
