@@ -151,10 +151,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cloudflare/workers-types@npm:4.20260411.1":
-  version: 4.20260411.1
-  resolution: "@cloudflare/workers-types@npm:4.20260411.1"
-  checksum: 10c0/f65856e53ec9d20393338e5051eadeb73492476d9d5f6b52531afb1a1a2d98ad28d198ca2cfb78b6e6c9a58da30de44b9d1ebfe4db542117abf5063de78d9a63
+"@cloudflare/workers-types@npm:4.20260413.1":
+  version: 4.20260413.1
+  resolution: "@cloudflare/workers-types@npm:4.20260413.1"
+  checksum: 10c0/9189db36ebd3c932bfb8bfffef5499f496ca86e62a1d46ea1e62b8a252d8c7b18e01ed1caea9ce58ae1782a51c6bc48b2fc32e552ce766ab2bae8b8935861ee0
   languageName: node
   linkType: hard
 
@@ -1030,7 +1030,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@gryphoon/admin-functions@workspace:gryphoon.work/functions"
   dependencies:
-    "@cloudflare/workers-types": "npm:4.20260411.1"
+    "@cloudflare/workers-types": "npm:4.20260413.1"
     "@gryphoon/articles-share": "workspace:*"
     "@hckr_/cloudflare-pages-plugin-rollbar": "npm:1.1.4"
     "@thi.ng/transducers": "npm:9.6.31"
