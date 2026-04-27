@@ -3,7 +3,7 @@
   "private": true,
   "dependencies": {
     "@hckr_/cloudflare-pages-plugin-rollbar": "1.1.4",
-    "@thi.ng/transducers": "9.6.32",
+    "@thi.ng/transducers": "9.6.33",
     "cookie": "1.1.1",
     "feed": "5.2.1",
     "jose": "6.2.2"
