@@ -5,7 +5,7 @@
     "@gryphoon/components": "workspace:*"
   },
   "devDependencies": {
-    "@hckr_/blendid": "9.6.12"
+    "@hckr_/blendid": "9.6.13"
   },
   "scripts": {
     "start": "blendid",
