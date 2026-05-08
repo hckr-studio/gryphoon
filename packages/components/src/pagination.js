@@ -45,6 +45,12 @@ export function defPagination({ HTMLElement, customElements }) {
       }
 
       const { search } = new URL(this.ownerDocument.location.href);
+      if (this.firstLink) {
+        const firstParams = new URLSearchParams(search);
+        firstParams.set("page", 0);
+        this.firstLink.href = `?${firstParams}`;
+      }
+
       if (this.prevLink) {
         const prevParams = new URLSearchParams(search);
         prevParams.set("page", prevPage);
