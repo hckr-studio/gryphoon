@@ -1039,7 +1039,7 @@ __metadata:
     "@cloudflare/workers-types": "npm:4.20260508.1"
     "@gryphoon/articles-share": "workspace:*"
     "@hckr_/cloudflare-pages-plugin-rollbar": "npm:1.1.4"
-    "@thi.ng/transducers": "npm:9.6.33"
+    "@thi.ng/transducers": "npm:9.6.35"
     cookie: "npm:1.1.1"
     feed: "npm:5.2.1"
     jose: "npm:6.2.3"
@@ -2269,14 +2269,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@thi.ng/api@npm:^8.12.20, @thi.ng/api@npm:^8.12.21":
+"@thi.ng/api@npm:^8.12.21":
   version: 8.12.21
   resolution: "@thi.ng/api@npm:8.12.21"
   checksum: 10c0/d8efef0a87c22f20ccda6712301ea118b1559062bfc81184f6c58c90c9e8df49aa2016c3c0662d3f93e119029e16a0860db006655c20e6b9bca5571dded9571f
   languageName: node
   linkType: hard
 
-"@thi.ng/arrays@npm:^2.14.16":
+"@thi.ng/arrays@npm:^2.14.18":
   version: 2.14.18
   resolution: "@thi.ng/arrays@npm:2.14.18"
   dependencies:
@@ -2290,14 +2290,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@thi.ng/checks@npm:^3.9.0, @thi.ng/checks@npm:^3.9.1":
+"@thi.ng/checks@npm:^3.9.1":
   version: 3.9.1
   resolution: "@thi.ng/checks@npm:3.9.1"
   checksum: 10c0/837b44f8b3d7c9586e8d073bad528d308ed9fd73b9abc95699db19b723787d7bcec3db9c39dbb0b0fc54853047eb4a4188fd1defcfcf39d7c73de6d558d38999
   languageName: node
   linkType: hard
 
-"@thi.ng/compare@npm:^2.5.8, @thi.ng/compare@npm:^2.5.9":
+"@thi.ng/compare@npm:^2.5.9":
   version: 2.5.9
   resolution: "@thi.ng/compare@npm:2.5.9"
   dependencies:
@@ -2306,7 +2306,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@thi.ng/compose@npm:^3.0.57":
+"@thi.ng/compose@npm:^3.0.58":
   version: 3.0.58
   resolution: "@thi.ng/compose@npm:3.0.58"
   dependencies:
@@ -2323,14 +2323,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@thi.ng/errors@npm:^2.6.10, @thi.ng/errors@npm:^2.6.9":
+"@thi.ng/errors@npm:^2.6.10":
   version: 2.6.10
   resolution: "@thi.ng/errors@npm:2.6.10"
   checksum: 10c0/d4e641a2814cbdf2f869acae6c44faffbf8c9cc70ece655151c4b4aca0c8588b6782f21be48115ebd7dc09702c6cfdda8baad4e9b0bdf363c2eed8387f8f3d66
   languageName: node
   linkType: hard
 
-"@thi.ng/math@npm:^5.15.9":
+"@thi.ng/math@npm:^5.15.10":
   version: 5.15.10
   resolution: "@thi.ng/math@npm:5.15.10"
   dependencies:
@@ -2339,7 +2339,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@thi.ng/random@npm:^4.1.45, @thi.ng/random@npm:^4.1.47":
+"@thi.ng/random@npm:^4.1.47":
   version: 4.1.47
   resolution: "@thi.ng/random@npm:4.1.47"
   dependencies:
@@ -2349,27 +2349,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@thi.ng/timestamp@npm:^1.1.39":
+"@thi.ng/timestamp@npm:^1.1.40":
   version: 1.1.40
   resolution: "@thi.ng/timestamp@npm:1.1.40"
   checksum: 10c0/51b24819acf5e24f102326ad5e102ebabf8a0e18e3ffaa33907bb0bb4968c0c84a04b6b06c41fe6ccb8d49320520cdd9155a17329197a12031f2b070ee2cb30c
   languageName: node
   linkType: hard
 
-"@thi.ng/transducers@npm:9.6.33":
-  version: 9.6.33
-  resolution: "@thi.ng/transducers@npm:9.6.33"
+"@thi.ng/transducers@npm:9.6.35":
+  version: 9.6.35
+  resolution: "@thi.ng/transducers@npm:9.6.35"
   dependencies:
-    "@thi.ng/api": "npm:^8.12.20"
-    "@thi.ng/arrays": "npm:^2.14.16"
-    "@thi.ng/checks": "npm:^3.9.0"
-    "@thi.ng/compare": "npm:^2.5.8"
-    "@thi.ng/compose": "npm:^3.0.57"
-    "@thi.ng/errors": "npm:^2.6.9"
-    "@thi.ng/math": "npm:^5.15.9"
-    "@thi.ng/random": "npm:^4.1.45"
-    "@thi.ng/timestamp": "npm:^1.1.39"
-  checksum: 10c0/39fc383edb363a2d8654d51b65ef9510ab8a6072417489750b38d65ce4be55878ee12881bb72af7ea5067d96708cad26e66b17c0eee43802b50b68ab97c6272b
+    "@thi.ng/api": "npm:^8.12.21"
+    "@thi.ng/arrays": "npm:^2.14.18"
+    "@thi.ng/checks": "npm:^3.9.1"
+    "@thi.ng/compare": "npm:^2.5.9"
+    "@thi.ng/compose": "npm:^3.0.58"
+    "@thi.ng/errors": "npm:^2.6.10"
+    "@thi.ng/math": "npm:^5.15.10"
+    "@thi.ng/random": "npm:^4.1.47"
+    "@thi.ng/timestamp": "npm:^1.1.40"
+  checksum: 10c0/201544dd665478e0586d8b8c2ba9f0a9f403b5c76eb5c6fc95cec4865b71cc8697b82f38e9d96bf35ce548b76c2c6fb5c7bde7c2ce79bf6f67bc9552f45a0ada
   languageName: node
   linkType: hard
 
