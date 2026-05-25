@@ -1052,7 +1052,7 @@ __metadata:
     "@cloudflare/workers-types": "npm:4.20260520.1"
     "@gryphoon/articles-share": "workspace:*"
     "@hckr_/cloudflare-pages-plugin-rollbar": "npm:1.1.4"
-    "@thi.ng/transducers": "npm:9.6.38"
+    "@thi.ng/transducers": "npm:9.6.39"
     cookie: "npm:1.1.1"
     feed: "npm:5.2.1"
     jose: "npm:6.2.3"
@@ -2324,14 +2324,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@thi.ng/api@npm:^8.12.24, @thi.ng/api@npm:^8.12.25":
+"@thi.ng/api@npm:^8.12.25":
   version: 8.12.25
   resolution: "@thi.ng/api@npm:8.12.25"
   checksum: 10c0/31429db634a58a68dc4df5085794ff922e4e00df0dac044bb4b8c31894b9865e05a4a5645d06bc185f80570fda53bf87762219efcc9a258bb6fc395bb35fbd6f
   languageName: node
   linkType: hard
 
-"@thi.ng/arrays@npm:^2.14.21":
+"@thi.ng/arrays@npm:^2.14.22":
   version: 2.14.22
   resolution: "@thi.ng/arrays@npm:2.14.22"
   dependencies:
@@ -2345,14 +2345,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@thi.ng/checks@npm:^3.9.4, @thi.ng/checks@npm:^3.9.5":
+"@thi.ng/checks@npm:^3.9.5":
   version: 3.9.5
   resolution: "@thi.ng/checks@npm:3.9.5"
   checksum: 10c0/dfec35f1165a655ecb1a24539ac8780da6afdbbff2bebeddfb67cf43d9b9e9da37f0087aba6e378570fefbca185889fa01a8bce3b12288249e07580540ac9a15
   languageName: node
   linkType: hard
 
-"@thi.ng/compare@npm:^2.5.12, @thi.ng/compare@npm:^2.5.13":
+"@thi.ng/compare@npm:^2.5.13":
   version: 2.5.13
   resolution: "@thi.ng/compare@npm:2.5.13"
   dependencies:
@@ -2361,7 +2361,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@thi.ng/compose@npm:^3.0.61":
+"@thi.ng/compose@npm:^3.0.62":
   version: 3.0.62
   resolution: "@thi.ng/compose@npm:3.0.62"
   dependencies:
@@ -2378,14 +2378,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@thi.ng/errors@npm:^2.6.13, @thi.ng/errors@npm:^2.6.14":
+"@thi.ng/errors@npm:^2.6.14":
   version: 2.6.14
   resolution: "@thi.ng/errors@npm:2.6.14"
   checksum: 10c0/af3d751387181a544c9d6bd6fd130563267a62f975979b8f9d34110a73c1dda3503f2bb1827dba37527d3906b08eacc4cc79218336d47826d9f93f2b4bd29632
   languageName: node
   linkType: hard
 
-"@thi.ng/math@npm:^5.15.13":
+"@thi.ng/math@npm:^5.15.14":
   version: 5.15.14
   resolution: "@thi.ng/math@npm:5.15.14"
   dependencies:
@@ -2394,7 +2394,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@thi.ng/random@npm:^4.1.50, @thi.ng/random@npm:^4.1.51":
+"@thi.ng/random@npm:^4.1.51":
   version: 4.1.51
   resolution: "@thi.ng/random@npm:4.1.51"
   dependencies:
@@ -2404,27 +2404,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@thi.ng/timestamp@npm:^1.1.43":
+"@thi.ng/timestamp@npm:^1.1.44":
   version: 1.1.44
   resolution: "@thi.ng/timestamp@npm:1.1.44"
   checksum: 10c0/caa936acb0b7335945f30e08655064adfe7e69140380bbf86fdec3aed67f640760d8dd24034b8210ee6c44a0b04835e95a3942bb1b25077ea8a292e47f5d8970
   languageName: node
   linkType: hard
 
-"@thi.ng/transducers@npm:9.6.38":
-  version: 9.6.38
-  resolution: "@thi.ng/transducers@npm:9.6.38"
+"@thi.ng/transducers@npm:9.6.39":
+  version: 9.6.39
+  resolution: "@thi.ng/transducers@npm:9.6.39"
   dependencies:
-    "@thi.ng/api": "npm:^8.12.24"
-    "@thi.ng/arrays": "npm:^2.14.21"
-    "@thi.ng/checks": "npm:^3.9.4"
-    "@thi.ng/compare": "npm:^2.5.12"
-    "@thi.ng/compose": "npm:^3.0.61"
-    "@thi.ng/errors": "npm:^2.6.13"
-    "@thi.ng/math": "npm:^5.15.13"
-    "@thi.ng/random": "npm:^4.1.50"
-    "@thi.ng/timestamp": "npm:^1.1.43"
-  checksum: 10c0/8c5c7d9d5ca9307673a354a497ddb2b166a049a17dde8cc2dfed41346817d08743101fbc17eab1e14d9276b268e62f1c606e0594f408096110a2b5e298ed7e0f
+    "@thi.ng/api": "npm:^8.12.25"
+    "@thi.ng/arrays": "npm:^2.14.22"
+    "@thi.ng/checks": "npm:^3.9.5"
+    "@thi.ng/compare": "npm:^2.5.13"
+    "@thi.ng/compose": "npm:^3.0.62"
+    "@thi.ng/errors": "npm:^2.6.14"
+    "@thi.ng/math": "npm:^5.15.14"
+    "@thi.ng/random": "npm:^4.1.51"
+    "@thi.ng/timestamp": "npm:^1.1.44"
+  checksum: 10c0/4eba4500193fe2f7e06c2e28babd7bc526c5fbc2360fa91eeeac37336ee0f3f9452af2fc037eccf6c3c3cfd43003916a71a5d750df030be929126d5bbee736af
   languageName: node
   linkType: hard
 
