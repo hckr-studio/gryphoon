@@ -1,7 +1,10 @@
 {
   "name": "@gryphoon/components",
-  "version": "1.0.5",
+  "version": "1.0.10",
   "type": "module",
+  "dependencies": {
+    "@gryphoon/texy": "1.0.0"
+  },
   "exports": {
     "./*.js": "./src/*.js",
     "./lib/*.js": "./src/lib/*.js"

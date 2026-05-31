@@ -1,4 +1,4 @@
-import { processTypo } from "@hckr_/blendid/lib/texy.mjs";
+import { processTypo } from "@gryphoon/texy";
 
 function setDateContent(el, date, { formatter, HTMLTimeElement, HTMLMetaElement }) {
   if (!el) return;
@@ -131,10 +131,9 @@ export function defFeed({ HTMLElement, HTMLDataElement, HTMLTimeElement, HTMLMet
      */
     renderItem(entry, formatter) {
       const item = this.#itemTemplate.content.cloneNode(true);
-      let locale = (entry.lang || this.lang).split("-").at(0);
-      if (locale === "undefined") {
-        locale = undefined;
-      }
+      const lang = entry.lang === "undefined" ? undefined : entry.lang;
+      const locale = (lang || this.lang).split("-").at(0);
+
       const article = item.querySelector("article");
 
       if (entry.rating) {
