@@ -1,0 +1,9 @@
+{
+  "name": "@gryphoon/texy",
+  "version": "1.0.0",
+  "type": "module",
+  "exports": {
+    ".": "./index.js"
+  },
+  "packageManager": "yarn@4.15.0"
+}
