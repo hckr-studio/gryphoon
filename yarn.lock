@@ -1088,7 +1088,7 @@ __metadata:
     "@gryphoon/articles-share": "workspace:*"
     "@hckr_/cloudflare-pages-plugin-rollbar": "npm:1.1.4"
     "@thi.ng/transducers": "npm:9.6.40"
-    cookie: "npm:2.0.0"
+    cookie: "npm:2.0.1"
     feed: "npm:5.2.1"
     jose: "npm:6.2.3"
   languageName: unknown
@@ -3268,10 +3268,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cookie@npm:2.0.0":
-  version: 2.0.0
-  resolution: "cookie@npm:2.0.0"
-  checksum: 10/82209c84b17b9f8d2481fcb5860718959c863dc709ac0e6614c157a711e25360e02ac202181b87c633d86ae7fb41edc924fa251b46083908ced91d3100962a16
+"cookie@npm:2.0.1":
+  version: 2.0.1
+  resolution: "cookie@npm:2.0.1"
+  checksum: 10/9fd785e98334f78e6337f4aafd5a3558a2ff49931b92c9cd9f1f3f042819532dc7f0730d55bd1666bb1d82b86090581d690388764aab1b84dfcd47eb0b959361
   languageName: node
   linkType: hard
 
