@@ -9,7 +9,7 @@
     "jose": "6.2.3"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "4.20260702.1",
+    "@cloudflare/workers-types": "5.20260704.1",
     "@gryphoon/articles-share": "workspace:*"
   }
 }
