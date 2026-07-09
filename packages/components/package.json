@@ -9,5 +9,5 @@
     "./*.js": "./src/*.js",
     "./lib/*.js": "./src/lib/*.js"
   },
-  "packageManager": "yarn@4.17.0"
+  "packageManager": "yarn@4.17.1"
 }
