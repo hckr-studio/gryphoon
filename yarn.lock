@@ -1087,7 +1087,7 @@ __metadata:
     "@cloudflare/workers-types": "npm:5.20260719.1"
     "@gryphoon/articles-share": "workspace:*"
     "@hckr_/cloudflare-pages-plugin-rollbar": "npm:1.1.4"
-    "@thi.ng/transducers": "npm:9.6.41"
+    "@thi.ng/transducers": "npm:9.6.42"
     cookie: "npm:2.0.1"
     feed: "npm:6.0.0"
     jose: "npm:6.2.3"
@@ -2307,24 +2307,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@thi.ng/arrays@npm:^2.14.24":
-  version: 2.14.24
-  resolution: "@thi.ng/arrays@npm:2.14.24"
+"@thi.ng/arrays@npm:^2.14.25":
+  version: 2.14.25
+  resolution: "@thi.ng/arrays@npm:2.14.25"
   dependencies:
     "@thi.ng/api": "npm:^8.12.27"
-    "@thi.ng/checks": "npm:^3.10.1"
+    "@thi.ng/checks": "npm:^3.11.0"
     "@thi.ng/compare": "npm:^2.5.15"
     "@thi.ng/equiv": "npm:^2.1.116"
     "@thi.ng/errors": "npm:^2.6.16"
     "@thi.ng/random": "npm:^4.1.53"
-  checksum: 10/f790123ae242a29e4a3bfd531a808e4aa041eb163adad2208de25156821239e2c8f9b434e9b09285b547c5044ba1c1d247b6d0b1db0f95bcb6cdc80ae960576c
+  checksum: 10/c2900c9f44a761e1992a6cc59b721b9b79226071fa397b834afd01cdc50eeb1f187adb463d82b92c286f4a94f826a8b98f36199d7d05e7b9a4ab8c9069eff4d8
   languageName: node
   linkType: hard
 
-"@thi.ng/checks@npm:^3.10.1":
-  version: 3.10.1
-  resolution: "@thi.ng/checks@npm:3.10.1"
-  checksum: 10/1a2a0a1809959329e569f5de6c9407442b1b5504485630af7ae4d71152f13dd9ab13138813a37e10f747a2137c3337f996ab33af3a8128657994c26bdd1be44b
+"@thi.ng/checks@npm:^3.11.0":
+  version: 3.11.0
+  resolution: "@thi.ng/checks@npm:3.11.0"
+  checksum: 10/e8ea5b0789cab9b4660a75ca00ef0f715b96051f9b76ee6f542c2d375b5e54ef6fd89d607502c4544fb96f571898d71113d40fa65e2dfb5d16496555d7261949
   languageName: node
   linkType: hard
 
@@ -2387,20 +2387,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@thi.ng/transducers@npm:9.6.41":
-  version: 9.6.41
-  resolution: "@thi.ng/transducers@npm:9.6.41"
+"@thi.ng/transducers@npm:9.6.42":
+  version: 9.6.42
+  resolution: "@thi.ng/transducers@npm:9.6.42"
   dependencies:
     "@thi.ng/api": "npm:^8.12.27"
-    "@thi.ng/arrays": "npm:^2.14.24"
-    "@thi.ng/checks": "npm:^3.10.1"
+    "@thi.ng/arrays": "npm:^2.14.25"
+    "@thi.ng/checks": "npm:^3.11.0"
     "@thi.ng/compare": "npm:^2.5.15"
     "@thi.ng/compose": "npm:^3.0.64"
     "@thi.ng/errors": "npm:^2.6.16"
     "@thi.ng/math": "npm:^5.15.16"
     "@thi.ng/random": "npm:^4.1.53"
     "@thi.ng/timestamp": "npm:^1.1.46"
-  checksum: 10/50b577a603682e8b7efec738c64b3886aed0b3589ae920bb5677246612372fabde057934f91e697caf3b6700fcd057e6175e7b170010196986b87bab8a426115
+  checksum: 10/4ff4661534525aaf3bda7b345eeb828a4b3d203759c59340bb9ab4bd83c4373a43c4ae12b028d082b3efd9b5d9e210104e1c92ff0d28a8e8b557ac152f0164df
   languageName: node
   linkType: hard
 
