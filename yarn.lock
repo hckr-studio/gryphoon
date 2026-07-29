@@ -151,10 +151,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cloudflare/workers-types@npm:5.20260727.1":
-  version: 5.20260727.1
-  resolution: "@cloudflare/workers-types@npm:5.20260727.1"
-  checksum: 10/186c3dff824bae8ab7d779144086e35e73808e4e02ffc9ec517623eb8b86812ff42646571f5f09cde82df27cca951159e71fb9ac221a71496cd165c4e2568cbf
+"@cloudflare/workers-types@npm:5.20260729.1":
+  version: 5.20260729.1
+  resolution: "@cloudflare/workers-types@npm:5.20260729.1"
+  checksum: 10/04942b654c54314926a8f1fc13c101a32b24fb7193274b2ef0f65a70bbfc597ca842b8f5e98190d225d26dd423b54afdb75df1745efbb509f61b7b1e5b35c8fa
   languageName: node
   linkType: hard
 
@@ -1084,7 +1084,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@gryphoon/admin-functions@workspace:gryphoon.work/functions"
   dependencies:
-    "@cloudflare/workers-types": "npm:5.20260727.1"
+    "@cloudflare/workers-types": "npm:5.20260729.1"
     "@gryphoon/articles-share": "workspace:*"
     "@hckr_/cloudflare-pages-plugin-rollbar": "npm:1.1.4"
     "@thi.ng/transducers": "npm:9.6.42"
@@ -1107,7 +1107,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@gryphoon/articles-share@workspace:workers/articles-share"
   dependencies:
-    wrangler: "npm:4.114.0"
+    wrangler: "npm:4.115.0"
   languageName: unknown
   linkType: soft
 
@@ -4596,7 +4596,7 @@ __metadata:
   resolution: "gryphoon@workspace:."
   dependencies:
     "@biomejs/biome": "npm:2.5.6"
-    wrangler: "npm:4.114.0"
+    wrangler: "npm:4.115.0"
   languageName: unknown
   linkType: soft
 
@@ -5833,9 +5833,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"miniflare@npm:4.20260722.0":
-  version: 4.20260722.0
-  resolution: "miniflare@npm:4.20260722.0"
+"miniflare@npm:4.20260722.1":
+  version: 4.20260722.1
+  resolution: "miniflare@npm:4.20260722.1"
   dependencies:
     "@cspotcode/source-map-support": "npm:0.8.1"
     sharp: "npm:0.35.2"
@@ -5845,7 +5845,7 @@ __metadata:
     youch: "npm:4.1.0-beta.10"
   bin:
     miniflare: bootstrap.js
-  checksum: 10/ec753b423f417cb4d4a0f19a22984da968692cad144f2085d75d71fde4278fc6f1c52d5b54325cac5a53f6a23e5908cea0e9b9275b47707785df57257980bf8e
+  checksum: 10/6506e3e80b07d8b09258fee349aff7e65a4bb6b9bc31174174830927509543f886003628d438b446c6e00d4cc59b4eb06a9aedc971b07dff30a1380f15203ebf
   languageName: node
   linkType: hard
 
@@ -8942,16 +8942,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"wrangler@npm:4.114.0":
-  version: 4.114.0
-  resolution: "wrangler@npm:4.114.0"
+"wrangler@npm:4.115.0":
+  version: 4.115.0
+  resolution: "wrangler@npm:4.115.0"
   dependencies:
     "@cloudflare/kv-asset-handler": "npm:0.5.0"
     "@cloudflare/unenv-preset": "npm:2.16.1"
     blake3-wasm: "npm:2.1.5"
     esbuild: "npm:0.28.1"
     fsevents: "npm:2.3.3"
-    miniflare: "npm:4.20260722.0"
+    miniflare: "npm:4.20260722.1"
     path-to-regexp: "npm:6.3.0"
     unenv: "npm:2.0.0-rc.24"
     workerd: "npm:1.20260722.1"
@@ -8967,7 +8967,7 @@ __metadata:
     cf-wrangler: bin/cf-wrangler.js
     wrangler: bin/wrangler.js
     wrangler2: bin/wrangler.js
-  checksum: 10/0b83aa69ae03dbfec3d8767bc8c9cbc67a571a813a767f63e13db0045082d0f3a37da5c047d9aed51e9c8baac94801dca3c7e5ba7a00b1ba09f1fea979a1a6f5
+  checksum: 10/b16a88e353501e4c30e19d9cc48bd98a4dec0502e17558a0387f72eeee29416d90380331f0eebd6125ffe3e903c9ae33bc52b4c6573adf84a9a9a6f85cddf268
   languageName: node
   linkType: hard
 
