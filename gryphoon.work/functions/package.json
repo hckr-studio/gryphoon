@@ -6,7 +6,7 @@
     "@thi.ng/transducers": "9.6.42",
     "cookie": "2.0.1",
     "feed": "6.0.0",
-    "jose": "6.2.5"
+    "jose": "6.2.6"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "5.20260731.1",
