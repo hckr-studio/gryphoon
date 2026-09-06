@@ -1090,7 +1090,7 @@ __metadata:
     "@thi.ng/transducers": "npm:9.7.0"
     cookie: "npm:2.0.1"
     feed: "npm:6.0.0"
-    jose: "npm:6.2.11"
+    jose: "npm:6.2.12"
   languageName: unknown
   linkType: soft
 
@@ -5432,10 +5432,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jose@npm:6.2.11":
-  version: 6.2.11
-  resolution: "jose@npm:6.2.11"
-  checksum: 10/89dbbe3eee3d7b21537d5c819a03676ba87a6c34f69be08cdc9a87186555c21c05faba2a18f08f1d2e2502000b7d12b6db7e7766d75eee85d587db0b17e213dc
+"jose@npm:6.2.12":
+  version: 6.2.12
+  resolution: "jose@npm:6.2.12"
+  checksum: 10/42ef7b598d22fe4ed0a4d0407f9dd9ae9f56dabd31cbad6cb4f67e296953a46b5d63603f8a599a3ee4c5659bf29bb14e846237f0381ea679116520b53e71e4ea
   languageName: node
   linkType: hard
 
