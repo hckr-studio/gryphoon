@@ -12,7 +12,7 @@
     "www.gryphoon.work"
   ],
   "devDependencies": {
-    "@biomejs/biome": "2.5.13",
+    "@biomejs/biome": "2.5.14",
     "wrangler": "4.132.0"
   },
   "scripts": {
