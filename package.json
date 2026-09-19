@@ -13,7 +13,7 @@
   ],
   "devDependencies": {
     "@biomejs/biome": "2.5.14",
-    "wrangler": "4.134.0"
+    "wrangler": "4.135.0"
   },
   "scripts": {
     "fmt": "biome format --write"
