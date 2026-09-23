@@ -151,10 +151,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cloudflare/workers-types@npm:5.20260922.1":
-  version: 5.20260922.1
-  resolution: "@cloudflare/workers-types@npm:5.20260922.1"
-  checksum: 10/45cd1f9e0a317798ad297ad5331d511fc1594ebfe16fa09974449906b03089cf6eed75356ebc46d3ffc6bdcd3bbfed557d50c450b536ec37d760464a261d1a9a
+"@cloudflare/workers-types@npm:5.20260923.1":
+  version: 5.20260923.1
+  resolution: "@cloudflare/workers-types@npm:5.20260923.1"
+  checksum: 10/b9ebbf004b9e400a985d3b4ee4baa9a7f55fab3ef7ea1dc7bb1b5b381a548419ec201fa24356a17fb39f35e82dcf5fa20eacd1262323b4ac3515edae00ab7f98
   languageName: node
   linkType: hard
 
@@ -1085,7 +1085,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@gryphoon/admin-functions@workspace:gryphoon.work/functions"
   dependencies:
-    "@cloudflare/workers-types": "npm:5.20260922.1"
+    "@cloudflare/workers-types": "npm:5.20260923.1"
     "@gryphoon/articles-share": "workspace:*"
     "@hckr_/cloudflare-pages-plugin-rollbar": "npm:1.1.4"
     "@thi.ng/transducers": "npm:9.7.0"
@@ -1108,7 +1108,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@gryphoon/articles-share@workspace:workers/articles-share"
   dependencies:
-    wrangler: "npm:4.136.1"
+    wrangler: "npm:4.136.3"
   languageName: unknown
   linkType: soft
 
@@ -4665,7 +4665,7 @@ __metadata:
   resolution: "gryphoon@workspace:."
   dependencies:
     "@biomejs/biome": "npm:2.5.14"
-    wrangler: "npm:4.136.1"
+    wrangler: "npm:4.136.3"
   languageName: unknown
   linkType: soft
 
@@ -9005,9 +9005,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"wrangler@npm:4.136.1":
-  version: 4.136.1
-  resolution: "wrangler@npm:4.136.1"
+"wrangler@npm:4.136.3":
+  version: 4.136.3
+  resolution: "wrangler@npm:4.136.3"
   dependencies:
     "@cloudflare/kv-asset-handler": "npm:0.5.0"
     "@cloudflare/unenv-preset": "npm:2.16.2"
@@ -9030,7 +9030,7 @@ __metadata:
     cf-wrangler: bin/cf-wrangler.js
     wrangler: bin/wrangler.js
     wrangler2: bin/wrangler.js
-  checksum: 10/b8302a37104a4bef13375e03ab2750165f4b60160c039c796c8d61f57d330081aaf3e5374c2257e67b4aa8fe7850a3f49972ad343b6415eea9365779ba9c5ffc
+  checksum: 10/ac07a671e641735bb3a74c48898145a732966af9ce75c47acb46b679c94d5bbe25ff70d805d1dc31c3ff8f87a43a3ad27e9a643203defbb2dc16ae11274ff1e2
   languageName: node
   linkType: hard
 
