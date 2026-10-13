@@ -8,45 +8,44 @@
  * typography, no rendering - the scope of this port).
  */
 
-import { describe, it } from 'node:test';
-import assert from 'node:assert/strict';
-import { readFileSync, readdirSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
-import { Texy } from '../src/Texy.js';
-import { normalize } from '../src/normalize.js';
-import { dump } from './helpers/ast-dumper.js';
+import { describe, it } from "node:test";
+import assert from "node:assert/strict";
+import { readFileSync, readdirSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
+import { Texy } from "../src/Texy.js";
+import { normalize } from "../src/normalize.js";
+import { dump } from "./helpers/ast-dumper.js";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
-const fixturesDir = join(root, 'tests', 'fixtures', 'parse');
-const sourcesDir = join(root, '..', '..', 'tests', 'Texy', 'sources');
+const fixturesDir = join(root, "tests", "fixtures", "parse");
+const sourcesDir = join(root, "..", "..", "tests", "Texy", "sources");
 
-const fixtures = readdirSync(fixturesDir).filter(f => f.endsWith('.txt'));
+const fixtures = readdirSync(fixturesDir).filter(f => f.endsWith(".txt"));
 
+describe("conformance: parse-phase ASTs match the reference implementation", () => {
+  for (const fixture of fixtures) {
+    const name = fixture.replace(/\.txt$/, "");
+    const variant = name.match(/^(.*)-on$/) ? { emoticon: true } : null;
 
-describe('conformance: parse-phase ASTs match the reference implementation', () => {
-	for (const fixture of fixtures) {
-		const name = fixture.replace(/\.txt$/, '');
-		const variant = name.match(/^(.*)-on$/) ? { emoticon: true } : null;
+    it(`${name}.texy`, () => {
+      const source = normalize(readFileSync(join(sourcesDir, name.replace(/-on$/, "") + ".texy"), "utf8"));
+      const expected = readFileSync(join(fixturesDir, fixture), "utf8");
 
-		it(`${name}.texy`, () => {
-			const source = normalize(readFileSync(join(sourcesDir, name.replace(/-on$/, '') + '.texy'), 'utf8'));
-			const expected = readFileSync(join(fixturesDir, fixture), 'utf8');
+      const texy = new Texy();
+      if (variant?.emoticon) {
+        texy.allowed.emoticon = true;
+      }
 
-			const texy = new Texy();
-			if (variant?.emoticon) {
-				texy.allowed.emoticon = true;
-			}
+      // parse phase only (the oracle dumps before the transform passes)
+      texy.inModulePrepare = true;
+      for (const module of texy.modules) module.beforeParse();
+      texy.inModulePrepare = false;
 
-			// parse phase only (the oracle dumps before the transform passes)
-			texy.inModulePrepare = true;
-			for (const module of texy.modules) module.beforeParse();
-			texy.inModulePrepare = false;
+      const document = texy.engine.parse(source, texy.allowed, false);
+      const actual = dump(document, source);
 
-			const document = texy.engine.parse(source, texy.allowed, false);
-			const actual = dump(document, source);
-
-			assert.equal(actual, expected);
-		});
-	}
+      assert.equal(actual, expected);
+    });
+  }
 });

@@ -7,25 +7,23 @@
  * and non-breaking spaces are stripped by the text renderer itself.
  */
 
-import { renderConformance } from './helpers/render-conformance.js';
-import { Syntax } from '../src/Syntax.js';
+import { renderConformance } from "./helpers/render-conformance.js";
+import { Syntax } from "../src/Syntax.js";
 
 /**
  * Sources with known typography divergences of the @gryphoon/texy library
  * (same as render-typo.test.js; hyphenation output is hidden by the text
  * renderer, but the underlying text runs still differ for edge-cases).
  */
-const knownDivergences = new Set([
-	'edge-cases',
-]);
+const knownDivergences = new Set(["edge-cases"]);
 
 renderConformance({
-	suite: 'conformance: plain-text rendition matches the reference implementation',
-	fixturesDir: 'text',
-	extension: '.txt',
-	convert: (texy, source) => texy.toText(source),
-	configure: texy => {
-		texy.allowed[Syntax.Emoticon] = true; // fixtures were generated with --emoticon
-	},
-	knownDivergences,
+  suite: "conformance: plain-text rendition matches the reference implementation",
+  fixturesDir: "text",
+  extension: ".txt",
+  convert: (texy, source) => texy.toText(source),
+  configure: texy => {
+    texy.allowed[Syntax.Emoticon] = true; // fixtures were generated with --emoticon
+  },
+  knownDivergences,
 });

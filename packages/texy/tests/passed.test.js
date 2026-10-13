@@ -7,46 +7,47 @@
  * (typography deliberately absent from both sides).
  */
 
-import { describe, it } from 'node:test';
-import assert from 'node:assert/strict';
-import { readFileSync, readdirSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
-import { Texy } from '../src/Texy.js';
-import { Syntax } from '../src/Syntax.js';
-import { normalize } from '../src/normalize.js';
-import { dump } from './helpers/ast-dumper.js';
+import { describe, it } from "node:test";
+import assert from "node:assert/strict";
+import { readFileSync, readdirSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
+import { Texy } from "../src/Texy.js";
+import { Syntax } from "../src/Syntax.js";
+import { normalize } from "../src/normalize.js";
+import { dump } from "./helpers/ast-dumper.js";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
-const fixturesDir = join(root, 'tests', 'fixtures', 'passed');
-const sourcesDir = join(root, '..', '..', 'tests', 'Texy', 'sources');
+const fixturesDir = join(root, "tests", "fixtures", "passed");
+const sourcesDir = join(root, "..", "..", "tests", "Texy", "sources");
 
-const fixtures = readdirSync(fixturesDir).filter(f => f.endsWith('.txt'));
+const fixtures = readdirSync(fixturesDir).filter(f => f.endsWith(".txt"));
 
+describe("conformance: post-transform ASTs match the reference implementation", () => {
+  for (const fixture of fixtures) {
+    const name = fixture.replace(/\.txt$/, "");
 
-describe('conformance: post-transform ASTs match the reference implementation', () => {
-	for (const fixture of fixtures) {
-		const name = fixture.replace(/\.txt$/, '');
+    it(`${name}.texy`, () => {
+      const source = normalize(readFileSync(join(sourcesDir, name + ".texy"), "utf8"));
+      const expected = readFileSync(join(fixturesDir, fixture), "utf8");
 
-		it(`${name}.texy`, () => {
-			const source = normalize(readFileSync(join(sourcesDir, name + '.texy'), 'utf8'));
-			const expected = readFileSync(join(fixturesDir, fixture), 'utf8');
+      const texy = new Texy();
+      texy.allowed[Syntax.Typography] = false; // the oracle's pass pipeline runs without typography
+      texy.allowed[Syntax.Hyphenation] = false;
+      const document = texy.parse(source);
+      const actual = dump(document, source);
 
-			const texy = new Texy();
-			texy.allowed[Syntax.Typography] = false; // the oracle's pass pipeline runs without typography
-			texy.allowed[Syntax.Hyphenation] = false;
-			const document = texy.parse(source);
-			const actual = dump(document, source);
-
-			if (actual !== expected) {
-				const a = actual.split('\n');
-				const e = expected.split('\n');
-				for (let i = 0; i < Math.max(a.length, e.length); i++) {
-					if (a[i] !== e[i]) {
-						assert.fail(`line ${i + 1}\n  actual:   ${JSON.stringify(a.slice(i, i + 2))}\n  expected: ${JSON.stringify(e.slice(i, i + 2))}`);
-					}
-				}
-			}
-		});
-	}
+      if (actual !== expected) {
+        const a = actual.split("\n");
+        const e = expected.split("\n");
+        for (let i = 0; i < Math.max(a.length, e.length); i++) {
+          if (a[i] !== e[i]) {
+            assert.fail(
+              `line ${i + 1}\n  actual:   ${JSON.stringify(a.slice(i, i + 2))}\n  expected: ${JSON.stringify(e.slice(i, i + 2))}`,
+            );
+          }
+        }
+      }
+    });
+  }
 });

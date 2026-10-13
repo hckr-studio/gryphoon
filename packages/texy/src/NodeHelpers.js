@@ -10,34 +10,28 @@
  * @param {(node: Node) => boolean}filter
  * @returns {Array<Node>}
  */
-export function find(node, filter)
-{
-	const found = [];
-	collect(node, filter, found);
-	return found;
+export function find(node, filter) {
+  const found = [];
+  collect(node, filter, found);
+  return found;
 }
-
 
 /** @param {Node} node @param {Array<Node>} found */
-function collect(node, filter, found)
-{
-	if (filter(node)) found.push(node);
-	for (const child of node.getChildren()) {
-		collect(child, filter, found);
-	}
+function collect(node, filter, found) {
+  if (filter(node)) found.push(node);
+  for (const child of node.getChildren()) {
+    collect(child, filter, found);
+  }
 }
-
 
 /**
  * @param {Node} node
  * @param {(node: Node) => boolean} filter
  * @returns {Array<Node>}
  */
-export function findAll(node, filter)
-{
-	return find(node, filter);
+export function findAll(node, filter) {
+  return find(node, filter);
 }
-
 
 /**
  * The first node the filter accepts, pre-order; leaves the tree as soon as
@@ -46,16 +40,14 @@ export function findAll(node, filter)
  * @param {(node: Node) => boolean} filter
  * @returns {?Node}
  */
-export function findFirst(node, filter)
-{
-	if (filter(node)) return node;
-	for (const child of node.getChildren()) {
-		const res = findFirst(child, filter);
-		if (res !== null) return res;
-	}
-	return null;
+export function findFirst(node, filter) {
+  if (filter(node)) return node;
+  for (const child of node.getChildren()) {
+    const res = findFirst(child, filter);
+    if (res !== null) return res;
+  }
+  return null;
 }
-
 
 /**
  * Extracts plain text content from AST node(s) (port of Helpers::extractText).
@@ -64,19 +56,17 @@ export function findFirst(node, filter)
  * @param {Node} node
  * @returns {string}
  */
-export function extractText(node)
-{
-	if (node.constructor.name === 'TextNode' || node.constructor.name === 'RawTextNode') {
-		return node.text;
-	}
+export function extractText(node) {
+  if (node.constructor.name === "TextNode" || node.constructor.name === "RawTextNode") {
+    return node.text;
+  }
 
-	let text = '';
-	for (const child of node.getChildren()) {
-		text += extractText(child);
-	}
-	return text;
+  let text = "";
+  for (const child of node.getChildren()) {
+    text += extractText(child);
+  }
+  return text;
 }
-
 
 /**
  * Shallow copy of an AST node (PHP clone semantics): properties are copied,
@@ -84,7 +74,6 @@ export function extractText(node)
  * @param {Node} node
  * @returns {Node}
  */
-export function cloneNode(node)
-{
-	return Object.assign(Object.create(Object.getPrototypeOf(node)), node);
+export function cloneNode(node) {
+  return Object.assign(Object.create(Object.getPrototypeOf(node)), node);
 }

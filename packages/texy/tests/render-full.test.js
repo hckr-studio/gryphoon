@@ -9,18 +9,18 @@
  * are skipped with justification.
  */
 
-import { renderConformance } from './helpers/render-conformance.js';
-import { Syntax } from '../src/Syntax.js';
+import { renderConformance } from "./helpers/render-conformance.js";
+import { Syntax } from "../src/Syntax.js";
 
 const knownDivergences = new Set();
 
 renderConformance({
-	suite: 'conformance: rendered HTML with the full default configuration matches the reference implementation',
-	fixturesDir: 'render-full',
-	extension: '.html',
-	convert: (texy, source) => texy.process(source),
-	configure: texy => {
-		texy.allowed[Syntax.Emoticon] = true; // fixtures were generated with --emoticon
-	},
-	knownDivergences,
+  suite: "conformance: rendered HTML with the full default configuration matches the reference implementation",
+  fixturesDir: "render-full",
+  extension: ".html",
+  convert: (texy, source) => texy.process(source),
+  configure: texy => {
+    texy.allowed[Syntax.Emoticon] = true; // fixtures were generated with --emoticon
+  },
+  knownDivergences,
 });

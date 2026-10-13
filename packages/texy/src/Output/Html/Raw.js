@@ -4,13 +4,11 @@
  * the well-forming engine as-is.
  */
 
-export class Raw
-{
-	/**
-	 * @param {string} html
-	 */
-	constructor(html)
-	{
-		this.html = html;
-	}
+export class Raw {
+  /**
+   * @param {string} html
+   */
+  constructor(html) {
+    this.html = html;
+  }
 }

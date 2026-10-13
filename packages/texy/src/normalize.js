@@ -10,39 +10,36 @@
  * @throws {Error} when the input is not valid UTF-8 (a lone surrogate)
  */
 
-export function normalize(text)
-{
-	if (hasLoneSurrogate(text)) {
-		throw new Error('Input is not valid UTF-8 text.');
-	}
+export function normalize(text) {
+  if (hasLoneSurrogate(text)) {
+    throw new Error("Input is not valid UTF-8 text.");
+  }
 
-	// standardize line endings to unix-like
-	text = text.replaceAll('\r\n', '\n').replaceAll('\r', '\n');
+  // standardize line endings to unix-like
+  text = text.replaceAll("\r\n", "\n").replaceAll("\r", "\n");
 
-	// remove control characters; leave \t + \n
-	text = text.replace(/[\x00-\x08\x0B-\x1F]+/g, '');
+  // remove control characters; leave \t + \n
+  text = text.replace(/[\x00-\x08\x0B-\x1F]+/g, "");
 
-	// right trim line ends
-	text = text.replace(/[\t ]+$/gm, '');
+  // right trim line ends
+  text = text.replace(/[\t ]+$/gm, "");
 
-	// drop blank lines at both ends and byte order marks at the start;
-	// a mark hidden behind blank lines would surface after the trim otherwise
-	text = text.replace(/^[\n\u{FEFF}]+/u, '');
-	return text.replace(/\n+$/, '');
+  // drop blank lines at both ends and byte order marks at the start;
+  // a mark hidden behind blank lines would surface after the trim otherwise
+  text = text.replace(/^[\n\u{FEFF}]+/u, "");
+  return text.replace(/\n+$/, "");
 }
 
-
 /** A JS string can only be invalid UTF-8 through an unpaired surrogate. */
-function hasLoneSurrogate(s)
-{
-	for (let i = 0; i < s.length; i++) {
-		const cu = s.charCodeAt(i);
-		if (cu >= 0xD800 && cu <= 0xDBFF) {
-			const lo = s.charCodeAt(++i);
-			if (lo === undefined || lo < 0xDC00 || lo > 0xDFFF) return true;
-		} else if (cu >= 0xDC00 && cu <= 0xDFFF) {
-			return true;
-		}
-	}
-	return false;
+function hasLoneSurrogate(s) {
+  for (let i = 0; i < s.length; i++) {
+    const cu = s.charCodeAt(i);
+    if (cu >= 0xd800 && cu <= 0xdbff) {
+      const lo = s.charCodeAt(++i);
+      if (lo === undefined || lo < 0xdc00 || lo > 0xdfff) return true;
+    } else if (cu >= 0xdc00 && cu <= 0xdfff) {
+      return true;
+    }
+  }
+  return false;
 }

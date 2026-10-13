@@ -1,198 +1,198 @@
 [
-    {
-        "input": "Hello world...",
-        "expected": "Hello world…"
-    },
-    {
-        "input": "123-456",
-        "expected": "123–456"
-    },
-    {
-        "input": "al--pha",
-        "expected": "al–pha"
-    },
-    {
-        "input": ",- x",
-        "expected": ",– x"
-    },
-    {
-        "input": "23. 1. 1978",
-        "expected": "23. 1. 1978"
-    },
-    {
-        "input": "23. 1.",
-        "expected": "23. 1."
-    },
-    {
-        "input": "a --- b",
-        "expected": "a — b"
-    },
-    {
-        "input": "a - b",
-        "expected": "a – b"
-    },
-    {
-        "input": "x <-> y",
-        "expected": "x ↔ y"
-    },
-    {
-        "input": "a --> b",
-        "expected": "a → b"
-    },
-    {
-        "input": "a <-- b",
-        "expected": "a ←  b"
-    },
-    {
-        "input": "a ==> b",
-        "expected": "a ⇒ b"
-    },
-    {
-        "input": "+- 5",
-        "expected": "± 5"
-    },
-    {
-        "input": "123 x 456",
-        "expected": "123 × 456"
-    },
-    {
-        "input": "123x456",
-        "expected": "123×456"
-    },
-    {
-        "input": "123x",
-        "expected": "123×"
-    },
-    {
-        "input": "Značka (TM) a (R) a (C) a (EUR)",
-        "expected": "Značka ™ a ® a © a €"
-    },
-    {
-        "input": "1 123 123 123",
-        "expected": "1 123 123 123"
-    },
-    {
-        "input": "Kolem \"prechodni uvozovky\" a textu",
-        "expected": "Kolem „prechodni uvozovky“ a textu"
-    },
-    {
-        "input": "single 'quotes' here",
-        "expected": "single ‚quotes‘ here"
-    },
-    {
-        "input": "V textu je \\x17 markup \\x17 a obrázek \\x16 vedle",
-        "expected": "V textu je \\x17 markup \\x17 a obrázek \\x16 vedle"
-    },
-    {
-        "input": "číslo 42 je málo",
-        "expected": "číslo 42 je málo"
-    },
-    {
-        "input": "s v vodom",
-        "expected": "s v vodom"
-    },
-    {
-        "input": "Krát ké slovo",
-        "expected": "Krát ké slovo"
-    },
-    {
-        "input": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx krát",
-        "expected": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx krát"
-    },
-    {
-        "input": "Toto je docela dlouhá věta, ve které zůstane sí",
-        "expected": "Toto je docela dlouhá věta, ve které zůstane sí"
-    },
-    {
-        "input": "unclosed \"quote",
-        "expected": "unclosed \"quote"
-    },
-    {
-        "input": "\"a\" \"b\"",
-        "expected": "„a“ „b“"
-    },
-    {
-        "input": "He said \"\"double\"\" inside",
-        "expected": "He said \"\"double\"\" inside"
-    },
-    {
-        "input": "a'b",
-        "expected": "a'b"
-    },
-    {
-        "input": "5 % sleva",
-        "expected": "5 % sleva"
-    },
-    {
-        "input": "3 kg",
-        "expected": "3 kg"
-    },
-    {
-        "input": "stránka 12,",
-        "expected": "stránka 12,"
-    },
-    {
-        "input": "ul. Nová 5",
-        "expected": "ul. Nová 5"
-    },
-    {
-        "input": "eme 'a' ile",
-        "expected": "eme ‚a‘ ile"
-    },
-    {
-        "input": "a... b",
-        "expected": "a… b"
-    },
-    {
-        "input": ". . .",
-        "expected": ". . ."
-    },
-    {
-        "input": "10 °C",
-        "expected": "10 °C"
-    },
-    {
-        "input": "123 , x",
-        "expected": "123 , x"
-    },
-    {
-        "input": "5 %",
-        "expected": "5 %"
-    },
-    {
-        "input": "5 €",
-        "expected": "5 €"
-    },
-    {
-        "input": "5 word",
-        "expected": "5 word"
-    },
-    {
-        "input": "3 (test)",
-        "expected": "3 (test)"
-    },
-    {
-        "input": "12 345",
-        "expected": "12 345"
-    },
-    {
-        "input": "cena 20 €",
-        "expected": "cena 20 €"
-    },
-    {
-        "input": "je to 1+1",
-        "expected": "je to 1+1"
-    },
-    {
-        "input": "TM",
-        "expected": "TM"
-    },
-    {
-        "input": "(TM)",
-        "expected": "(TM)"
-    },
-    {
-        "input": "x (tm)",
-        "expected": "x ™"
-    }
+  {
+    "input": "Hello world...",
+    "expected": "Hello world…"
+  },
+  {
+    "input": "123-456",
+    "expected": "123–456"
+  },
+  {
+    "input": "al--pha",
+    "expected": "al–pha"
+  },
+  {
+    "input": ",- x",
+    "expected": ",– x"
+  },
+  {
+    "input": "23. 1. 1978",
+    "expected": "23. 1. 1978"
+  },
+  {
+    "input": "23. 1.",
+    "expected": "23. 1."
+  },
+  {
+    "input": "a --- b",
+    "expected": "a — b"
+  },
+  {
+    "input": "a - b",
+    "expected": "a – b"
+  },
+  {
+    "input": "x <-> y",
+    "expected": "x ↔ y"
+  },
+  {
+    "input": "a --> b",
+    "expected": "a → b"
+  },
+  {
+    "input": "a <-- b",
+    "expected": "a ←  b"
+  },
+  {
+    "input": "a ==> b",
+    "expected": "a ⇒ b"
+  },
+  {
+    "input": "+- 5",
+    "expected": "± 5"
+  },
+  {
+    "input": "123 x 456",
+    "expected": "123 × 456"
+  },
+  {
+    "input": "123x456",
+    "expected": "123×456"
+  },
+  {
+    "input": "123x",
+    "expected": "123×"
+  },
+  {
+    "input": "Značka (TM) a (R) a (C) a (EUR)",
+    "expected": "Značka ™ a ® a © a €"
+  },
+  {
+    "input": "1 123 123 123",
+    "expected": "1 123 123 123"
+  },
+  {
+    "input": "Kolem \"prechodni uvozovky\" a textu",
+    "expected": "Kolem „prechodni uvozovky“ a textu"
+  },
+  {
+    "input": "single 'quotes' here",
+    "expected": "single ‚quotes‘ here"
+  },
+  {
+    "input": "V textu je \\x17 markup \\x17 a obrázek \\x16 vedle",
+    "expected": "V textu je \\x17 markup \\x17 a obrázek \\x16 vedle"
+  },
+  {
+    "input": "číslo 42 je málo",
+    "expected": "číslo 42 je málo"
+  },
+  {
+    "input": "s v vodom",
+    "expected": "s v vodom"
+  },
+  {
+    "input": "Krát ké slovo",
+    "expected": "Krát ké slovo"
+  },
+  {
+    "input": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx krát",
+    "expected": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx krát"
+  },
+  {
+    "input": "Toto je docela dlouhá věta, ve které zůstane sí",
+    "expected": "Toto je docela dlouhá věta, ve které zůstane sí"
+  },
+  {
+    "input": "unclosed \"quote",
+    "expected": "unclosed \"quote"
+  },
+  {
+    "input": "\"a\" \"b\"",
+    "expected": "„a“ „b“"
+  },
+  {
+    "input": "He said \"\"double\"\" inside",
+    "expected": "He said \"\"double\"\" inside"
+  },
+  {
+    "input": "a'b",
+    "expected": "a'b"
+  },
+  {
+    "input": "5 % sleva",
+    "expected": "5 % sleva"
+  },
+  {
+    "input": "3 kg",
+    "expected": "3 kg"
+  },
+  {
+    "input": "stránka 12,",
+    "expected": "stránka 12,"
+  },
+  {
+    "input": "ul. Nová 5",
+    "expected": "ul. Nová 5"
+  },
+  {
+    "input": "eme 'a' ile",
+    "expected": "eme ‚a‘ ile"
+  },
+  {
+    "input": "a... b",
+    "expected": "a… b"
+  },
+  {
+    "input": ". . .",
+    "expected": ". . ."
+  },
+  {
+    "input": "10 °C",
+    "expected": "10 °C"
+  },
+  {
+    "input": "123 , x",
+    "expected": "123 , x"
+  },
+  {
+    "input": "5 %",
+    "expected": "5 %"
+  },
+  {
+    "input": "5 €",
+    "expected": "5 €"
+  },
+  {
+    "input": "5 word",
+    "expected": "5 word"
+  },
+  {
+    "input": "3 (test)",
+    "expected": "3 (test)"
+  },
+  {
+    "input": "12 345",
+    "expected": "12 345"
+  },
+  {
+    "input": "cena 20 €",
+    "expected": "cena 20 €"
+  },
+  {
+    "input": "je to 1+1",
+    "expected": "je to 1+1"
+  },
+  {
+    "input": "TM",
+    "expected": "TM"
+  },
+  {
+    "input": "(TM)",
+    "expected": "(TM)"
+  },
+  {
+    "input": "x (tm)",
+    "expected": "x ™"
+  }
 ]

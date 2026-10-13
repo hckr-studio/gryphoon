@@ -11,7 +11,7 @@
  * so parse patterns keep it faithful; the typography nbsp rule is the
  * deliberate all-scripts extension.
  */
-export const Letter = 'A-Za-z\\x{C0}-\\x{2FF}\\x{370}-\\x{1EFF}';
+export const Letter = "A-Za-z\\x{C0}-\\x{2FF}\\x{370}-\\x{1EFF}";
 
 // modifier .(title)[class]{style}
 export const Modifier = String.raw`(?x:
@@ -58,11 +58,20 @@ export const LinkUrl = String.raw`(?x:
 	[^:);,.!?\s]                    # URL must not end with these chars
 )`;
 
-export const Email = String.raw`(?x:
-	[` + Letter + String.raw`]                 # first char
-	[0-9.+_` + Letter + String.raw`\x{ad}-]{0,63}  # local part
+export const Email =
+  String.raw`(?x:
+	[` +
+  Letter +
+  String.raw`]                 # first char
+	[0-9.+_` +
+  Letter +
+  String.raw`\x{ad}-]{0,63}  # local part
 	@
-	[0-9.+_` + Letter + String.raw`\x{ad}-]{1,252} # domain
+	[0-9.+_` +
+  Letter +
+  String.raw`\x{ad}-]{1,252} # domain
 	\.
-	[` + Letter + String.raw`\x{ad}]{2,19}     # TLD
+	[` +
+  Letter +
+  String.raw`\x{ad}]{2,19}     # TLD
 )`;

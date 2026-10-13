@@ -8,23 +8,23 @@
  * src/Typography.js.
  */
 
-import { renderConformance } from './helpers/render-conformance.js';
-import { Syntax } from '../src/Syntax.js';
+import { renderConformance } from "./helpers/render-conformance.js";
+import { Syntax } from "../src/Syntax.js";
 
 const knownDivergences = new Set();
 
 renderConformance({
-	suite: 'conformance: rendered HTML with typography matches the reference implementation',
-	fixturesDir: 'render-typo',
-	extension: '.html',
-	convert: (texy, source) => texy.process(source),
-	configure: (texy, name) => {
-		texy.allowed[Syntax.Hyphenation] = false; // fixtures generated with hyphenation disabled
-		// only the emoticon-on fixture was generated with --emoticon; the
-		// plain fixtures (emoticon, showcase, ...) have emoticons off
-		if (name === "emoticon-on") {
-			texy.allowed[Syntax.Emoticon] = true;
-		}
-	},
-	knownDivergences,
+  suite: "conformance: rendered HTML with typography matches the reference implementation",
+  fixturesDir: "render-typo",
+  extension: ".html",
+  convert: (texy, source) => texy.process(source),
+  configure: (texy, name) => {
+    texy.allowed[Syntax.Hyphenation] = false; // fixtures generated with hyphenation disabled
+    // only the emoticon-on fixture was generated with --emoticon; the
+    // plain fixtures (emoticon, showcase, ...) have emoticons off
+    if (name === "emoticon-on") {
+      texy.allowed[Syntax.Emoticon] = true;
+    }
+  },
+  knownDivergences,
 });

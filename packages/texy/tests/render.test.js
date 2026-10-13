@@ -9,17 +9,17 @@
  * flag the non-default setting.
  */
 
-import { renderConformance } from './helpers/render-conformance.js';
-import { Syntax } from '../src/Syntax.js';
+import { renderConformance } from "./helpers/render-conformance.js";
+import { Syntax } from "../src/Syntax.js";
 
 renderConformance({
-	suite: 'conformance: rendered HTML matches the reference implementation',
-	fixturesDir: 'render',
-	extension: '.html',
-	convert: (texy, source) => texy.process(source),
-	configure: texy => {
-		texy.allowed[Syntax.Typography] = false; // fixtures generated with typography disabled
-		texy.allowed[Syntax.Hyphenation] = false;
-		texy.allowed[Syntax.Emoticon] = true; // fixtures were generated with --emoticon
-	},
+  suite: "conformance: rendered HTML matches the reference implementation",
+  fixturesDir: "render",
+  extension: ".html",
+  convert: (texy, source) => texy.process(source),
+  configure: texy => {
+    texy.allowed[Syntax.Typography] = false; // fixtures generated with typography disabled
+    texy.allowed[Syntax.Hyphenation] = false;
+    texy.allowed[Syntax.Emoticon] = true; // fixtures were generated with --emoticon
+  },
 });

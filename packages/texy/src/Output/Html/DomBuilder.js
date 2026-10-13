@@ -17,10 +17,9 @@
  * - void elements never receive children, mirroring the WellFormer.
  */
 
-import { DOMParser } from 'linkedom';
-import { phpLooseNull } from '../../helpers.js';
-import { Raw } from './Raw.js';
-
+import { DOMParser } from "linkedom";
+import { phpLooseNull } from "../../helpers.js";
+import { Raw } from "./Raw.js";
 
 /**
  * Composite attribute value (class list / style map) joined the way
@@ -29,19 +28,17 @@ import { Raw } from './Raw.js';
  * @param {Array|Object<string, string>} value
  * @returns {string}
  */
-function compositeValue(key, value)
-{
-	const parts = [];
-	for (const [k, v] of Object.entries(value)) {
-		if (phpLooseNull(v)) {
-			continue;
-		}
-		parts.push(/^\d+$/.test(k) ? String(v) : `${k}:${v}`);
-	}
+function compositeValue(key, value) {
+  const parts = [];
+  for (const [k, v] of Object.entries(value)) {
+    if (phpLooseNull(v)) {
+      continue;
+    }
+    parts.push(/^\d+$/.test(k) ? String(v) : `${k}:${v}`);
+  }
 
-	return key === 'style' ? parts.join(';') : parts.join(' ');
+  return key === "style" ? parts.join(";") : parts.join(" ");
 }
-
 
 /**
  * Appends one render-tree node to a DOM parent.
@@ -49,53 +46,47 @@ function compositeValue(key, value)
  * @param {import('./Element.js').Element|import('./Raw.js').Raw|string} child
  * @param {*} doc the linkedom document
  */
-function appendNode(parent, child, doc)
-{
-	if (child instanceof Raw) {
-		// parse the trusted pre-serialized HTML in a detached container,
-		// then splice the parsed nodes in
-		const container = doc.createElement('div');
-		container.innerHTML = child.html;
-		while (container.firstChild) {
-			parent.appendChild(container.firstChild);
-		}
-		return;
-	}
+function appendNode(parent, child, doc) {
+  if (child instanceof Raw) {
+    // parse the trusted pre-serialized HTML in a detached container,
+    // then splice the parsed nodes in
+    const container = doc.createElement("div");
+    container.innerHTML = child.html;
+    while (container.firstChild) {
+      parent.appendChild(container.firstChild);
+    }
+    return;
+  }
 
-	if (typeof child !== 'object') {
-		parent.appendChild(doc.createTextNode(child));
-		return;
-	}
+  if (typeof child !== "object") {
+    parent.appendChild(doc.createTextNode(child));
+    return;
+  }
 
-	if (child.name === null || child.name === '') {
-		for (const inner of child.children) { // transparent wrapper
-			appendNode(parent, inner, doc);
-		}
-		return;
-	}
+  if (child.name === null || child.name === "") {
+    for (const inner of child.children) {
+      // transparent wrapper
+      appendNode(parent, inner, doc);
+    }
+    return;
+  }
 
-	const el = doc.createElement(child.name);
-	for (const [key, value] of Object.entries(child.attrs)) {
-		if (value === null || value === undefined || value === false) {
-			continue;
-		}
-		el.setAttribute(
-			key,
-			typeof value === 'object'
-				? compositeValue(key, value)
-				: String(value),
-		);
-	}
+  const el = doc.createElement(child.name);
+  for (const [key, value] of Object.entries(child.attrs)) {
+    if (value === null || value === undefined || value === false) {
+      continue;
+    }
+    el.setAttribute(key, typeof value === "object" ? compositeValue(key, value) : String(value));
+  }
 
-	if (!child.isVoid) {
-		for (const inner of child.children) {
-			appendNode(el, inner, doc);
-		}
-	}
+  if (!child.isVoid) {
+    for (const inner of child.children) {
+      appendNode(el, inner, doc);
+    }
+  }
 
-	parent.appendChild(el);
+  parent.appendChild(el);
 }
-
 
 /**
  * Projects the rendered tree into a linkedom Document; the content lands
@@ -106,13 +97,10 @@ function appendNode(parent, child, doc)
  *   (its body is used as the content root)
  * @returns the linkedom Document
  */
-export function renderToDom(root, { document = null } = {})
-{
-	const doc = document ?? new DOMParser().parseFromString(
-		'<!doctype html><html><head></head><body></body></html>',
-		'text/html',
-	);
+export function renderToDom(root, { document = null } = {}) {
+  const doc =
+    document ?? new DOMParser().parseFromString("<!doctype html><html><head></head><body></body></html>", "text/html");
 
-	appendNode(doc.body, root, doc);
-	return doc;
+  appendNode(doc.body, root, doc);
+  return doc;
 }
