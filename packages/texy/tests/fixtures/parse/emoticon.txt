@@ -1,0 +1,19 @@
+DocumentNode
+  ContentNode
+    ParagraphNode [0,38]
+      ContentNode
+        TextNode [0,38] "I fell sometimes :-) and sometimes :-("
+    ParagraphNode [40,16]
+      ContentNode
+        TextNode [40,16] "WTF is this? 8-O"
+    ParagraphNode [58,3]
+      ContentNode
+        TextNode [58,3] ":-)"
+    ParagraphNode [63,7]
+      ContentNode
+        PhraseNode [63,7] phrase/strong
+          ContentNode
+            TextNode [65,3] ":-)"
+    ParagraphNode [72,6]
+      ContentNode
+        TextNode [72,6] ":-))))"

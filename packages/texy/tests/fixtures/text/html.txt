@@ -1,0 +1,21 @@
+This example shows how Texy! handle HTML tags.
+
+Dangerous span
+
+ Hello!
+
+<my />..</my>
+
+..
+
+…</span title=„pokus“>
+
+test1
+
+test2
+
+test3 
+
+text1test2test3
+
+text1test2test3

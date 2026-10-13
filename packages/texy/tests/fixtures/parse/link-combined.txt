@@ -1,0 +1,664 @@
+DocumentNode
+  ContentNode
+    HeadingNode [0,13] level=3
+      ContentNode
+        TextNode [0,6] "Odkazy"
+    ListNode [15,63] unordered
+      ListItemNode [15,63]
+        ContentNode
+          ParagraphNode [17,61]
+            ContentNode
+              TextNode [17,6] "odkaz "
+              HtmlTagNode [23,46] <a>
+              TextNode [69,5] "pokus"
+              HtmlTagNode [74,4] <a>
+      ListItemNode [79,52]
+        ContentNode
+          ParagraphNode [81,50]
+            ContentNode
+              TextNode [81,6] "odkaz "
+              HtmlTagNode [87,35] <a>
+              TextNode [122,5] "pokus"
+              HtmlTagNode [127,4] <a>
+      ListItemNode [132,35]
+        ContentNode
+          ParagraphNode [134,33]
+            ContentNode
+              TextNode [134,6] "odkaz "
+              HtmlTagNode [140,13] <a>
+              HtmlTagNode [153,4] <a>
+              TextNode [157,10] " prázdný"
+      ListItemNode [168,29]
+        ContentNode
+          ParagraphNode [170,27]
+            ContentNode
+              TextNode [170,6] "odkaz "
+              HtmlTagNode [176,3] <a>
+              TextNode [179,4] "test"
+              HtmlTagNode [183,4] <a>
+              TextNode [187,10] " prázdný"
+      ListItemNode [198,56]
+        ContentNode
+          ParagraphNode [201,53]
+            ContentNode
+              TextNode [201,16] "Klasický odkaz "
+              LinkNode [217,36] url=http://phpfashion.com/
+                ContentNode
+                  TextNode [218,11] "php Fashion"
+              TextNode [253,1] "?"
+      ListItemNode [255,42]
+        ContentNode
+          ParagraphNode [257,40]
+            ContentNode
+              TextNode [257,16] "Klasický odkaz "
+              LinkNode [273,23] url=[/trine/]
+                ContentNode
+                  TextNode [274,11] "php Fashion"
+              TextNode [296,1] "x"
+      ListItemNode [298,57]
+        ContentNode
+          ParagraphNode [300,55]
+            ContentNode
+              TextNode [300,16] "Klasický odkaz "
+              LinkNode [316,38] mod[330,12] url=[./trine/]
+                ContentNode
+                  TextNode [317,11] "php Fashion"
+              TextNode [354,1] "x"
+      ListItemNode [356,51]
+        ContentNode
+          ParagraphNode [358,49]
+            ContentNode
+              TextNode [358,16] "Klasický odkaz "
+              LinkNode [374,32] url=[dave@example.com]
+                ContentNode
+                  TextNode [375,11] "php Fashion"
+              TextNode [406,1] "x"
+      ListItemNode [408,48]
+        ContentNode
+          ParagraphNode [410,46]
+            ContentNode
+              TextNode [410,16] "Klasický odkaz "
+              LinkNode [426,30] url=dave@example.com
+                ContentNode
+                  TextNode [427,11] "php Fashion"
+      ListItemNode [457,50]
+        ContentNode
+          ParagraphNode [460,47]
+            ContentNode
+              TextNode [460,19] "Referenční odkaz "
+              LinkNode [479,28] url=[php Fashion1]
+                ContentNode
+                  TextNode [480,11] "php Fashion"
+      ListItemNode [508,49]
+        ContentNode
+          ParagraphNode [510,47]
+            ContentNode
+              TextNode [510,19] "Referenční odkaz "
+              LinkNode [529,28] url=[php Fashion2]
+                ContentNode
+                  TextNode [530,11] "php Fashion"
+      ListItemNode [558,49]
+        ContentNode
+          ParagraphNode [560,47]
+            ContentNode
+              TextNode [560,19] "Referenční odkaz "
+              LinkNode [579,28] url=[php Fashion3]
+                ContentNode
+                  TextNode [580,11] "php Fashion"
+      ListItemNode [608,42]
+        ContentNode
+          ParagraphNode [610,40]
+            ContentNode
+              TextNode [610,19] "Referenční odkaz "
+              LinkNode [629,21] url=[email]
+                ContentNode
+                  TextNode [630,11] "php Fashion"
+      ListItemNode [651,64]
+        ContentNode
+          ParagraphNode [653,62]
+            ContentNode
+              TextNode [653,19] "Referenční odkaz "
+              LinkNode [672,42] mod[686,12] url=[php Fashion1]
+                ContentNode
+                  TextNode [673,11] "php Fashion"
+              TextNode [714,1] "?"
+      ListItemNode [716,60]
+        ContentNode
+          ParagraphNode [718,58]
+            ContentNode
+              TextNode [718,19] "Referenční odkaz "
+              LinkNode [737,38] mod[751,8] url=[php Fashion2]
+                ContentNode
+                  TextNode [738,11] "php Fashion"
+              TextNode [775,1] "?"
+      ListItemNode [777,53]
+        ContentNode
+          ParagraphNode [779,51]
+            ContentNode
+              TextNode [779,19] "Referenční odkaz "
+              LinkNode [798,31] url=[php Fashion1#12]
+                ContentNode
+                  TextNode [799,11] "php Fashion"
+              TextNode [829,1] "?"
+      ListItemNode [831,55]
+        ContentNode
+          ParagraphNode [833,53]
+            ContentNode
+              TextNode [833,19] "Referenční odkaz "
+              LinkNode [852,33] url=[php Fashion2?a=45]
+                ContentNode
+                  TextNode [853,11] "php Fashion"
+              TextNode [885,1] "?"
+    ListNode [889,35] unordered
+      ListItemNode [889,35]
+        ContentNode
+          ParagraphNode [891,33]
+            ContentNode
+              TextNode [891,10] "wiki link "
+              LinkNode [901,23] url=http://texy.info
+                ContentNode
+                  TextNode [902,4] "Texy"
+      ListItemNode [925,51]
+        ContentNode
+          ParagraphNode [927,49]
+            ContentNode
+              TextNode [927,10] "wiki link "
+              LinkNode [937,39] url=http://texy.info
+                ContentNode
+                  TextNode [938,4] "Texy"
+      ListItemNode [977,40]
+        ContentNode
+          ParagraphNode [979,38]
+            ContentNode
+              TextNode [979,14] "markdown link "
+              LinkNode [993,24] url=http://texy.info
+                ContentNode
+                  TextNode [994,4] "Texy"
+      ListItemNode [1018,54]
+        ContentNode
+          ParagraphNode [1020,52]
+            ContentNode
+              TextNode [1020,14] "markdown link "
+              LinkNode [1034,38] url=http://texy.info
+                ContentNode
+                  TextNode [1035,4] "Texy"
+    HeadingNode [1074,37] level=3
+      ContentNode
+        TextNode [1074,19] "Obrázkové odkazy:"
+    ListNode [1113,46] unordered
+      ListItemNode [1113,46]
+        ContentNode
+          ParagraphNode [1115,44]
+            ContentNode
+              TextNode [1115,16] "Klasický odkaz "
+              LinkNode [1131,28] url=[* texy-big.jpg *]
+                ContentNode
+                  TextNode [1132,7] "obrazek"
+      ListItemNode [1160,46]
+        ContentNode
+          ParagraphNode [1162,44]
+            ContentNode
+              TextNode [1162,16] "Klasický odkaz "
+              LinkNode [1178,28] url=[* texy-big.jpg >]
+                ContentNode
+                  TextNode [1179,7] "obrazek"
+      ListItemNode [1207,44]
+        ContentNode
+          ParagraphNode [1209,42]
+            ContentNode
+              TextNode [1209,16] "Klasický odkaz "
+              LinkNode [1225,26] url=[*texy-big.jpg*]
+                ContentNode
+                  TextNode [1226,7] "obrazek"
+      ListItemNode [1252,44]
+        ContentNode
+          ParagraphNode [1255,41]
+            ContentNode
+              TextNode [1255,19] "Referenční odkaz "
+              LinkNode [1274,22] url=[neobrazek1]
+                ContentNode
+                  TextNode [1275,7] "obrazek"
+      ListItemNode [1297,43]
+        ContentNode
+          ParagraphNode [1299,41]
+            ContentNode
+              TextNode [1299,19] "Referenční odkaz "
+              LinkNode [1318,22] url=[*obrazek1*]
+                ContentNode
+                  TextNode [1319,7] "obrazek"
+      ListItemNode [1341,43]
+        ContentNode
+          ParagraphNode [1343,41]
+            ContentNode
+              TextNode [1343,19] "Referenční odkaz "
+              LinkNode [1362,22] url=[*obrazek3*]
+                ContentNode
+                  TextNode [1363,7] "obrazek"
+    HeadingNode [1388,42] level=3
+      ContentNode
+        TextNode [1388,22] "Odkazující obrázky:"
+    ListNode [1432,54] unordered
+      ListItemNode [1432,54]
+        ContentNode
+          ParagraphNode [1434,52]
+            ContentNode
+              TextNode [1434,16] "Klasický odkaz "
+              LinkNode [1450,35] url=http://phpfashion.com/
+                ContentNode
+                  ImageNode [1450,35] src=texy.jpg
+              TextNode [1485,1] "?"
+      ListItemNode [1487,67]
+        ContentNode
+          ParagraphNode [1489,65]
+            ContentNode
+              TextNode [1489,16] "Klasický odkaz "
+              LinkNode [1505,48] url=[dave@example.com]
+                ContentNode
+                  ImageNode [1505,48] src=texy.jpg
+              TextNode [1553,1] "x"
+      ListItemNode [1555,49]
+        ContentNode
+          ParagraphNode [1558,46]
+            ContentNode
+              TextNode [1558,46] "Referenční odkaz [neobrazek1]:[php Fashion1]"
+      ListItemNode [1605,47]
+        ContentNode
+          ParagraphNode [1607,45]
+            ContentNode
+              TextNode [1607,19] "Referenční odkaz "
+              LinkNode [1626,26] url=[*obrazek2*]
+                ContentNode
+                  TextNode [1627,11] "php Fashion"
+      ListItemNode [1653,47]
+        ContentNode
+          ParagraphNode [1655,45]
+            ContentNode
+              TextNode [1655,19] "Referenční odkaz "
+              LinkNode [1674,26] url=[*obrazek3*]
+                ContentNode
+                  TextNode [1675,11] "php Fashion"
+      ListItemNode [1701,41]
+        ContentNode
+          ParagraphNode [1703,39]
+            ContentNode
+              TextNode [1703,19] "Referenční odkaz "
+              LinkNode [1722,20] url=[email]
+                ContentNode
+                  ImageNode [1722,20] src=obrazek2
+      ListItemNode [1743,62]
+        ContentNode
+          ParagraphNode [1745,60]
+            ContentNode
+              TextNode [1745,19] "Referenční odkaz "
+              LinkNode [1764,40] mod[1778,12] url=[*obrazek2*]
+                ContentNode
+                  TextNode [1765,11] "php Fashion"
+              TextNode [1804,1] "?"
+      ListItemNode [1806,58]
+        ContentNode
+          ParagraphNode [1808,56]
+            ContentNode
+              TextNode [1808,19] "Referenční odkaz "
+              LinkNode [1827,36] mod[1841,8] url=[*obrazek3*]
+                ContentNode
+                  TextNode [1828,11] "php Fashion"
+              TextNode [1863,1] "?"
+      ListItemNode [1865,49]
+        ContentNode
+          ParagraphNode [1868,46]
+            ContentNode
+              TextNode [1868,19] "Referenční odkaz "
+              LinkNode [1887,27] url=[php Fashion2]
+                ContentNode
+                  ImageNode [1887,27] src=obrazek1
+      ListItemNode [1915,44]
+        ContentNode
+          ParagraphNode [1917,42]
+            ContentNode
+              TextNode [1917,19] "Referenční odkaz "
+              LinkNode [1936,22] url=[/trine/]
+                ContentNode
+                  ImageNode [1936,22] src=obrazek2
+              TextNode [1958,1] "x"
+      ListItemNode [1960,35]
+        ContentNode
+          ParagraphNode [1962,33]
+            ContentNode
+              TextNode [1962,19] "Referenční odkaz "
+              LinkNode [1981,14] url=obrazek3
+                ContentNode
+                  ImageNode [1981,14] src=obrazek3
+      ListItemNode [1996,35]
+        ContentNode
+          ParagraphNode [1998,33]
+            ContentNode
+              TextNode [1998,19] "Referenční odkaz "
+              LinkNode [2017,14] url=obrazek2
+                ContentNode
+                  ImageNode [2017,14] src=obrazek2
+      ListItemNode [2032,46]
+        ContentNode
+          ParagraphNode [2034,44]
+            ContentNode
+              TextNode [2034,19] "Referenční odkaz "
+              LinkNode [2053,25] url=[*obrazek1*]
+                ContentNode
+                  ImageNode [2053,25] src=obrazek4
+      ListItemNode [2079,45]
+        ContentNode
+          ParagraphNode [2082,42]
+            ContentNode
+              TextNode [2082,30] "Čistě referenční obrázek "
+              ImageNode [2112,12] src=obrazek1
+      ListItemNode [2125,44]
+        ContentNode
+          ParagraphNode [2127,42]
+            ContentNode
+              TextNode [2127,30] "Čistě referenční obrázek "
+              ImageNode [2157,12] src=obrazek2
+      ListItemNode [2170,44]
+        ContentNode
+          ParagraphNode [2172,42]
+            ContentNode
+              TextNode [2172,30] "Čistě referenční obrázek "
+              ImageNode [2202,12] src=obrazek3
+      ListItemNode [2215,44]
+        ContentNode
+          ParagraphNode [2217,42]
+            ContentNode
+              TextNode [2217,30] "Čistě referenční obrázek "
+              ImageNode [2247,12] src=obrazek4
+    HeadingNode [2262,38] level=3
+      ContentNode
+        TextNode [2262,19] "Obrázek s popiskou"
+    ParagraphNode [2302,56]
+      ContentNode
+        LinkNode [2302,21] url=[home]
+          ContentNode
+            ImageNode [2302,21] src=texy.gif
+        TextNode [2323,35] " * popiska s plným formátováním"
+    HeadingNode [2361,25] level=3
+      ContentNode
+        TextNode [2361,12] "Rel nofollow"
+    ListNode [2388,69] unordered
+      ListItemNode [2388,69]
+        ContentNode
+          ParagraphNode [2390,67]
+            ContentNode
+              TextNode [2390,18] "relnofollow odkaz "
+              LinkNode [2408,48] mod[2422,10] url=http://phpfashion.com/
+                ContentNode
+                  TextNode [2409,11] "php Fashion"
+              TextNode [2456,1] "?"
+      ListItemNode [2458,56]
+        ContentNode
+          ParagraphNode [2460,54]
+            ContentNode
+              TextNode [2460,18] "relnofollow odkaz "
+              LinkNode [2478,35] mod[2492,10] url=[/trine/]
+                ContentNode
+                  TextNode [2479,11] "php Fashion"
+              TextNode [2513,1] "x"
+      ListItemNode [2515,59]
+        ContentNode
+          ParagraphNode [2517,57]
+            ContentNode
+              TextNode [2517,18] "relnofollow odkaz "
+              LinkNode [2535,38] mod[2549,12] url=[./trine/]
+                ContentNode
+                  TextNode [2536,11] "php Fashion"
+              TextNode [2573,1] "x"
+      ListItemNode [2575,70]
+        ContentNode
+          ParagraphNode [2577,68]
+            ContentNode
+              TextNode [2577,18] "relnofollow odkaz "
+              LinkNode [2595,49] mod[2609,15] url=[dave@example.com]
+                ContentNode
+                  TextNode [2596,11] "php Fashion"
+              TextNode [2644,1] "x"
+      ListItemNode [2646,63]
+        ContentNode
+          ParagraphNode [2648,61]
+            ContentNode
+              TextNode [2648,18] "relnofollow odkaz "
+              LinkNode [2666,43] mod[2680,11] url=dave@example.com
+                ContentNode
+                  TextNode [2667,11] "php Fashion"
+      ListItemNode [2710,45]
+        ContentNode
+          ParagraphNode [2712,43]
+            ContentNode
+              TextNode [2712,18] "relnofollow odkaz "
+              HtmlTagNode [2730,16] <a>
+              TextNode [2746,5] "test1"
+              HtmlTagNode [2751,4] <a>
+      ListItemNode [2756,59]
+        ContentNode
+          ParagraphNode [2758,57]
+            ContentNode
+              TextNode [2758,18] "relnofollow odkaz "
+              HtmlTagNode [2776,30] <a>
+              TextNode [2806,5] "test2"
+              HtmlTagNode [2811,4] <a>
+      ListItemNode [2816,53]
+        ContentNode
+          ParagraphNode [2818,51]
+            ContentNode
+              TextNode [2818,18] "relnofollow odkaz "
+              HtmlTagNode [2836,24] <a>
+              TextNode [2860,5] "test3"
+              HtmlTagNode [2865,4] <a>
+      ListItemNode [2870,58]
+        ContentNode
+          ParagraphNode [2872,56]
+            ContentNode
+              TextNode [2872,18] "relnofollow odkaz "
+              HtmlTagNode [2890,29] <a>
+              TextNode [2919,5] "test4"
+              HtmlTagNode [2924,4] <a>
+      ListItemNode [2929,67]
+        ContentNode
+          ParagraphNode [2931,65]
+            ContentNode
+              TextNode [2931,18] "relnofollow odkaz "
+              HtmlTagNode [2949,38] <a>
+              TextNode [2987,5] "test5"
+              HtmlTagNode [2992,4] <a>
+    HeadingNode [2999,19] level=3
+      ContentNode
+        TextNode [2999,9] "Specialni"
+    ListNode [3020,21] unordered
+      ListItemNode [3020,21]
+        ContentNode
+          ParagraphNode [3022,19]
+            ContentNode
+              LinkNode [3022,19] url=www.text.cz
+                ContentNode
+                  TextNode [3023,5] "text1"
+      ListItemNode [3042,22]
+        ContentNode
+          ParagraphNode [3044,20]
+            ContentNode
+              LinkNode [3044,19] url=www.text.cz
+                ContentNode
+                  TextNode [3045,5] "text1"
+              TextNode [3063,1] ")"
+      ListItemNode [3065,23]
+        ContentNode
+          ParagraphNode [3067,21]
+            ContentNode
+              LinkNode [3067,20] url=www.text.cz(
+                ContentNode
+                  TextNode [3068,5] "text1"
+              TextNode [3087,1] ")"
+      ListItemNode [3089,24]
+        ContentNode
+          ParagraphNode [3091,22]
+            ContentNode
+              LinkNode [3091,21] url=www.text.cz(x
+                ContentNode
+                  TextNode [3092,5] "text1"
+              TextNode [3112,1] ")"
+      ListItemNode [3114,22]
+        ContentNode
+          ParagraphNode [3116,20]
+            ContentNode
+              LinkNode [3116,20] url=hxxp://test/
+                ContentNode
+                  TextNode [3117,5] "text2"
+      ListItemNode [3137,30]
+        ContentNode
+          ParagraphNode [3139,28]
+            ContentNode
+              LinkNode [3139,27] url=javascript:alert(''
+                ContentNode
+                  TextNode [3140,5] "text3"
+              TextNode [3166,1] ")"
+      ListItemNode [3168,33]
+        ContentNode
+          ParagraphNode [3170,31]
+            ContentNode
+              LinkNode [3170,31] url=mailto:dave@example.com
+                ContentNode
+                  TextNode [3171,5] "text4"
+      ListItemNode [3202,33]
+        ContentNode
+          ParagraphNode [3204,31]
+            ContentNode
+              LinkNode [3204,31] url=mailTO:dave@example.com
+                ContentNode
+                  TextNode [3205,5] "text4"
+      ListItemNode [3236,12]
+        ContentNode
+          ParagraphNode [3238,10]
+            ContentNode
+              LinkNode [3238,10] url=#id
+                ContentNode
+                  TextNode [3239,4] "text"
+      ListItemNode [3249,13]
+        ContentNode
+          ParagraphNode [3251,11]
+            ContentNode
+              LinkNode [3251,11] url=./xx
+                ContentNode
+                  TextNode [3252,4] "text"
+      ListItemNode [3263,12]
+        ContentNode
+          ParagraphNode [3265,10]
+            ContentNode
+              LinkNode [3265,10] url=/xx
+                ContentNode
+                  TextNode [3266,4] "text"
+      ListItemNode [3276,33]
+        ContentNode
+          ParagraphNode [3278,31]
+            ContentNode
+              HtmlTagNode [3278,22] <a>
+              TextNode [3300,5] "test5"
+              HtmlTagNode [3305,4] <a>
+      ListItemNode [3310,34]
+        ContentNode
+          ParagraphNode [3312,32]
+            ContentNode
+              HtmlTagNode [3312,23] <a>
+              TextNode [3335,5] "test6"
+              HtmlTagNode [3340,4] <a>
+      ListItemNode [3345,42]
+        ContentNode
+          ParagraphNode [3347,40]
+            ContentNode
+              HtmlTagNode [3347,31] <a>
+              TextNode [3378,5] "test7"
+              HtmlTagNode [3383,4] <a>
+      ListItemNode [3388,45]
+        ContentNode
+          ParagraphNode [3390,43]
+            ContentNode
+              HtmlTagNode [3390,34] <a>
+              TextNode [3424,5] "test8"
+              HtmlTagNode [3429,4] <a>
+    HeadingNode [3435,11] level=3
+      ContentNode
+        TextNode [3435,4] "Pure"
+    ListNode [3447,15] unordered
+      ListItemNode [3447,15]
+        ContentNode
+          ParagraphNode [3449,13]
+            ContentNode
+              UrlNode [3449,13]
+      ListItemNode [3463,81]
+        ContentNode
+          ParagraphNode [3465,79]
+            ContentNode
+              UrlNode [3465,18]
+              TextNode [3483,2] ", "
+              UrlNode [3485,19]
+              TextNode [3504,1] " "
+              UrlNode [3505,18]
+              TextNode [3523,2] "! "
+              UrlNode [3525,18]
+              TextNode [3543,1] ")"
+      ListItemNode [3545,25]
+        ContentNode
+          ParagraphNode [3547,23]
+            ContentNode
+              UrlNode [3547,23]
+      ListItemNode [3571,28]
+        ContentNode
+          ParagraphNode [3573,26]
+            ContentNode
+              UrlNode [3573,26]
+      ListItemNode [3600,18]
+        ContentNode
+          ParagraphNode [3602,16]
+            ContentNode
+              UrlNode [3602,16]
+      ListItemNode [3619,19]
+        ContentNode
+          ParagraphNode [3621,17]
+            ContentNode
+              UrlNode [3621,17]
+      ListItemNode [3639,19]
+        ContentNode
+          ParagraphNode [3641,17]
+            ContentNode
+              UrlNode [3641,17]
+      ListItemNode [3659,20]
+        ContentNode
+          ParagraphNode [3661,18]
+            ContentNode
+              TextNode [3661,18] "ftps://example.com"
+      ListItemNode [3680,30]
+        ContentNode
+          ParagraphNode [3682,28]
+            ContentNode
+              TextNode [3682,28] "ftps://user:pass@example.com"
+      ListItemNode [3711,18]
+        ContentNode
+          ParagraphNode [3713,16]
+            ContentNode
+              EmailNode [3713,16]
+      ListItemNode [3730,17]
+        ContentNode
+          ParagraphNode [3732,15]
+            ContentNode
+              UrlNode [3732,14]
+              TextNode [3746,1] ")"
+      ListItemNode [3748,22]
+        ContentNode
+          ParagraphNode [3750,20]
+            ContentNode
+              UrlNode [3750,20]
+    LinkDefinitionNode [3773,38]
+    LinkDefinitionNode [3812,23]
+    LinkDefinitionNode [3836,24]
+    LinkDefinitionNode [3861,25]
+    LinkDefinitionNode [3888,30]
+    LinkDefinitionNode [3919,30]
+    LinkDefinitionNode [3950,30]
+    LinkDefinitionNode [3981,26]
+    ImageDefinitionNode [4009,30] mod[4033,6]
+    ImageDefinitionNode [4040,28]
+    ImageDefinitionNode [4069,22]
+    ImageDefinitionNode [4092,26]

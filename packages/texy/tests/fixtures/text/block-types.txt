@@ -1,0 +1,59 @@
+space
+
+space
+
+/--.[texy] te st \--
+
+te
+st
+
+0
+
+0
+
+te
+st
+
+te
+st
+
+Text mezi @notexy ..... a @ nebude Texy *formátovat*
+
+Code: *formátovat*
+  &nbsp; <br /> <xx>
+
+Code: *formátovat*
+  &nbsp; <br /> <xx>
+
+Code: Odsazeny
+ text
+
+HTML: *formátovat*
+  &nbsp; <br /> <xx>
+
+	Html: Odsazeny
+	 text
+
+Text: *formátovat*
+  &nbsp; <br /> <xx>
+
+	Text: Odsazeny
+	 text
+
+Defaut: *formátovat*
+  &nbsp; <br /> <xx>
+
+Default: Odsazeny
+ text
+
+PRE: *formátovat*
+  &nbsp; <br /> <xx>
+
+PRE: Odsazeny
+ text
+
+Div: formátovat
+   <xx>
+
+Div: Odsazeny
+text

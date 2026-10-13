@@ -1,0 +1,316 @@
+DocumentNode
+  ContentNode
+    TableNode [0,27]
+      TableRowNode [0,27]
+        TableCellNode [1,15]
+          ContentNode
+            TextNode [2,7] "Table 1"
+        TableCellNode [17,10]
+          ContentNode
+            TextNode [18,9] "Age Group"
+      TableRowNode [53,24]
+        TableCellNode [54,15]
+          ContentNode
+            TextNode [55,6] "Street"
+        TableCellNode [70,7]
+          ContentNode
+            TextNode [71,6] "Junior"
+      TableRowNode [78,24]
+        TableCellNode [79,15]
+          ContentNode
+            TextNode [79,7] "^  City"
+        TableCellNode [95,7]
+          ContentNode
+            TextNode [96,6] "Senior"
+      TableRowNode [103,24]
+        TableCellNode [104,15]
+          ContentNode
+            TextNode [105,13] "Another place"
+        TableCellNode [120,7]
+          ContentNode
+            TextNode [121,6] "Junior"
+    TableNode [132,27]
+      TableRowNode [132,27]
+        TableCellNode [133,15]
+          ContentNode
+            TextNode [134,7] "Table 2"
+        TableCellNode [149,10]
+          ContentNode
+            TextNode [150,9] "Age Group"
+      TableRowNode [184,24]
+        TableCellNode [185,15]
+          ContentNode
+            TextNode [185,1] "^"
+        TableCellNode [201,7]
+          ContentNode
+            TextNode [202,6] "Senior"
+      TableRowNode [209,11]
+        TableCellNode [213,7]
+          ContentNode
+            TextNode [214,6] "Junior"
+    TableNode [225,27]
+      TableRowNode [225,27]
+        TableCellNode [226,15]
+          ContentNode
+            TextNode [227,7] "Table 3"
+        TableCellNode [242,10]
+          ContentNode
+            TextNode [243,9] "Age Group"
+      TableRowNode [277,26]
+        TableCellNode [278,17]
+          ContentNode
+            ParagraphNode [279,31]
+              ContentNode
+                TextNode [279,6] "Street"
+                LineBreakNode [285,22]
+                TextNode [307,3] "row"
+            ListNode [326,6] unordered
+              ListItemNode [326,6]
+                ContentNode
+                  ParagraphNode [328,4]
+                    ContentNode
+                      TextNode [328,4] "City"
+        TableCellNode [296,7]
+          ContentNode
+            TextNode [297,6] "Junior"
+      TableRowNode [304,19]
+        TableCellNode
+          ContentNode
+            TextNode " "
+      TableRowNode [324,26]
+        TableCellNode [343,7]
+          ContentNode
+            TextNode [344,6] "Senior"
+      TableRowNode [351,28]
+        TableCellNode [352,19]
+          ContentNode
+            TextNode [353,17] "- Another place ^"
+        TableCellNode [372,7]
+          ContentNode
+            TextNode [373,6] "Junior"
+    TableNode [382,29]
+      TableRowNode [382,29]
+        TableCellNode [383,17]
+          ContentNode
+            ParagraphNode [385,7]
+              ContentNode
+                TextNode [385,7] "Table 4"
+            ParagraphNode [419,4]
+              ContentNode
+                TextNode [419,4] "test"
+        TableCellNode [401,10]
+          ContentNode
+            TextNode [402,9] "Age Group"
+      TableRowNode [412,3]
+        TableCellNode
+          ContentNode
+            TextNode " "
+      TableRowNode [416,15]
+        TableCellNode [426,5]
+          ContentNode
+            TextNode [427,4] "item"
+      TableRowNode [432,10]
+        TableCellNode [433,2]
+          ContentNode
+            TextNode [434,1] "^"
+        TableCellNode [436,6]
+          ContentNode
+            TextNode [437,5] "item2"
+    TableNode [446,27]
+      TableRowNode [446,27]
+        TableCellNode [447,15]
+          ContentNode
+            TextNode [448,7] "Table 5"
+        TableCellNode [463,10]
+          ContentNode
+            TextNode [464,9] "Age Group"
+      TableRowNode [498,21]
+        TableCellNode [499,17]
+          ContentNode
+            ParagraphNode [500,6]
+              ContentNode
+                TextNode [500,6] "Street"
+            ListNode [522,6] unordered
+              ListItemNode [522,6]
+                ContentNode
+                  ParagraphNode [524,4]
+                    ContentNode
+                      TextNode [524,4] "City"
+              ListItemNode [544,7]
+                ContentNode
+                  ParagraphNode [546,5]
+                    ContentNode
+                      TextNode [546,5] "Place"
+        TableCellNode [517,2]
+          ContentNode
+            TextNode [518,1] "A"
+      TableRowNode [520,21]
+        TableCellNode [539,2]
+          ContentNode
+            ParagraphNode [540,47]
+              ContentNode
+                TextNode [540,47] "B C D"
+      TableRowNode [566,23]
+        TableCellNode [567,17]
+          ContentNode
+            TextNode [568,9] "- Village"
+    TableNode [594,23]
+      TableRowNode [594,23]
+        TableCellNode [595,14]
+          ContentNode
+            TextNode [596,7] "Table 6"
+        TableCellNode [611,6]
+          ContentNode
+            TextNode [612,5] "Group"
+      TableRowNode [642,32]
+        TableCellNode [643,7]
+          ContentNode
+            TextNode [644,5] "empty"
+        TableCellNode [651,14]
+          ContentNode
+            TextNode [652,12] "col&row span"
+        TableCellNode [667,7]
+          ContentNode
+            TextNode [668,6] "Senior"
+      TableRowNode [675,32]
+        TableCellNode [676,7]
+          ContentNode
+            TextNode [677,5] "empty"
+        TableCellNode [700,7]
+          ContentNode
+            TextNode [701,6] "Junior"
+      TableRowNode [708,33]
+        TableCellNode [709,7]
+          ContentNode
+            TextNode [710,5] "empty"
+        TableCellNode [733,0]
+          ContentNode
+            TextNode " "
+        TableCellNode [734,7]
+          ContentNode
+            TextNode [735,6] "Junior"
+      TableRowNode [742,34]
+        TableCellNode [743,7]
+          ContentNode
+            TextNode [744,5] "empty"
+        TableCellNode [767,0]
+          ContentNode
+            TextNode " "
+        TableCellNode [769,7]
+          ContentNode
+            TextNode [770,6] "Junior"
+    TableNode [779,18]
+      TableRowNode [779,18]
+        TableCellNode [780,16]
+          ContentNode
+            TextNode [781,14] "Table in table"
+      TableRowNode [818,35]
+        TableCellNode [819,23]
+          ContentNode
+            ParagraphNode [821,19]
+              ContentNode
+                TextNode [821,19] "| inner A | inner B"
+            ParagraphNode [857,19]
+              ContentNode
+                TextNode [857,19] "| inner C | inner D"
+        TableCellNode [843,8]
+          ContentNode
+            TextNode [844,7] "outer 1"
+      TableRowNode [854,35]
+        TableCellNode [879,8]
+          ContentNode
+            TextNode [880,7] "outer 2"
+    ParagraphNode [892,21]
+      ContentNode
+        TextNode [892,21] "List block collapses:"
+    TableNode [915,38]
+      TableRowNode [915,38]
+        TableCellNode [916,11]
+          ContentNode
+            TextNode [918,8] "Column 1"
+        TableCellNode [928,12]
+          ContentNode
+            TextNode [930,8] "Column 2"
+        TableCellNode [941,11]
+          ContentNode
+            TextNode [943,8] "Column 3"
+      TableRowNode [954,38]
+        TableCellNode [955,11]
+          ContentNode
+            TextNode " "
+        TableCellNode [967,12]
+          ContentNode
+            ListNode [968,6] ordered
+              ListItemNode [968,6]
+                ContentNode
+                  ParagraphNode [971,3]
+                    ContentNode
+                      TextNode [971,3] "one"
+              ListItemNode [1007,6]
+                ContentNode
+                  ParagraphNode [1010,3]
+                    ContentNode
+                      TextNode [1010,3] "two"
+              ListItemNode [1046,8]
+                ContentNode
+                  ParagraphNode [1049,5]
+                    ContentNode
+                      TextNode [1049,5] "three"
+        TableCellNode [980,11]
+          ContentNode
+            TextNode " "
+    ParagraphNode [1072,56]
+      ContentNode
+        TextNode [1072,56] "List block correct, but extra table cell (bottom-right):"
+    TableNode [1130,38]
+      TableRowNode [1130,38]
+        TableCellNode [1131,11]
+          ContentNode
+            TextNode [1133,8] "Column 1"
+        TableCellNode [1143,12]
+          ContentNode
+            TextNode [1145,8] "Column 2"
+        TableCellNode [1156,11]
+          ContentNode
+            TextNode [1158,8] "Column 3"
+      TableRowNode [1169,38]
+        TableCellNode [1170,11]
+          ContentNode
+            TextNode " "
+        TableCellNode [1182,12]
+          ContentNode
+            ListNode [1183,6] ordered
+              ListItemNode [1183,6]
+                ContentNode
+                  ParagraphNode [1186,3]
+                    ContentNode
+                      TextNode [1186,3] "one"
+              ListItemNode [1222,6]
+                ContentNode
+                  ParagraphNode [1225,3]
+                    ContentNode
+                      TextNode [1225,3] "two"
+              ListItemNode [1261,8]
+                ContentNode
+                  ParagraphNode [1264,5]
+                    ContentNode
+                      TextNode [1264,5] "three"
+        TableCellNode [1195,11]
+          ContentNode
+            TextNode " "
+      TableRowNode [1247,38]
+        TableCellNode [1273,11]
+          ContentNode
+            TextNode " "
+    TableNode [1288,25]
+      TableRowNode [1288,25]
+        TableCellNode [1289,10]
+          ContentNode
+            LinkNode [1290,8] url=link
+              ContentNode
+                TextNode [1291,1] "a"
+        TableCellNode [1300,12]
+          ContentNode
+            LinkNode [1301,10] url=link
+              ContentNode
+                TextNode [1302,1] "b"

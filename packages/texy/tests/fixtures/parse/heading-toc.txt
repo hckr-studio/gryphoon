@@ -1,0 +1,15 @@
+DocumentNode
+  ContentNode
+    HeadingNode [0,11] level=1
+      ContentNode
+        TextNode [0,5] "Title"
+    HeadingNode [13,29] level=2
+      ContentNode
+        TextNode [13,14] "subtitle * 123"
+    CodeBlockNode [44,46]
+    HeadingNode [93,29] mod[100,15] level=1
+      ContentNode
+        TextNode [93,5] "Title"
+    HeadingNode [124,21] level=3
+      ContentNode
+        TextNode [124,10] "last title"

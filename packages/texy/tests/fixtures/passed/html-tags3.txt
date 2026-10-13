@@ -1,0 +1,13 @@
+DocumentNode
+  ContentNode
+    ParagraphNode [0,39]
+      ContentNode
+        HtmlTagNode [0,39] <link>
+    ParagraphNode [41,46]
+      ContentNode
+        TextNode [41,6] "<head>"
+        TextNode [47,1] "\n"
+        HtmlTagNode [48,39] <link>
+    ParagraphNode [89,5]
+      ContentNode
+        TextNode [89,5] "Pokus"

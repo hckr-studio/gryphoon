@@ -1,0 +1,32 @@
+DocumentNode
+  ContentNode
+    ParagraphNode [0,31]
+      ContentNode
+        HtmlTagNode [0,12] <a>
+        HtmlTagNode [12,5] <div>
+        TextNode [17,4] "test"
+        HtmlTagNode [21,6] <div>
+        HtmlTagNode [27,4] <a>
+    ParagraphNode [33,44]
+      ContentNode
+        HtmlTagNode [33,5] <div>
+        HtmlTagNode [38,12] <a>
+        HtmlTagNode [50,6] <span>
+        TextNode [56,4] "test"
+        HtmlTagNode [60,7] <span>
+        HtmlTagNode [67,4] <a>
+        HtmlTagNode [71,6] <div>
+    ParagraphNode [79,26]
+      ContentNode
+        HtmlTagNode [79,5] <ins>
+        HtmlTagNode [84,5] <div>
+        TextNode [89,4] "test"
+        HtmlTagNode [93,6] <div>
+        HtmlTagNode [99,6] <ins>
+    ParagraphNode [107,26]
+      ContentNode
+        HtmlTagNode [107,5] <del>
+        HtmlTagNode [112,5] <div>
+        TextNode [117,4] "test"
+        HtmlTagNode [121,6] <div>
+        HtmlTagNode [127,6] <del>

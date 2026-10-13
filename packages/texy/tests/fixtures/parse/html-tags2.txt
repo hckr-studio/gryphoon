@@ -1,0 +1,98 @@
+DocumentNode
+  ContentNode
+    CodeBlockNode [0,777]
+    ParagraphNode [780,673]
+      ContentNode
+        HtmlTagNode [780,48] <form>
+        TextNode [828,2] "\n "
+        HtmlTagNode [830,10] <FIELDSET>
+        HtmlTagNode [840,8] <legend>
+        TextNode [848,21] "Kontaktní formulář"
+        HtmlTagNode [869,9] <legend>
+        TextNode [878,3] "\n  "
+        HtmlTagNode [881,3] <p>
+        HtmlTagNode [884,19] <label>
+        TextNode [903,7] "jméno:"
+        HtmlTagNode [910,8] <label>
+        TextNode [918,1] " "
+        HtmlTagNode [919,118] <input>
+        HtmlTagNode [1037,4] <p>
+        TextNode [1041,3] "\n  "
+        HtmlTagNode [1044,3] <p>
+        HtmlTagNode [1047,18] <label>
+        TextNode [1065,7] "e-mail:"
+        HtmlTagNode [1072,8] <label>
+        TextNode [1080,1] " "
+        HtmlTagNode [1081,115] <input>
+        HtmlTagNode [1196,4] <p>
+        TextNode [1200,3] "\n  "
+        HtmlTagNode [1203,3] <p>
+        HtmlTagNode [1206,7] <label>
+        TextNode [1213,6] "text: "
+        HtmlTagNode [1219,8] <label>
+        HtmlTagNode [1227,123] <textarea>
+        TextNode [1350,4] "text"
+        HtmlTagNode [1354,11] <textarea>
+        HtmlTagNode [1365,4] <p>
+        TextNode [1369,3] "\n  "
+        HtmlTagNode [1372,3] <p>
+        HtmlTagNode [1375,53] <input>
+        HtmlTagNode [1428,4] <p>
+        TextNode [1432,2] "\n "
+        HtmlTagNode [1434,11] <fieldset>
+        TextNode [1445,1] "\n"
+        HtmlTagNode [1446,7] <form>
+    ParagraphNode [1455,114]
+      ContentNode
+        TextNode [1455,9] "tohle je "
+        HtmlTagNode [1464,91] <form>
+        TextNode [1555,7] " konec "
+        HtmlTagNode [1562,7] <form>
+    ParagraphNode [1572,57]
+      ContentNode
+        HtmlTagNode [1572,12] <embed>
+        HtmlTagNode [1584,8] <embed>
+        HtmlTagNode [1592,5] <wbr>
+        HtmlTagNode [1597,9] <marquee>
+        HtmlTagNode [1606,9] <bgsound>
+        HtmlTagNode [1615,8] <canvas>
+        HtmlTagNode [1623,6] <nobr>
+    ParagraphNode [1631,797]
+      ContentNode
+        HtmlTagNode [1631,31] <script>
+        TextNode [1662,231] " // tady se ve výsledku sem tam zdroj zalomí a pak to dělá zbytečné chyby tady se ve výsledku sem tam zdroj zalomí a pak to dělá zbytečné chyby tady se ve výsledku sem tam zdroj zalomí a pak to dělá zbytečné chyby"
+        LineBreakNode [1893,2]
+        HtmlCommentNode [1895,357]
+        TextNode [2252,1] " "
+        HtmlTagNode [2253,9] <script>
+        TextNode [2262,1] " "
+        HtmlTagNode [2263,10] <noscript>
+        LineBreakNode [2273,2]
+        HtmlTagNode [2275,3] <p>
+        HtmlTagNode [2278,134] <img>
+        HtmlTagNode [2412,4] <p>
+        TextNode [2416,1] " "
+        HtmlTagNode [2417,11] <noscript>
+    ParagraphNode [2431,64]
+      ContentNode
+        HtmlTagNode [2431,27] <iframe>
+        TextNode [2458,1] " "
+        LinkNode [2459,26] url=stranka.html
+          ContentNode
+            TextNode [2460,11] "alternativa"
+        TextNode [2485,1] " "
+        HtmlTagNode [2486,9] <iframe>
+    ParagraphNode [2500,29]
+      ContentNode
+        HtmlTagNode [2500,5] <pre>
+        TextNode [2505,18] "\nspeciální\ntest\n"
+        HtmlTagNode [2523,6] <pre>
+    ParagraphNode [2532,5]
+      ContentNode
+        HtmlTagNode [2532,5] <pre>
+    ParagraphNode [2539,16]
+      ContentNode
+        TextNode [2539,16] "speciální test"
+    ParagraphNode [2557,6]
+      ContentNode
+        HtmlTagNode [2557,6] <pre>

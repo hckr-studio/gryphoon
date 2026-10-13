@@ -1,0 +1,23 @@
+DocumentNode
+  ContentNode
+    ParagraphNode [0,38]
+      ContentNode
+        TextNode [0,17] "I fell sometimes "
+        EmoticonNode [17,3]
+        TextNode [20,15] " and sometimes "
+        EmoticonNode [35,3]
+    ParagraphNode [40,16]
+      ContentNode
+        TextNode [40,13] "WTF is this? "
+        EmoticonNode [53,3]
+    ParagraphNode [58,3]
+      ContentNode
+        EmoticonNode [58,3]
+    ParagraphNode [63,7]
+      ContentNode
+        PhraseNode [63,7] phrase/strong
+          ContentNode
+            EmoticonNode [65,3]
+    ParagraphNode [72,6]
+      ContentNode
+        EmoticonNode [72,6]

@@ -1,0 +1,112 @@
+DocumentNode
+  ContentNode
+    HeadingNode [0,14] level=1
+      ContentNode
+        TextNode [0,8] "Modifier"
+    FigureNode [16,70]
+      ImageNode [16,50] src=obr.jpg
+      ContentNode
+        TextNode [71,15] "any description"
+    FigureNode [88,77] mod[160,5]
+      ImageNode [88,50] src=obr.jpg
+      ContentNode
+        TextNode [143,15] "any description"
+    FigureNode [167,57] mod[219,5]
+      ImageNode [167,50] src=obr.jpg
+    FigureNode [226,40] mod[261,5]
+      ImageNode [226,13] src=obr.jpg
+      ContentNode
+        TextNode [244,15] "any description"
+    FigureNode [268,20] mod[283,5]
+      ImageNode [268,13] src=obr.jpg
+    HeadingNode [291,10] level=1
+      ContentNode
+        TextNode [291,5] "Links"
+    FigureNode [303,29]
+      LinkNode [303,15] url=obr.jpg
+        ContentNode
+          ImageNode [303,13] src=obr.jpg
+      ContentNode
+        TextNode [323,9] "auto link"
+    FigureNode [334,27]
+      LinkNode [334,18] url=link
+        ContentNode
+          ImageNode [334,13] src=obr.jpg
+      ContentNode
+        TextNode [357,4] "link"
+    FigureNode [363,60]
+      LinkNode [363,45] url=popup.php?img=obr-big.jpg
+        ContentNode
+          ImageNode [363,13] src=obr.jpg
+      ContentNode
+        TextNode [413,10] "image link"
+    FigureNode [426,15]
+      LinkNode [426,15] url=obr.jpg
+        ContentNode
+          ImageNode [426,13] src=obr.jpg
+    FigureNode [443,18]
+      LinkNode [443,18] url=link
+        ContentNode
+          ImageNode [443,13] src=obr.jpg
+    FigureNode [463,45]
+      LinkNode [463,45] url=popup.php?img=obr-big.jpg
+        ContentNode
+          ImageNode [463,13] src=obr.jpg
+    HeadingNode [511,9] level=1
+      ContentNode
+        TextNode [511,5] "Align"
+    FigureNode [522,33]
+      ImageNode [522,13] src=obr.jpg
+      ContentNode
+        TextNode [540,15] "any description"
+    FigureNode [557,33]
+      ImageNode [557,13] src=obr.jpg
+      ContentNode
+        TextNode [575,15] "any description"
+    FigureNode [592,13]
+      ImageNode [592,13] src=obr.jpg
+    FigureNode [607,13]
+      ImageNode [607,13] src=obr.jpg
+    HeadingNode [623,13] level=1
+      ContentNode
+        TextNode [623,8] "Multiple"
+    FigureNode [638,33]
+      ImageNode [638,13] src=obr.jpg
+      ContentNode
+        TextNode [656,15] "any description"
+    FigureNode [672,33]
+      ImageNode [672,13] src=obr.jpg
+      ContentNode
+        TextNode [690,15] "any description"
+    FigureNode [708,13]
+      ImageNode [708,13] src=obr.jpg
+    FigureNode [722,13]
+      ImageNode [722,13] src=obr.jpg
+    HeadingNode [738,17] level=1
+      ContentNode
+        TextNode [738,12] "Part of text"
+    FigureNode [757,33]
+      ImageNode [757,13] src=obr.jpg
+      ContentNode
+        TextNode [775,15] "any description"
+    ParagraphNode [791,5]
+      ContentNode
+        TextNode [791,5] "hello"
+    FigureNode [799,13]
+      ImageNode [799,13] src=obr.jpg
+    ParagraphNode [813,5]
+      ContentNode
+        TextNode [813,5] "hello"
+    FigureNode [828,11]
+      ImageNode [828,11] src=image
+    ParagraphNode [842,5]
+      ContentNode
+        TextNode [842,5] "hello"
+    FigureNode [848,13]
+      ImageNode [848,13] src=obr.jpg
+    ParagraphNode [864,137]
+      ContentNode
+        ImageNode [864,58] src=nikon-curve-1.jpg
+        TextNode [922,1] " "
+        ImageNode [923,78] src=nikon-curve-2.jpg
+    HorizontalRuleNode [1003,3]

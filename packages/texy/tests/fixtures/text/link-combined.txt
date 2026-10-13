@@ -1,0 +1,103 @@
+Odkazy
+
+odkaz pokus
+odkaz pokus
+odkaz prázdný
+odkaz <a>test</a> prázdný
+Klasický odkaz php Fashion?
+Klasický odkaz php Fashionx
+Klasický odkaz php Fashionx
+Klasický odkaz php Fashionx
+Klasický odkaz php Fashion
+Referenční odkaz php Fashion
+Referenční odkaz php Fashion
+Referenční odkaz php Fashion
+Referenční odkaz php Fashion
+Referenční odkaz php Fashion?
+Referenční odkaz php Fashion?
+Referenční odkaz php Fashion?
+Referenční odkaz php Fashion?
+
+wiki link Texy
+wiki link Texy
+markdown link Texy
+markdown link Texy
+
+Obrázkové odkazy:
+
+Klasický odkaz obrazek
+Klasický odkaz obrazek
+Klasický odkaz obrazek
+Referenční odkaz obrazek
+Referenční odkaz obrazek
+Referenční odkaz obrazek
+
+Odkazující obrázky:
+
+Klasický odkaz ?
+Klasický odkaz titlex
+Referenční odkaz [neobrazek1]:[php Fashion1]
+Referenční odkaz php Fashion
+Referenční odkaz php Fashion
+Referenční odkaz 
+Referenční odkaz php Fashion?
+Referenční odkaz php Fashion?
+Referenční odkaz altX
+Referenční odkaz x
+Referenční odkaz 
+Referenční odkaz 
+Referenční odkaz 
+Čistě referenční obrázek altX
+Čistě referenční obrázek 
+Čistě referenční obrázek 
+Čistě referenční obrázek 
+
+Obrázek s popiskou
+
+ * popiska s plným formátováním
+
+Rel nofollow
+
+relnofollow odkaz php Fashion?
+relnofollow odkaz php Fashionx
+relnofollow odkaz php Fashionx
+relnofollow odkaz php Fashionx
+relnofollow odkaz php Fashion
+relnofollow odkaz test1
+relnofollow odkaz test2
+relnofollow odkaz test3
+relnofollow odkaz test4
+relnofollow odkaz test5
+
+Specialni
+
+text1
+text1)
+text1)
+text1)
+text2
+text3)
+text4
+text4
+text
+text
+text
+test5
+test6
+test7
+test8
+
+Pure
+
+www.texy.info
+www.texy.info/path, www.texy.info/path? www.texy.info/path! www.texy.info/path)
+www.texy.info/path#flag
+www.texy.info/path/#!/flag
+http://texy.info
+https://texy.info
+ftp://example.com
+ftps://example.com
+ftps://user:pass@example.com
+dave@example.com
+www.text.cz?(x)
+www.text.cz?(x)#$%10

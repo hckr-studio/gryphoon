@@ -1,0 +1,57 @@
+Table 1	Age Group
+Street	Junior
+^ City	Senior
+Another place	Junior
+
+Table 2	Age Group
+^	Senior
+Junior
+
+Table 3	Age Group
+Street
+row
+City	Junior
+ 
+Senior
+– Another place ^	Junior
+
+Table 4
+test	Age Group
+ 
+item
+^	item2
+
+Table 5	Age Group
+Street
+City
+Place	A
+B C D
+– Village
+
+Table 6	Group
+empty	col&row span	Senior
+empty	Junior
+empty	 	Junior
+empty	 	Junior
+
+Table in table
+| inner A | inner B
+| inner C | inner D	outer 1
+outer 2
+
+List block collapses:
+
+Column 1	Column 2	Column 3
+ 	one
+two
+three	 
+
+List block correct, but extra table cell (bottom-right):
+
+Column 1	Column 2	Column 3
+ 	one
+two
+three	 
+ 
+
+a	b

@@ -1,0 +1,82 @@
+DocumentNode
+  ContentNode
+    ParagraphNode [0,155]
+      ContentNode
+        TextNode [0,5] "This "
+        HtmlElementNode [5,8]
+          ContentNode
+            TextNode [13,7] "example"
+        TextNode [29,11] " shows how "
+        HtmlElementNode [40,88]
+          ContentNode
+            TextNode [128,5] "Texy!"
+        TextNode [137,18] " handle HTML tags."
+    ParagraphNode [157,62]
+      ContentNode
+        TextNode [157,10] "Dangerous "
+        HtmlElementNode [167,41]
+          ContentNode
+            TextNode [208,4] "span"
+    ParagraphNode [221,31]
+      ContentNode
+        HtmlElementNode [221,15]
+          ContentNode
+            TextNode [236,10] "\n  Hello!\n"
+    ParagraphNode [254,13]
+      ContentNode
+        TextNode [254,6] "<my />"
+        TextNode [260,2] ".."
+        TextNode [262,5] "</my>"
+    ParagraphNode [269,17]
+      ContentNode
+        HtmlTagNode [269,8] <span>
+        TextNode [277,2] ".."
+        HtmlTagNode [279,7] <span>
+    ParagraphNode [288,44]
+      ContentNode
+        HtmlTagNode [288,20] <span>
+        TextNode [308,24] "...</span title=\"pokus\">"
+    ParagraphNode [334,12]
+      ContentNode
+        HtmlTagNode [334,6] <form>
+        TextNode [340,6] "\ntest1"
+    ParagraphNode [350,18]
+      ContentNode
+        HtmlElementNode [350,6]
+          ContentNode
+            TextNode [356,5] "test2"
+    ParagraphNode [370,13]
+      ContentNode
+        TextNode [370,6] "test3 "
+        HtmlTagNode [376,7] <form>
+    ParagraphNode [385,64]
+      ContentNode
+        HtmlElementNode [385,14]
+          ContentNode
+            TextNode [399,5] "text1"
+            HtmlTagNode [404,6] <span>
+            HtmlElementNode [410,14]
+              ContentNode
+                TextNode [424,5] "test2"
+            TextNode [433,5] "test3"
+        HtmlTagNode [442,7] <span>
+    ParagraphNode [451,71]
+      ContentNode
+        HtmlElementNode [451,14]
+          ContentNode
+            TextNode [465,5] "text1"
+            HtmlElementNode [470,6]
+              ContentNode
+                HtmlTagNode [476,14] <a>
+                TextNode [490,5] "test2"
+        TextNode [506,5] "test3"
+        HtmlTagNode [511,4] <a>
+        HtmlTagNode [515,7] <span>
+    ParagraphNode [524,60]
+      ContentNode
+        HtmlElementNode [524,33]
+          ContentNode
+            HtmlTagNode [557,23] <img>
+    ParagraphNode [586,15]
+      ContentNode
+        HtmlTagNode [586,15] <hr>

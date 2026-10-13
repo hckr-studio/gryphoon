@@ -1,0 +1,122 @@
+[
+    {
+        "mode": "safe",
+        "input": "<a href=\"javascript:alert(1)\">click</a> and <b onmouseover=\"alert(2)\">bold</b> <script>alert(3)</script> <div class=\"c\">div</div>",
+        "expected": "<p>&lt;a href=„javascrip­t:alert(1)“&gt;clic­k&lt;/a&gt; and <b>bold</b>\n&lt;script&gt;alert(3)&lt;/scrip­t&gt; &lt;div\nclass=„c“&gt;div&lt;/div&gt;</p>\n"
+    },
+    {
+        "mode": "safe",
+        "input": "Hello .[dangerous-class]{color:red}#evil-id!",
+        "expected": "<p>Hello .[dangerous-class]{color:red}#e­vil-id!</p>\n"
+    },
+    {
+        "mode": "safe",
+        "input": "See [link](https://example.com) and image [* obr.jpg *]",
+        "expected": "<p>See <a href=\"https://example.com\" rel=\"nofollow\">link</a> and image [*\nobr.jpg *]</p>\n"
+    },
+    {
+        "mode": "safe",
+        "input": "<!-- comment --> and [ref]: https://example.com then [ref]",
+        "expected": "<p>&lt;!-- comment → and [ref]: <a href=\"https://example.com\"\nrel=\"nofollow\">https://example.com</a> then [ref]</p>\n"
+    },
+    {
+        "mode": "safe",
+        "input": "Quotes \"test\" and ellipsis...",
+        "expected": "<p>Quotes „test“ and ellipsis…</p>\n"
+    },
+    {
+        "mode": "safe",
+        "input": "External http://link.example.cz too",
+        "expected": "<p>External <a href=\"http://link.example.cz\"\nrel=\"nofollow\">http://link.example.cz</a> too</p>\n"
+    },
+    {
+        "mode": "disableLinks",
+        "input": "<a href=\"javascript:alert(1)\">click</a> and <b onmouseover=\"alert(2)\">bold</b> <script>alert(3)</script> <div class=\"c\">div</div>",
+        "expected": "&lt;a href=„javascrip­t:alert(1)“&gt;clic­k&lt;/a&gt; and <b\nonmouseover=\"alert(2)\">bold</b> <script>alert(3)</script>\n<div class=\"c\">div</div>\n"
+    },
+    {
+        "mode": "disableLinks",
+        "input": "Hello .[dangerous-class]{color:red}#evil-id!",
+        "expected": "<p>Hello .[dangerous-class]{color:red}#e­vil-id!</p>\n"
+    },
+    {
+        "mode": "disableLinks",
+        "input": "See [link](https://example.com) and image [* obr.jpg *]",
+        "expected": "<p>See <a href=\"https://example.com\">link</a> and image <img\nsrc=\"images/obr.jpg\" alt=\"\"></p>\n"
+    },
+    {
+        "mode": "disableLinks",
+        "input": "<!-- comment --> and [ref]: https://example.com then [ref]",
+        "expected": "<p><!-- comment --> and [ref]: https://example.com then [ref]</p>\n"
+    },
+    {
+        "mode": "disableLinks",
+        "input": "Quotes \"test\" and ellipsis...",
+        "expected": "<p>Quotes „test“ and ellipsis…</p>\n"
+    },
+    {
+        "mode": "disableLinks",
+        "input": "External http://link.example.cz too",
+        "expected": "<p>External http://link.e­xample.cz too</p>\n"
+    },
+    {
+        "mode": "disableImages",
+        "input": "<a href=\"javascript:alert(1)\">click</a> and <b onmouseover=\"alert(2)\">bold</b> <script>alert(3)</script> <div class=\"c\">div</div>",
+        "expected": "<a href=\"javascript:alert(1)\">click</a> and <b onmouseover=\"alert(2)\">bold</b>\n<script>alert(3)</script>\n<div class=\"c\">div</div>\n"
+    },
+    {
+        "mode": "disableImages",
+        "input": "Hello .[dangerous-class]{color:red}#evil-id!",
+        "expected": "<p>Hello .[dangerous-class]{color:red}#e­vil-id!</p>\n"
+    },
+    {
+        "mode": "disableImages",
+        "input": "See [link](https://example.com) and image [* obr.jpg *]",
+        "expected": "<p>See <a href=\"https://example.com\">link</a> and image [* obr.jpg *]</p>\n"
+    },
+    {
+        "mode": "disableImages",
+        "input": "<!-- comment --> and [ref]: https://example.com then [ref]",
+        "expected": "<p><!-- comment --> and [ref]: <a\nhref=\"https://example.com\">https://example.com</a> then [ref]</p>\n"
+    },
+    {
+        "mode": "disableImages",
+        "input": "Quotes \"test\" and ellipsis...",
+        "expected": "<p>Quotes „test“ and ellipsis…</p>\n"
+    },
+    {
+        "mode": "disableImages",
+        "input": "External http://link.example.cz too",
+        "expected": "<p>External <a href=\"http://link.example.cz\">http://link.example.cz</a> too</p>\n"
+    },
+    {
+        "mode": "all",
+        "input": "<a href=\"javascript:alert(1)\">click</a> and <b onmouseover=\"alert(2)\">bold</b> <script>alert(3)</script> <div class=\"c\">div</div>",
+        "expected": "<p>&lt;a href=„javascrip­t:alert(1)“&gt;clic­k&lt;/a&gt; and <b>bold</b>\n&lt;script&gt;alert(3)&lt;/scrip­t&gt; &lt;div\nclass=„c“&gt;div&lt;/div&gt;</p>\n"
+    },
+    {
+        "mode": "all",
+        "input": "Hello .[dangerous-class]{color:red}#evil-id!",
+        "expected": "<p>Hello .[dangerous-class]{color:red}#e­vil-id!</p>\n"
+    },
+    {
+        "mode": "all",
+        "input": "See [link](https://example.com) and image [* obr.jpg *]",
+        "expected": "<p>See <a href=\"https://example.com\" rel=\"nofollow\">link</a> and image [*\nobr.jpg *]</p>\n"
+    },
+    {
+        "mode": "all",
+        "input": "<!-- comment --> and [ref]: https://example.com then [ref]",
+        "expected": "<p>&lt;!-- comment → and [ref]: https://example.com then [ref]</p>\n"
+    },
+    {
+        "mode": "all",
+        "input": "Quotes \"test\" and ellipsis...",
+        "expected": "<p>Quotes „test“ and ellipsis…</p>\n"
+    },
+    {
+        "mode": "all",
+        "input": "External http://link.example.cz too",
+        "expected": "<p>External http://link.e­xample.cz too</p>\n"
+    }
+]

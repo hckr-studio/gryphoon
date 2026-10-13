@@ -1,0 +1,36 @@
+auto
+
+Úvod
+demo
+
+\---
+
+aa
+
+co je Texy!
+využití
+v čem je lepší
+Texy! vs. WYSIWIG
+
+syntax
+demo
+implementace
+download
+licence
+aktuality
+kontakt
+
+/---div
+
+Sponzor hostingu:
+
+Webhosting poskytuje Český hosting
+
+Texy! forma stránky (menu, patička, odkazy)
+
+\---
+
+Texy! © David Grudl 2003–2005
+
+Úvod
+demo

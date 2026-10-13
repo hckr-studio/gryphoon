@@ -1,0 +1,54 @@
+DocumentNode
+  ContentNode
+    ParagraphNode [0,58]
+      ContentNode
+        TextNode [0,31] "Normální text další řádek"
+        LineBreakNode [31,2]
+        TextNode [33,25] "odsazeno přesně mezerou"
+    ListNode [60,14] ordered
+      ListItemNode [60,25]
+        ContentNode
+          ParagraphNode [65,20]
+            ContentNode
+              TextNode [65,20] "odrážka text"
+      ListItemNode [86,25]
+        ContentNode
+          ParagraphNode [92,19]
+            ContentNode
+              TextNode [92,19] "odrážka text"
+    ListNode [113,11] unordered
+      ListItemNode [113,20]
+        ContentNode
+          ParagraphNode [115,18]
+            ContentNode
+              TextNode [115,18] "odrážka text"
+    ListNode [135,11] unordered
+      ListItemNode [135,17]
+        ContentNode
+          ParagraphNode [137,15]
+            ContentNode
+              TextNode [137,15] "odrážka text"
+      ListItemNode [153,154]
+        ContentNode
+          ParagraphNode [156,77]
+            ContentNode
+              TextNode [156,47] "odrážka další řádek další řádek"
+              LineBreakNode [203,5]
+              TextNode [208,25] "odsazeno přesně mezerou"
+          ParagraphNode [238,69]
+            ContentNode
+              TextNode [238,15] "další řádek"
+              LineBreakNode [253,5]
+              TextNode [258,25] "odsazeno přesně mezerou"
+              LineBreakNode [283,9]
+              TextNode [292,15] "hodně odsazeno"
+    ParagraphNode [310,45]
+      ContentNode
+        TextNode [310,5] "konec"
+        LineBreakNode [315,5]
+        TextNode [320,15] "hodně odsazeno"
+        LineBreakNode [335,5]
+        TextNode [340,15] "hodně odsazeno"
+    ParagraphNode [362,15]
+      ContentNode
+        TextNode [362,15] "hodně odsazeno"

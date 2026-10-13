@@ -1,0 +1,19 @@
+toto je odstavec
+s vice radky
+
+toto je odstavec
+s vice radky
+
+toto je odstavec
+s vice radky
+
+toto je odstavec
+s vice radky
+
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Curabitur turpis enim, placerat tincidunt, tincidunt ac, fringilla et, mauris.
+A následují řádky
+které Texy! oddělí elementem <br> &nbsp;
+
+Odstavec zarovnaný *doprava. Lorem* ipsum dolor sit amet, consectetuer adipiscing elit. Curabitur turpis enim, placerat tincidunt, tincidunt ac, fringilla et, mauris.
+
+Odstavec psaný modrou „barvou. Curabitur“:link quam justo, hendrerit a, mattis ut, ultrices at, dui. In mollis. Ut pellentesque erat vehicula nunc. Ut ultricies. Nulla nunc velit, consequat vel, laoreet in, blandit et, eros.

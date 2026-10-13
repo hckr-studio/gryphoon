@@ -1,0 +1,40 @@
+<div>
+  <!--[if !IE]> -->
+  <object type="application/x-shockwave-flash" data="/trine/media/flash/trineplayer.swf?videofile=tricko%2Eswf&amp;fps=15" width="320" height="260">
+  <!-- <![endif]-->
+
+  <!--[if IE]>
+  <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="320" height="260"
+      codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0">
+      <param name="movie" value="/trine/media/flash/trineplayer.swf?videofile=tricko%2Eswf&amp;fps=15" />
+  <!--><!-- -->
+      <param name="loop" value="false" />
+      <param name="menu" value="false" />
+      <param name="scale" value="exactfit" />
+
+      <p>Pro přehrání je třeba mít nainstalovaný FLASH Player</p>
+  </object>
+  <!-- <![endif]-->
+</div>
+
+ Kontaktní formulář
+ jméno: 
+ e-mail: 
+ text: text
+ 
+ 
+
+tohle je  konec 
+
+<marquee><bgsound><nobr>
+
+ // tady se ve výsledku sem tam zdroj zalomí a pak to dělá zbytečné chyby tady se ve výsledku sem tam zdroj zalomí a pak to dělá zbytečné chyby tady se ve výsledku sem tam zdroj zalomí a pak to dělá zbytečné chyby
+  
+ 
+
+ alternativa 
+
+speciální
+test
+
+speciální test
