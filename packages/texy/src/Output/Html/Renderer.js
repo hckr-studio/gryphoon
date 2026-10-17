@@ -6,15 +6,21 @@
  * configuration snapshot reusable across documents.
  */
 
-import { NodeRenderer } from "../NodeRenderer.js";
-import { Element } from "./Element.js";
-import { Raw } from "./Raw.js";
-import { ElementDecorator } from "./ElementDecorator.js";
-import { ImageDimensions } from "./ImageDimensions.js";
-import { WellFormer } from "./WellFormer.js";
-import { renderToDom } from "./DomBuilder.js";
-import { inlineElements } from "./Schema.js";
 import {
+  decodeEntities,
+  escapeHtml,
+  escapeHtmlQuotes,
+  normalizeWww,
+  phpLtrim,
+  phpTrim,
+  prependRoot,
+  shortenUrl,
+} from "../../helpers.js";
+import { cloneNode, extractText } from "../../NodeHelpers.js";
+import {
+  AnnotationNode,
+  BlockQuoteNode,
+  CodeBlockNode,
   CommentNode,
   ContentNode,
   DefinitionListNode,
@@ -28,39 +34,32 @@ import {
   HtmlCommentNode,
   HtmlElementNode,
   HtmlTagNode,
-  ImageNode,
   ImageDefinitionNode,
+  ImageNode,
+  LineBreakNode,
   LinkDefinitionNode,
   LinkNode,
-  LineBreakNode,
-  ListType,
-  ListNode,
   ListItemNode,
+  ListNode,
+  ListType,
   ParagraphNode,
   PhraseNode,
   RawTextNode,
   SectionNode,
-  TableNode,
   TableCellNode,
+  TableNode,
   TableRowNode,
   TextNode,
   UrlNode,
-  AnnotationNode,
-  CodeBlockNode,
-  BlockQuoteNode,
 } from "../../nodes.js";
 import { Syntax } from "../../Syntax.js";
-import {
-  decodeEntities,
-  escapeHtml,
-  escapeHtmlQuotes,
-  normalizeWww,
-  phpLtrim,
-  phpTrim,
-  prependRoot,
-  shortenUrl,
-} from "../../helpers.js";
-import { cloneNode, extractText } from "../../NodeHelpers.js";
+import { NodeRenderer } from "../NodeRenderer.js";
+import { renderToDom } from "./DomBuilder.js";
+import { Element } from "./Element.js";
+import { ElementDecorator } from "./ElementDecorator.js";
+import { Raw } from "./Raw.js";
+import { inlineElements } from "./Schema.js";
+import { WellFormer } from "./WellFormer.js";
 
 /**
  * PHP settype($attrs[$key], 'array'): an existing array or map passes
@@ -93,7 +92,19 @@ export class Renderer extends NodeRenderer {
     this.parseContextFactory = parseContextFactory;
     this.noFollow = config.linkNoFollow;
     this.titleTypography = true;
-    this.imageDimensions = new ImageDimensions(config);
+
+    // try to load it, FS access is awailable only on Node.js. Otherwise, fallback to `undefined`
+    import("./ImageDimensions.js")
+      .then(({ ImageDimensions }) => (this.imageDimensions = new ImageDimensions(config)))
+      .catch(
+        () =>
+          (this.imageDimensions = {
+            detect() {
+              return [];
+            },
+          }),
+      );
+
     this.decorator = new ElementDecorator(htmlPolicy, urlPolicy, config, this);
 
     this.handlers.set(DocumentNode, n => this.renderDocument(n));
@@ -675,9 +686,6 @@ export class Renderer extends NodeRenderer {
    * @returns {Element}
    */
   renderImage(node) {
-    // Detect dimensions from the file system (imageFileRoot)
-    const [width, height] = this.imageDimensions.detect(node);
-
     const el = new Element("img");
     let mod = node.modifier;
 
@@ -720,6 +728,10 @@ export class Renderer extends NodeRenderer {
     }
 
     // dimensions
+
+    // Detect dimensions from the file system (imageFileRoot)
+    const [width, height] = this.imageDimensions.detect(node);
+
     el.attrs.width = width;
     el.attrs.height = height;
 
