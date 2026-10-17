@@ -16,34 +16,36 @@
  * </code>
  */
 
-import { Engine } from "./Parsing/Engine.js";
-import { UrlPolicy } from "./UrlPolicy.js";
-import { normalize } from "./normalize.js";
-import { Syntax } from "./Syntax.js";
 import { HtmlPolicy } from "./HtmlPolicy.js";
-import { HtmlPairingPass } from "./Passes/HtmlPairingPass.js";
-import { HtmlSanitizePass } from "./Passes/HtmlSanitizePass.js";
-import { HeadingPass } from "./Passes/HeadingPass.js";
-import { DirectiveModule } from "./Modules/DirectiveModule.js";
-import { HtmlModule } from "./Modules/HtmlModule.js";
-import { ImageModule } from "./Modules/ImageModule.js";
-import { PhraseModule } from "./Modules/PhraseModule.js";
-import { LinkReferenceModule } from "./Modules/LinkReferenceModule.js";
 import { AutolinkModule } from "./Modules/AutolinkModule.js";
-import { EmoticonModule } from "./Modules/EmoticonModule.js";
-import { ParagraphModule } from "./Modules/ParagraphModule.js";
 import { BlockModule } from "./Modules/BlockModule.js";
-import { HorizontalRuleModule } from "./Modules/HorizontalRuleModule.js";
 import { BlockQuoteModule } from "./Modules/BlockQuoteModule.js";
-import { TableModule } from "./Modules/TableModule.js";
+import { DirectiveModule } from "./Modules/DirectiveModule.js";
+import { EmoticonModule } from "./Modules/EmoticonModule.js";
 import { HeadingModule } from "./Modules/HeadingModule.js";
-import { ListModule } from "./Modules/ListModule.js";
-import { TypographyModule } from "./Modules/TypographyModule.js";
+import { HorizontalRuleModule } from "./Modules/HorizontalRuleModule.js";
+import { HtmlModule } from "./Modules/HtmlModule.js";
 import { HyphenationModule } from "./Modules/HyphenationModule.js";
-import { TextRunPass } from "./Passes/TextRunPass.js";
+import { ImageModule } from "./Modules/ImageModule.js";
+import { LinkReferenceModule } from "./Modules/LinkReferenceModule.js";
+import { ListModule } from "./Modules/ListModule.js";
+import { ParagraphModule } from "./Modules/ParagraphModule.js";
+import { PhraseModule } from "./Modules/PhraseModule.js";
+import { TableModule } from "./Modules/TableModule.js";
+import { TypographyModule } from "./Modules/TypographyModule.js";
+import { normalize } from "./normalize.js";
 import { Config } from "./Output/Html/Config.js";
 import { Renderer } from "./Output/Html/Renderer.js";
 import { Renderer as TextRenderer } from "./Output/Text/Renderer.js";
+import { Engine } from "./Parsing/Engine.js";
+import { HeadingPass } from "./Passes/HeadingPass.js";
+import { HtmlPairingPass } from "./Passes/HtmlPairingPass.js";
+import { HtmlSanitizePass } from "./Passes/HtmlSanitizePass.js";
+import { TextRunPass } from "./Passes/TextRunPass.js";
+import { Syntax } from "./Syntax.js";
+import { UrlPolicy } from "./UrlPolicy.js";
+
+/** @typedef {import('./nodes.js').DocumentNode} DocumentNode */
 
 export class Texy {
   constructor() {
@@ -173,7 +175,7 @@ export class Texy {
    * Parses text to an AST. The text is normalized first (idempotent).
    * @param {string} text
    * @param {boolean} singleLine
-   * @returns {import('./nodes.js').DocumentNode}
+   * @returns {DocumentNode}
    */
   parse(text, singleLine = false) {
     text = normalize(text);
@@ -220,7 +222,7 @@ export class Texy {
    * case: a document built by a different parser, which is still an
    * ordinary Texy AST and still wants the typography. Calling it on an
    * already typographed document does nothing.
-   * @param {import('./nodes.js').DocumentNode} document
+   * @param {DocumentNode} document
    */
   applyAstTypography(document) {
     if (document.meta.typographed) {
@@ -247,10 +249,10 @@ export class Texy {
    * Pairs passthrough HTML tags into elements and evaluates the tag
    * whitelist over them; both are transform passes that protect every
    * output format. Only when html/tag is allowed.
-   * @param {import('./nodes.js').DocumentNode} document
+   * @param {DocumentNode} document
    */
   processHtmlPassthrough(document) {
-    if (!this.allowed["html/tag"]) {
+    if (!this.allowed[Syntax.HtmlTag]) {
       return;
     }
 
@@ -288,7 +290,7 @@ export class Texy {
   /**
    * Renders a parsed document to HTML. Separate from parse() so a
    * consumer can read or transform the AST in between.
-   * @param {import('./nodes.js').DocumentNode} document
+   * @param {DocumentNode} document
    * @returns {string}
    */
   renderHtml(document) {
@@ -299,8 +301,8 @@ export class Texy {
    * Renders a parsed document onto a linkedom Document (content in
    * <body>) for DOM-side transformation; serialize afterwards via
    * linkedom (e.g. document.body.innerHTML).
-   * @param {import('./nodes.js').DocumentNode} document
-   * @returns the linkedom Document
+   * @param {DocumentNode} document
+   * @returns {Document} the DOM Document
    */
   renderDom(document) {
     return this.createHtmlRenderer().renderToDom(document);
@@ -352,7 +354,7 @@ export class Texy {
 
   /**
    * Renders a parsed document to plain text.
-   * @param {import('./nodes.js').DocumentNode} document
+   * @param {DocumentNode} document
    * @returns {string}
    */
   renderText(document) {
