@@ -57,6 +57,7 @@ import { NodeRenderer } from "../NodeRenderer.js";
 import { renderToDom } from "./DomBuilder.js";
 import { Element } from "./Element.js";
 import { ElementDecorator } from "./ElementDecorator.js";
+import { createImageDimensions } from "./ImageDimensionsLoader.js";
 import { Raw } from "./Raw.js";
 import { inlineElements } from "./Schema.js";
 import { WellFormer } from "./WellFormer.js";
@@ -93,17 +94,9 @@ export class Renderer extends NodeRenderer {
     this.noFollow = config.linkNoFollow;
     this.titleTypography = true;
 
-    // try to load it, FS access is awailable only on Node.js. Otherwise, fallback to `undefined`
-    import("./ImageDimensions.js")
-      .then(({ ImageDimensions }) => (this.imageDimensions = new ImageDimensions(config)))
-      .catch(
-        () =>
-          (this.imageDimensions = {
-            detect() {
-              return [];
-            },
-          }),
-      );
+    // file-system sniffing is available only on Node.js; the loader resolves
+    // that once at module load, synchronously from the renderer's perspective
+    this.imageDimensions = createImageDimensions(config);
 
     this.decorator = new ElementDecorator(htmlPolicy, urlPolicy, config, this);
 
