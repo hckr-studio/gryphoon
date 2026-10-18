@@ -24,7 +24,7 @@ const root = dirname(dirname(dirname(fileURLToPath(import.meta.url)))); // tests
  */
 export function renderConformance({ suite, fixturesDir, extension, convert, configure, knownDivergences = new Set() }) {
   const dir = join(root, "tests", "fixtures", fixturesDir);
-  const sourcesDir = join(root, "..", "..", "tests", "Texy", "sources");
+  const sourcesDir = join(root, "tests", "fixtures", "sources");
   const fixtures = readdirSync(dir).filter(f => f.endsWith(extension));
 
   describe(suite, () => {

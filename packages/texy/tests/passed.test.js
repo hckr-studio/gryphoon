@@ -19,7 +19,7 @@ import { dump } from "./helpers/ast-dumper.js";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const fixturesDir = join(root, "tests", "fixtures", "passed");
-const sourcesDir = join(root, "..", "..", "tests", "Texy", "sources");
+const sourcesDir = join(root, "tests", "fixtures", "sources");
 
 const fixtures = readdirSync(fixturesDir).filter(f => f.endsWith(".txt"));
 
