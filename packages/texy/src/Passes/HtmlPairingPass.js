@@ -12,6 +12,20 @@ import { ContentNode, HtmlElementNode, HtmlTagNode } from "../nodes.js";
 import { voidElements } from "../Output/Html/Schema.js";
 
 export class HtmlPairingPass {
+  /**
+   * @param {?import('../Lint.js').LintCollector} lint optional issue collector
+   */
+  constructor(lint = null) {
+    this.lint = lint;
+    /**
+     * Tags already reported as crossed: the flattened fragment is re-paired
+     * inside the enclosing element, where the tag would surface again as
+     * unclosed - the same problem must not be reported twice.
+     * @type {?Set<HtmlTagNode>}
+     */
+    this.crossedTags = lint ? new Set() : null;
+  }
+
   /** @param {import('../nodes.js').DocumentNode} doc */
   process(doc) {
     new NodeTraverser().traverse(doc, node => {
@@ -57,12 +71,18 @@ export class HtmlPairingPass {
 
       if (found === null) {
         // stray closing tag
+        this.lint?.report(child.range, `Stray closing tag </${name}>.`, { code: "html/tag-stray" });
         this.emit(out, frames, child);
         continue;
       }
 
       // crossed tags above the match cannot be paired - flatten them back
       while (frames.length - 1 > found) {
+        const [crossed] = frames[frames.length - 1];
+        this.lint?.report(crossed.range, `Tag <${crossed.name}> is crossed and stays unpaired.`, {
+          code: "html/tag-crossed",
+        });
+        this.crossedTags?.add(crossed);
         this.flatten(out, frames);
       }
 
@@ -76,6 +96,10 @@ export class HtmlPairingPass {
 
     // unmatched opening tags stay standalone
     while (frames.length > 0) {
+      const [tag] = frames[frames.length - 1];
+      if (!this.crossedTags?.has(tag)) {
+        this.lint?.report(tag.range, `Unclosed tag <${tag.name}>.`, { code: "html/tag-unclosed" });
+      }
       this.flatten(out, frames);
     }
 

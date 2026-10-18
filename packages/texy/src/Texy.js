@@ -38,6 +38,7 @@ import { Config } from "./Output/Html/Config.js";
 import { Renderer } from "./Output/Html/Renderer.js";
 import { Renderer as TextRenderer } from "./Output/Text/Renderer.js";
 import { Engine } from "./Parsing/Engine.js";
+import { LintCollector } from "./Lint.js";
 import { HeadingPass } from "./Passes/HeadingPass.js";
 import { HtmlPairingPass } from "./Passes/HtmlPairingPass.js";
 import { HtmlSanitizePass } from "./Passes/HtmlSanitizePass.js";
@@ -46,6 +47,8 @@ import { Syntax } from "./Syntax.js";
 import { UrlPolicy } from "./UrlPolicy.js";
 
 /** @typedef {import('./nodes.js').DocumentNode} DocumentNode */
+/** @typedef {import('./Lint.js').LintCollector} LintCollector */
+/** @typedef {import('./Lint.js').LintIssue} LintIssue */
 
 export class Texy {
   constructor() {
@@ -175,9 +178,10 @@ export class Texy {
    * Parses text to an AST. The text is normalized first (idempotent).
    * @param {string} text
    * @param {boolean} singleLine
+   * @param {?LintCollector} lint optional issue collector; never changes the output
    * @returns {DocumentNode}
    */
-  parse(text, singleLine = false) {
+  parse(text, singleLine = false, lint = null) {
     text = normalize(text);
 
     // let modules do per-parse initialization (pattern registration, state reset)
@@ -194,9 +198,9 @@ export class Texy {
 
     // the transform passes, in module order
     this.directiveModule.processDirectives(document);
-    this.processHtmlPassthrough(document);
+    this.processHtmlPassthrough(document, lint);
     this.imageModule.resolveReferences(document);
-    this.linkModule.resolveReferences(document);
+    this.linkModule.resolveReferences(document, lint);
     this.emoticonModule.resolveEmoticons(document);
     new HeadingPass(
       this.headingModule.top,
@@ -211,6 +215,19 @@ export class Texy {
 
     this.applyAstTypography(document);
     return document;
+  }
+
+  /**
+   * Parses text and collects lint issues alongside the AST, so a consumer
+   * (e.g. a language server) gets both without parsing twice.
+   * @param {string} text
+   * @param {boolean} singleLine
+   * @returns {{ document: DocumentNode, issues: LintIssue[] }}
+   */
+  lint(text, singleLine = false) {
+    const collector = new LintCollector();
+    const document = this.parse(text, singleLine, collector);
+    return { document, issues: collector.issues };
   }
 
   /**
@@ -250,14 +267,15 @@ export class Texy {
    * whitelist over them; both are transform passes that protect every
    * output format. Only when html/tag is allowed.
    * @param {DocumentNode} document
+   * @param {?LintCollector} lint optional issue collector
    */
-  processHtmlPassthrough(document) {
+  processHtmlPassthrough(document, lint = null) {
     if (!this.allowed[Syntax.HtmlTag]) {
       return;
     }
 
-    new HtmlPairingPass().process(document);
-    new HtmlSanitizePass(this.htmlPolicy).process(document);
+    new HtmlPairingPass(lint).process(document);
+    new HtmlSanitizePass(this.htmlPolicy, lint).process(document);
   }
 
   /**

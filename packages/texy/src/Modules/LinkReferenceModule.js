@@ -131,8 +131,9 @@ export class LinkReferenceModule extends Module {
    * Resolve link references in the document (transform phase; runs after
    * image references, so [*img*] targets can use image definitions).
    * @param {import('../nodes.js').DocumentNode} doc
+   * @param {?import('../Lint.js').LintCollector} lint optional issue collector
    */
-  resolveReferences(doc) {
+  resolveReferences(doc, lint = null) {
     // Start with user-defined definitions
     this.definitions = { ...this.userDefinitions };
 
@@ -144,7 +145,7 @@ export class LinkReferenceModule extends Module {
     // Pass 2: Resolve references in LinkNode.url
     this.livelock = new Set(); // circular label references (the Texy 3 livelock)
     for (const node of find(doc, n => n instanceof LinkNode)) {
-      this.resolveLinkNodeUrl(node);
+      this.resolveLinkNodeUrl(node, lint);
     }
   }
 
@@ -201,8 +202,9 @@ export class LinkReferenceModule extends Module {
   /**
    * Resolve URL in LinkNode that might be [ref] or [*img*].
    * @param {LinkNode} node
+   * @param {?import('../Lint.js').LintCollector} lint optional issue collector
    */
-  resolveLinkNodeUrl(node) {
+  resolveLinkNodeUrl(node, lint = null) {
     if (node.url === null) {
       return;
     }
@@ -237,6 +239,9 @@ export class LinkReferenceModule extends Module {
         }
       } else {
         // Image reference not found - use content as URL
+        lint?.report(node.range, `Image reference "${imgRef}" is not defined - used as URL.`, {
+          code: "image/reference-undefined",
+        });
         node.url = imgRef;
       }
       node.isImageLink = true;
@@ -256,6 +261,9 @@ export class LinkReferenceModule extends Module {
         return;
       }
       // Reference not found - use inner content as URL
+      lint?.report(node.range, `Reference "${refName}" is not defined - used as URL.`, {
+        code: "link/reference-undefined",
+      });
       node.url = refName;
       this.convertEmailUrl(node);
       return;

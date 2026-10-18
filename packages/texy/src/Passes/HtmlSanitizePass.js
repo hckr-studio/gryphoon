@@ -9,12 +9,17 @@
 
 import { NodeTraverser } from "../NodeTraverser.js";
 import { ContentNode, HtmlElementNode, HtmlTagNode, TextNode } from "../nodes.js";
+import { Severity } from "../Lint.js";
 import { decodeEntities } from "../helpers.js";
 
 export class HtmlSanitizePass {
-  /** @param {import('../HtmlPolicy.js').HtmlPolicy} policy */
-  constructor(policy) {
+  /**
+   * @param {import('../HtmlPolicy.js').HtmlPolicy} policy
+   * @param {?import('../Lint.js').LintCollector} lint optional issue collector
+   */
+  constructor(policy, lint = null) {
     this.policy = policy;
+    this.lint = lint;
   }
 
   /** @param {import('../nodes.js').DocumentNode} doc */
@@ -39,14 +44,20 @@ export class HtmlSanitizePass {
     for (const child of children) {
       if (child instanceof HtmlTagNode) {
         if (!this.policy.isTagAcceptable(child.name.toLowerCase(), child.attributes, child.closing)) {
+          this.lint?.report(child.range, `Tag <${child.name}> is not allowed and will be rendered as text.`, {
+            code: "html/tag-rejected",
+          });
           out.push(new TextNode(decodeEntities(this.policy.reconstructTag(child)), child.range));
           continue;
         }
 
         // the tag stays, but only with the attributes the whitelist names
-        child.attributes = this.policy.filterAttrs(child.name.toLowerCase(), child.attributes);
+        this.filterAttributes(child, child.name.toLowerCase());
       } else if (child instanceof HtmlElementNode) {
         if (!this.policy.isTagAcceptable(child.name.toLowerCase(), child.attributes, false)) {
+          this.lint?.report(child.range, `Tag <${child.name}> is not allowed and will be rendered as text.`, {
+            code: "html/tag-rejected",
+          });
           const open = new HtmlTagNode(child.name, { ...child.attributes }, false, false, child.range);
           const close = child.closingTag ?? new HtmlTagNode(child.name, {}, true);
           out.push(new TextNode(decodeEntities(this.policy.reconstructTag(open)), child.range));
@@ -57,12 +68,30 @@ export class HtmlSanitizePass {
           continue;
         }
 
-        child.attributes = this.policy.filterAttrs(child.name.toLowerCase(), child.attributes);
+        this.filterAttributes(child, child.name.toLowerCase());
       }
 
       out.push(child);
     }
 
     return out;
+  }
+
+  /**
+   * Filters attributes in place, reporting the dropped ones.
+   * @param {import('../nodes.js').HtmlTagNode|import('../nodes.js').HtmlElementNode} node
+   * @param {string} name lowercased tag name
+   */
+  filterAttributes(node, name) {
+    const filtered = this.policy.filterAttrs(name, node.attributes);
+    const dropped = Object.keys(node.attributes).filter(attr => !(attr in filtered));
+    if (dropped.length > 0) {
+      this.lint?.report(
+        node.range,
+        `Attribute${dropped.length > 1 ? "s" : ""} ${dropped.join(", ")} not allowed on <${name}> - dropped.`,
+        { severity: Severity.Information, code: "html/attr-dropped" },
+      );
+    }
+    node.attributes = filtered;
   }
 }
