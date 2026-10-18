@@ -1142,6 +1142,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@gryphoon/texy-lsp@workspace:packages/texy-lsp":
+  version: 0.0.0-use.local
+  resolution: "@gryphoon/texy-lsp@workspace:packages/texy-lsp"
+  dependencies:
+    "@gryphoon/texy": "workspace:^"
+  bin:
+    texy-lsp: bin/texy-lsp.js
+  languageName: unknown
+  linkType: soft
+
 "@gryphoon/texy@npm:1.0.0":
   version: 1.0.0
   resolution: "@gryphoon/texy@npm:1.0.0"
@@ -1149,7 +1159,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@gryphoon/texy@workspace:packages/texy":
+"@gryphoon/texy@workspace:^, @gryphoon/texy@workspace:packages/texy":
   version: 0.0.0-use.local
   resolution: "@gryphoon/texy@workspace:packages/texy"
   dependencies:

@@ -1,0 +1,22 @@
+{
+  "name": "@gryphoon/texy-lsp",
+  "description": "Language server for the Texy! markup language (LSP over stdio)",
+  "version": "0.1.0",
+  "license": "BSD-3-Clause",
+  "type": "module",
+  "bin": "bin/texy-lsp.js",
+  "exports": {
+    ".": "./src/server.js"
+  },
+  "files": [
+    "/bin",
+    "/src"
+  ],
+  "scripts": {
+    "test": "node --test tests/"
+  },
+  "dependencies": {
+    "@gryphoon/texy": "workspace:^"
+  },
+  "packageManager": "yarn@4.18.1"
+}
