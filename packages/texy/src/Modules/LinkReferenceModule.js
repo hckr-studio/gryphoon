@@ -20,6 +20,30 @@ import { decodeEntities, formUrlencode, toLower } from "../helpers.js";
 import { Modifier, mergeModifiers } from "../Modifier.js";
 import { extractText, find } from "../NodeHelpers.js";
 
+/**
+ * Is the bracketed link target a direct URL rather than a reference use?
+ * Texy is forgiving: an undefined reference falls back to a relative URL,
+ * so only URL-shaped targets can be told apart from reference typos -
+ * those are direct links by intent (lint skips them).
+ * @param {string} target
+ */
+function looksLikeUrl(target) {
+  return (
+    /^[a-z][a-z0-9+.-]*:/i.test(target) || // scheme (https:, mailto:, ...)
+    /^(www\.|\/\/|\/|\.\.?(\/|$)|#|\?)/i.test(target) || // site-relative, anchor, query
+    Boolean(match(target, "~" + Email + "(\\?\\S*)?$~A")) // e-mail target
+  );
+}
+
+/**
+ * The [*img*] link-target form: a file-path-like name is a direct image
+ * URL, not a reference use (lint skips those).
+ * @param {string} target
+ */
+function looksLikeImageUrl(target) {
+  return looksLikeUrl(target) || target.includes("/") || target.includes(".");
+}
+
 export class LinkReferenceModule extends Module {
   constructor(texy) {
     super();
@@ -238,10 +262,13 @@ export class LinkReferenceModule extends Module {
           }
         }
       } else {
-        // Image reference not found - use content as URL
-        lint?.report(node.range, `Image reference "${imgRef}" is not defined - used as URL.`, {
-          code: "image/reference-undefined",
-        });
+        // Image reference not found - use content as URL; a path-like
+        // target is a direct image URL, not a reference typo
+        if (!looksLikeImageUrl(imgRef)) {
+          lint?.report(node.range, `Image reference "${imgRef}" is not defined - used as URL.`, {
+            code: "image/reference-undefined",
+          });
+        }
         node.url = imgRef;
       }
       node.isImageLink = true;
@@ -260,10 +287,13 @@ export class LinkReferenceModule extends Module {
         this.convertEmailUrl(node);
         return;
       }
-      // Reference not found - use inner content as URL
-      lint?.report(node.range, `Reference "${refName}" is not defined - used as URL.`, {
-        code: "link/reference-undefined",
-      });
+      // Reference not found - use inner content as URL; a URL-shaped
+      // target is a direct link, not a reference typo
+      if (!looksLikeUrl(refName)) {
+        lint?.report(node.range, `Reference "${refName}" is not defined - used as URL.`, {
+          code: "link/reference-undefined",
+        });
+      }
       node.url = refName;
       this.convertEmailUrl(node);
       return;

@@ -1,0 +1,230 @@
+/**
+ * Source formatting: rewraps long lines according to the block syntax and
+ * normalizes headings to the written (#) form.
+ *
+ * The unit of change is one block: a block whose formatted text differs
+ * from its source yields a single replacement over its exact span, and
+ * everything between blocks (the blank-line gaps) is preserved verbatim -
+ * no diffing, no ambiguity. A construct whose semantics live in its exact
+ * lines is kept verbatim (code/comment blocks, tables, definitions,
+ * horizontal rules, figures); so is anything carrying a modifier or
+ * unrecognized. Only paragraphs - top-level, inside blockquotes and
+ * inside single-paragraph list items - are rewrapped, and link tokens
+ * ("label":[target]) are never broken across lines.
+ *
+ * Rewrapping a paragraph is semantics-preserving: newlines inside a
+ * paragraph are soft wraps. Heading levels come from the source markers,
+ * not node.level (the balancing pass may have rebalanced it).
+ */
+
+import { NodeTraverser } from "@gryphoon/texy/NodeTraverser.js";
+import {
+  BlockQuoteNode,
+  CodeBlockNode,
+  CommentNode,
+  DefinitionListNode,
+  FigureNode,
+  HeadingNode,
+  HeadingType,
+  HorizontalRuleNode,
+  ImageDefinitionNode,
+  LinkDefinitionNode,
+  ListNode,
+  ParagraphNode,
+  SectionNode,
+  TableNode,
+} from "@gryphoon/texy/nodes.js";
+
+/** Classes kept verbatim: their exact source lines carry the semantics. */
+const VERBATIM = new Set([
+  CodeBlockNode,
+  CommentNode,
+  DefinitionListNode,
+  FigureNode,
+  HorizontalRuleNode,
+  ImageDefinitionNode,
+  LinkDefinitionNode,
+  SectionNode,
+  TableNode,
+]);
+
+/** Node classes whose own range covers only part of the construct. */
+const DERIVED_EXTENT = new Set([ListNode, TableNode]);
+
+/**
+ * The source extent of a node, derived from all ranges in its subtree.
+ * @param {Object} node
+ * @returns {?{ offset: number, length: number }}
+ */
+function extentOf(node) {
+  let from = Infinity;
+  let to = -Infinity;
+  new NodeTraverser().traverse(node, n => {
+    if (n.range !== null) {
+      from = Math.min(from, n.range.offset);
+      to = Math.max(to, n.range.offset + n.range.length);
+    }
+    return null;
+  });
+  return from === Infinity ? null : { offset: from, length: to - from };
+}
+
+/**
+ * Splits paragraph text into unbreakable tokens; a link token
+ * ("label":[target]) glues to its target and bracketed constructs
+ * ([*image*], [wiki | link]) stay whole, so wrapping never separates them.
+ * @param {string} text
+ * @returns {string[]}
+ */
+function tokenize(text) {
+  return text.match(/"[^"\n]*"\s*:\S*|\[[^[\]\n]*\]|\S+/g) ?? [];
+}
+
+/**
+ * Greedy wrap in code units (LSP character semantics).
+ * @param {string} text single-line text
+ * @param {number} width maximum line width
+ * @returns {string[]} wrapped lines
+ */
+function wrap(text, width) {
+  const lines = [];
+  let line = "";
+  for (const token of tokenize(text)) {
+    if (line === "") {
+      line = token;
+    } else if (line.length + 1 + token.length <= width) {
+      line += " " + token;
+    } else {
+      lines.push(line);
+      line = token;
+    }
+  }
+  if (line !== "") {
+    lines.push(line);
+  }
+  return lines;
+}
+
+/**
+ * Rewraps a paragraph's source: soft newlines collapse to spaces first.
+ * @param {string} slice the paragraph's verbatim source
+ * @param {number} width
+ * @returns {string}
+ */
+function formatParagraph(slice, width) {
+  const single = slice.replaceAll("\n", " ").replace(/\s+/g, " ").trim();
+  return wrap(single, width).join("\n");
+}
+
+/**
+ * Formats one block node to source text.
+ * @param {Object} node
+ * @param {string} text the normalized source (absolute ranges)
+ * @param {string} slice the node's verbatim source (its extent)
+ * @param {number} width
+ * @returns {string}
+ */
+function formatBlock(node, text, slice, width) {
+  if (node instanceof HeadingNode) {
+    if (node.type === HeadingType.Underlined) {
+      // the level comes from the underline marker; the title line is kept
+      // verbatim as a modifier may ride on it
+      const lines = slice.split("\n");
+      const level = lines[1]?.trim().startsWith("-") ? 2 : 1;
+      return "#".repeat(level) + " " + lines[0].trim();
+    }
+    // written form: rebuild without the optional closing marker run
+    const level = slice.match(/^[ \t]*(#+)/)?.[1].length ?? 1;
+    const title = slice
+      .replace(/^[ \t]*#+[ \t]*/, "")
+      .replace(/[ \t]#+(?=[ \t]*(?:$|\.(?:\(|\[|\{)|[<>^_=-]))/, " ")
+      .trim();
+    return "#".repeat(level) + " " + title;
+  }
+
+  if (node instanceof ParagraphNode) {
+    return formatParagraph(slice, width);
+  }
+
+  if (node instanceof BlockQuoteNode && node.modifier === null) {
+    // only a single-paragraph quote is rewrapped: the prefix is stripped,
+    // the paragraph wrapped, and the prefix re-applied per line; anything
+    // else keeps its exact source
+    const children = node.content.children;
+    if (children.length === 1 && children[0] instanceof ParagraphNode && children[0].range !== null) {
+      const stripped = slice.replace(/^>[ ]?/gm, "");
+      return formatParagraph(stripped, width - 2)
+        .split("\n")
+        .map(line => (line === "" ? ">" : "> " + line))
+        .join("\n");
+    }
+    return slice;
+  }
+
+  if (node instanceof ListNode && node.modifier === null) {
+    return node.items.map(item => formatListItem(item, text, width)).join("\n");
+  }
+
+  return slice; // verbatim, modifier included
+}
+
+/**
+ * Formats a single list item; only a plain single-paragraph item is
+ * rewrapped (nested lists and multi-block items keep their source).
+ * @param {Object} item ListItemNode
+ * @param {string} text the normalized source (item ranges are absolute)
+ * @param {number} width
+ * @returns {string}
+ */
+function formatListItem(item, text, width) {
+  const slice = item.range === null ? "" : text.slice(item.range.offset, item.range.offset + item.range.length);
+  const blocks = item.content?.children ?? [];
+  if (item.modifier !== null || !(blocks.length === 1 && blocks[0] instanceof ParagraphNode)) {
+    return slice;
+  }
+
+  const marker = slice.match(/^(?:[-*+]|\d+[.)])/)?.[0] ?? "";
+  const markerWidth = marker === "" ? 0 : marker.length + 1; // + the one space after the marker
+  // continuation-line indents collapse inside formatParagraph with the
+  // rest of the soft whitespace
+  const content = formatParagraph(slice.slice(markerWidth), width - markerWidth);
+  return marker + " " + content.replaceAll("\n", "\n" + " ".repeat(markerWidth));
+}
+
+/**
+ * Formats a sequence of sibling blocks: one edit per block whose formatted
+ * text differs from its source; the gaps between blocks are never touched.
+ * @param {Object[]} blocks nodes with absolute ranges
+ * @param {string} text the normalized source (absolute ranges)
+ * @param {number} width
+ * @returns {Array<{ range: { offset: number, length: number }, text: string }>}
+ */
+export function formatBlocks(blocks, text, width) {
+  const edits = [];
+  for (const node of blocks) {
+    if (node.range === null) {
+      continue;
+    }
+    const extent = DERIVED_EXTENT.has(node.constructor) ? extentOf(node) : node.range;
+    if (extent === null) {
+      continue;
+    }
+    const slice = text.slice(extent.offset, extent.offset + extent.length);
+    const formatted = formatBlock(node, text, slice, width);
+    if (formatted !== slice) {
+      edits.push({ range: extent, text: formatted });
+    }
+  }
+  return edits;
+}
+
+/**
+ * Formats the whole document.
+ * @param {import("@gryphoon/texy/nodes.js").DocumentNode} document
+ * @param {string} text the normalized source the document was parsed from
+ * @param {number} lineWidth maximum line width, default 80
+ * @returns {Array<{ range: { offset: number, length: number }, text: string }>} edits in normalized coordinates
+ */
+export function formatDocument(document, text, lineWidth = 80) {
+  return formatBlocks(document.content.children, text, lineWidth);
+}

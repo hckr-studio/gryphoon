@@ -109,6 +109,27 @@ describe("lint: references", () => {
     const text = '[home]: https://example.org\n\n"click":[home]';
     assert.deepEqual(lintRows(new Texy(), text), []);
   });
+
+  it("direct URL targets are not reported as undefined references", () => {
+    assert.deepEqual(lintRows(new Texy(), '"App":[https://developer.chrome.com/blog/app-shell]'), []);
+    assert.deepEqual(lintRows(new Texy(), '"site":[www.example.com]'), []);
+    assert.deepEqual(lintRows(new Texy(), '"page":[/relative/path]'), []);
+    assert.deepEqual(lintRows(new Texy(), '"jump":[#anchor]'), []);
+    assert.deepEqual(lintRows(new Texy(), '"search":[?q=keyword]'), []);
+    assert.deepEqual(lintRows(new Texy(), '"mail":[someone@example.com]'), []);
+  });
+
+  it("a direct image path is not reported as an undefined image reference", () => {
+    assert.deepEqual(lintRows(new Texy(), '"look":[*img/photo.png*]'), []);
+    assert.deepEqual(lintRows(new Texy(), '"look":[*./i.png*]'), []);
+  });
+
+  it("the reported real-world case stays clean", () => {
+    const text =
+      "Používáme vzor \"Application Shell\":[https://developer.chrome.com/blog/app-shell], kdy hlavní script zavádí jednotlivé\n" +
+      "moduly dynamicky, podle aktuální potřeby.";
+    assert.deepEqual(lintRows(new Texy(), text), []);
+  });
 });
 
 describe("lint: passivity", () => {
