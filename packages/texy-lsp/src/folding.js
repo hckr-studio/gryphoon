@@ -12,6 +12,7 @@
 
 import { NodeTraverser } from "@gryphoon/texy/NodeTraverser.js";
 import { BlockQuoteNode, CodeBlockNode, CommentNode, ListItemNode, ListNode, SectionNode, TableNode } from "@gryphoon/texy/nodes.js";
+import { positionAt } from "./positions.js";
 
 /** Node class => LSP FoldingRangeKind, null for the default kind. */
 const FOLDABLE = new Map([
@@ -64,4 +65,26 @@ export function collectFoldings(document) {
     return null;
   });
   return foldings;
+}
+
+/**
+ * Converts foldable spans into LSP FoldingRanges: both span ends bridge
+ * from normalized offsets through the map into document lines, and
+ * single-line spans are dropped (a client cannot fold one line).
+ * @param {Array<{ offset: number, length: number, kind: ?string }>} foldings
+ * @param {Int32Array} map normalized offset -> original offset
+ * @param {number[]} lineStarts original document line starts
+ * @returns {Array<Object>} LSP FoldingRanges
+ */
+export function toFoldingRanges(foldings, map, lineStarts) {
+  const last = map.length - 1;
+  const ranges = [];
+  for (const folding of foldings) {
+    const start = positionAt(lineStarts, map[Math.min(folding.offset, last)]).line;
+    const end = positionAt(lineStarts, map[Math.min(folding.offset + folding.length - 1, last)]).line;
+    if (end > start) {
+      ranges.push(folding.kind === null ? { startLine: start, endLine: end } : { startLine: start, endLine: end, kind: folding.kind });
+    }
+  }
+  return ranges;
 }

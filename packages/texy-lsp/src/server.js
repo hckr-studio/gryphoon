@@ -14,7 +14,7 @@ import { createMessageReader, writeMessage } from "./framing.js";
 import { DocumentStore } from "./documents.js";
 import { offsetAt, normalizedOffsetAt, positionAt, toLspRange } from "./positions.js";
 import { collectReferences, refTokenRange } from "./links.js";
-import { collectFoldings } from "./folding.js";
+import { collectFoldings, toFoldingRanges } from "./folding.js";
 import { formatDocument } from "./formatting.js";
 
 const MethodNotFound = -32601;
@@ -360,9 +360,7 @@ export class TexyLanguageServer {
   }
 
   /**
-   * Folding ranges over the document's multi-line block constructs; the
-   * end line is the line of the construct's last character, so a node
-   * ending at a line start folds through the line before it.
+   * Folding ranges over the document's multi-line block constructs.
    * @param {Object} params textDocument/foldingRange
    * @returns {?Array<Object>} FoldingRanges
    */
@@ -374,16 +372,7 @@ export class TexyLanguageServer {
       return null;
     }
 
-    const last = analysis.map.length - 1;
-    const ranges = [];
-    for (const folding of analysis.foldings) {
-      const start = positionAt(document.lineStarts, analysis.map[Math.min(folding.offset, last)]).line;
-      const end = positionAt(document.lineStarts, analysis.map[Math.min(folding.offset + folding.length - 1, last)]).line;
-      if (end > start) {
-        ranges.push(folding.kind === null ? { startLine: start, endLine: end } : { startLine: start, endLine: end, kind: folding.kind });
-      }
-    }
-    return ranges;
+    return toFoldingRanges(analysis.foldings, analysis.map, document.lineStarts);
   }
 
   /**
