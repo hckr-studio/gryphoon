@@ -1,7 +1,7 @@
 {
   "name": "@gryphoon/texy",
   "description": "Node.js port of the Texy text-to-HTML converter",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "license": "BSD-3-Clause",
   "author": "",
   "type": "module",

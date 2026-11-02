@@ -11,8 +11,8 @@
  */
 
 import { unescapeHtml } from "./helpers.js";
-import { match } from "./Regexp.js";
 import { Range } from "./Range.js";
+import { match } from "./Regexp.js";
 
 /**
  * Names in {...} treated as HTML attributes; anything else is a CSS style.
@@ -21,12 +21,14 @@ import { Range } from "./Range.js";
  */
 export const ElAttrs = new Set([
   "abbr",
+  "about",
   "accesskey",
   "alt",
   "cite",
   "colspan",
   "contenteditable",
   "crossorigin",
+  "datatype",
   "datetime",
   "decoding",
   "dir",
@@ -50,8 +52,11 @@ export const ElAttrs = new Set([
   "name",
   "ping",
   "popover",
+  "prefix",
+  "property",
   "referrerpolicy",
   "rel",
+  "resource",
   "reversed",
   "role",
   "rowspan",
@@ -65,7 +70,9 @@ export const ElAttrs = new Set([
   "target",
   "title",
   "type",
+  "typeof",
   "value",
+  "vocab",
 ]);
 
 export class Modifier {
@@ -174,11 +181,13 @@ export class Modifier {
    */
   parseStyle(s) {
     for (const value of s.split(";")) {
-      const pair = value.split(":", 2);
-      const prop = pair[0].trim().toLowerCase();
-      if (prop === "" || pair.length < 2) continue;
+      const pos = value.indexOf(":");
+      if (pos === -1) continue;
 
-      const val = pair[1].trim();
+      const prop = value.slice(0, pos).trim().toLowerCase();
+      if (prop === "") continue;
+
+      const val = value.slice(pos + 1).trim();
       if (ElAttrs.has(prop) || prop.startsWith("data-") || prop.startsWith("aria-")) {
         this.attrs[prop] = val; // attribute
       } else if (val !== "") {

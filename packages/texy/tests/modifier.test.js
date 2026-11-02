@@ -3,8 +3,8 @@
  * in docs/porting.md §2.3 and exercised by the reference modifier.phpt.
  */
 
-import { describe, it } from "node:test";
 import assert from "node:assert/strict";
+import { describe, it } from "node:test";
 import { Modifier } from "../src/Modifier.js";
 
 describe("Modifier", () => {
@@ -39,6 +39,28 @@ describe("Modifier", () => {
     const m = Modifier.parse("{color: red; title: tip; data-x: 1; aria-label: y; width: 10px}");
     assert.deepEqual(m.styles, { color: "red", width: "10px" }); // width stays a style
     assert.deepEqual(m.attrs, { title: "tip", "data-x": "1", "aria-label": "y" });
+  });
+
+  it("RDFa property becomes an attr, not a style", () => {
+    const m = Modifier.parse("{property: dc:title; color: red}");
+    assert.deepEqual(m.attrs, { property: "dc:title" });
+    assert.deepEqual(m.styles, { color: "red" });
+  });
+
+  it("all RDFa attributes become attrs, not styles", () => {
+    const m = Modifier.parse(
+      "{about: https://example.com/; datatype: rdf:HTML; prefix: dc: http://purl.org/dc/terms/; property: dc:title; resource: #book; typeof: Book; vocab: https://schema.org/; color: red}",
+    );
+    assert.deepEqual(m.attrs, {
+      about: "https://example.com/",
+      datatype: "rdf:HTML",
+      prefix: "dc: http://purl.org/dc/terms/",
+      property: "dc:title",
+      resource: "#book",
+      typeof: "Book",
+      vocab: "https://schema.org/",
+    });
+    assert.deepEqual(m.styles, { color: "red" });
   });
 
   it("parses alignments", () => {

@@ -1,5 +1,11 @@
 import { Texy } from "./src/Texy.js";
 
+export function defTexy(config) {
+  const texy = new Texy();
+
+  return texy;
+}
+
 export { processTypo } from "./src/Typography.js";
 
 /**
@@ -9,6 +15,6 @@ export { processTypo } from "./src/Typography.js";
  * @returns {string}
  */
 export function process(text, singleLine = false) {
-  const texy = new Texy();
+  const texy = defTexy();
   return texy.process(text, singleLine);
 }
