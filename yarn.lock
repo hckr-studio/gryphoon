@@ -1157,8 +1157,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@gryphoon/infrastructure@workspace:infrastructure"
   dependencies:
-    "@pulumi/cloudflare": "npm:6.23.2"
-    "@pulumi/pulumi": "npm:3.273.0"
+    "@pulumi/cloudflare": "npm:6.23.3"
+    "@pulumi/pulumi": "npm:3.274.0"
   languageName: unknown
   linkType: soft
 
@@ -2039,10 +2039,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opentelemetry/api@npm:^1.3.0, @opentelemetry/api@npm:^1.9":
+"@opentelemetry/api@npm:^1.3.0":
   version: 1.10.0
   resolution: "@opentelemetry/api@npm:1.10.0"
   checksum: 10/630356af2c4caa2e15a102060360fac708651a9e21f45a9035a6c846dd01e51ff4cc2d28fadc471d4dcdf6997561163631ab69c2efa7604ad2307529e22b593f
+  languageName: node
+  linkType: hard
+
+"@opentelemetry/api@npm:~1.9":
+  version: 1.9.1
+  resolution: "@opentelemetry/api@npm:1.9.1"
+  checksum: 10/b26032739d3c54ca99b5a2920844a1fbd4c3ee383cacbb0915e8c706a2626fe91e96feaa6e893397abe0545dc8d0a765b220aa18a31b1773176eeaf3a225e10e
   languageName: node
   linkType: hard
 
@@ -2382,23 +2389,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pulumi/cloudflare@npm:6.23.2":
-  version: 6.23.2
-  resolution: "@pulumi/cloudflare@npm:6.23.2"
+"@pulumi/cloudflare@npm:6.23.3":
+  version: 6.23.3
+  resolution: "@pulumi/cloudflare@npm:6.23.3"
   dependencies:
-    "@pulumi/pulumi": "npm:^3.142.0"
-  checksum: 10/5c6420322d513f671be9a244b022821eea842b488253bf3e8236baf010d41462d3a1b275d06b36c947392c7b30a1f51f0f54f0597970b996f2dd9a6d86a350e8
+    "@pulumi/pulumi": "npm:^3.269.0"
+  checksum: 10/5538720d99262280183a11d62a8cf68a7c9d062f7b306981f86e53e2d14562a93f8b7f06ff449e6a27c433460f5ef568cf6ab7787cb65e84f117d80d401de676
   languageName: node
   linkType: hard
 
-"@pulumi/pulumi@npm:3.273.0":
-  version: 3.273.0
-  resolution: "@pulumi/pulumi@npm:3.273.0"
+"@pulumi/pulumi@npm:3.274.0, @pulumi/pulumi@npm:^3.269.0":
+  version: 3.274.0
+  resolution: "@pulumi/pulumi@npm:3.274.0"
   dependencies:
     "@grpc/grpc-js": "npm:^1.10.1"
     "@logdna/tail-file": "npm:^2.0.6"
     "@npmcli/arborist": "npm:^9.0.0"
-    "@opentelemetry/api": "npm:^1.9"
+    "@opentelemetry/api": "npm:~1.9"
     "@opentelemetry/core": "npm:^2.9"
     "@opentelemetry/exporter-trace-otlp-grpc": "npm:^0.220"
     "@opentelemetry/exporter-zipkin": "npm:^2.9"
@@ -2428,48 +2435,7 @@ __metadata:
       optional: true
     typescript:
       optional: true
-  checksum: 10/08efbba467ee55f7eaa137bb1678fbcf0f56141c085288a8e006934d7e66941662a048255fb91bfa4b5a3652050863e3df2c41b68cdad78e5d08a6ac6b67ded4
-  languageName: node
-  linkType: hard
-
-"@pulumi/pulumi@npm:^3.142.0":
-  version: 3.272.0
-  resolution: "@pulumi/pulumi@npm:3.272.0"
-  dependencies:
-    "@grpc/grpc-js": "npm:^1.10.1"
-    "@logdna/tail-file": "npm:^2.0.6"
-    "@npmcli/arborist": "npm:^9.0.0"
-    "@opentelemetry/api": "npm:^1.9"
-    "@opentelemetry/core": "npm:^2.9"
-    "@opentelemetry/exporter-trace-otlp-grpc": "npm:^0.220"
-    "@opentelemetry/exporter-zipkin": "npm:^2.9"
-    "@opentelemetry/instrumentation": "npm:^0.220"
-    "@opentelemetry/instrumentation-grpc": "npm:^0.220"
-    "@opentelemetry/resources": "npm:^2.9"
-    "@opentelemetry/sdk-trace-base": "npm:^2.9"
-    "@opentelemetry/sdk-trace-node": "npm:^2.9"
-    "@opentelemetry/semantic-conventions": "npm:^1.42"
-    "@types/google-protobuf": "npm:^3.15.5"
-    "@types/semver": "npm:^7.5.6"
-    execa: "npm:^5.1.0"
-    google-protobuf: "npm:^3.21.4"
-    ini: "npm:^2.0.0"
-    js-yaml: "npm:^4.3.2"
-    minimist: "npm:^1.2.6"
-    normalize-package-data: "npm:^6.0.0"
-    require-from-string: "npm:^2.0.1"
-    semver: "npm:^7.5.2"
-    source-map-support: "npm:^0.5.6"
-    upath: "npm:^1.1.0"
-  peerDependencies:
-    ts-node: ">= 7.0.1 < 12"
-    typescript: ">= 3.8.3 < 7"
-  peerDependenciesMeta:
-    ts-node:
-      optional: true
-    typescript:
-      optional: true
-  checksum: 10/b32f02a49690f8b1e6ca45366e7a190b42529e85693086c37af711ba7f98ecd6c9b1436ca4294e7651ece87ad17bba66702aadd459b76792bc1c0bc7c2a0ad83
+  checksum: 10/d476e955a9ff711927f6745d548afd73b6d6a01803c66028f84121309e1178b06bd4230946c09c862dc6e72199eba9d704384fa21647538426ebaf87799f576b
   languageName: node
   linkType: hard
 
