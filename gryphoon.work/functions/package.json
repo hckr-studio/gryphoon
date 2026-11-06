@@ -4,7 +4,7 @@
   "dependencies": {
     "@hckr_/cloudflare-pages-plugin-rollbar": "1.1.4",
     "@thi.ng/transducers": "9.7.0",
-    "cookie": "2.0.1",
+    "cookie": "2.0.2",
     "feed": "6.0.0",
     "jose": "6.2.15"
   },
