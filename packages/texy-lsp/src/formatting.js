@@ -1,6 +1,7 @@
 /**
  * Source formatting: rewraps long lines according to the block syntax and
- * normalizes headings to the written (#) form.
+ * normalizes headings to the written (#) form. The leading YAML front
+ * matter (`---` … `---`) is never touched - it is data, not prose.
  *
  * The unit of change is one block: a block whose formatted text differs
  * from its source yields a single replacement over its exact span, and
@@ -219,12 +220,44 @@ export function formatBlocks(blocks, text, width) {
 }
 
 /**
- * Formats the whole document.
+ * Front matter: the leading `---` … `---` fence block (Jekyll-style
+ * YAML). To the Texy parser it is an ordinary region (rules, an
+ * underlined heading, paragraphs), so the formatter must exclude it
+ * explicitly - it is data, not prose, and its lines are never rewrapped
+ * or normalized.
+ * @param {string} text the normalized source
+ * @returns {number} the exclusive end offset, 0 when there is none
+ */
+function frontMatterEnd(text) {
+  if (!text.startsWith("---\n")) {
+    return 0;
+  }
+  let offset = 4;
+  while (offset < text.length) {
+    const eol = text.indexOf("\n", offset);
+    const line = text.slice(offset, eol === -1 ? text.length : eol).trim();
+    if (line === "---") {
+      return eol === -1 ? text.length : eol + 1;
+    }
+    if (eol === -1) {
+      return 0; // no closing fence: not front matter, just Texy markup
+    }
+    offset = eol + 1;
+  }
+  return 0;
+}
+
+/**
+ * Formats the whole document. The front matter region edits are
+ * dropped - the formatter never touches anything before the closing
+ * fence.
  * @param {import("@gryphoon/texy/nodes.js").DocumentNode} document
  * @param {string} text the normalized source the document was parsed from
  * @param {number} lineWidth maximum line width, default 80
  * @returns {Array<{ range: { offset: number, length: number }, text: string }>} edits in normalized coordinates
  */
 export function formatDocument(document, text, lineWidth = 80) {
-  return formatBlocks(document.content.children, text, lineWidth);
+  const edits = formatBlocks(document.content.children, text, lineWidth);
+  const fmEnd = frontMatterEnd(text);
+  return fmEnd === 0 ? edits : edits.filter(edit => edit.range.offset >= fmEnd);
 }
