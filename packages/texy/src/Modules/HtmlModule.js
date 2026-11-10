@@ -1,22 +1,36 @@
 /**
  * Processes HTML tags, comments and entity references in input text
  * (port of Texy\Modules\HtmlModule).
- *
- * Tag pairing into HtmlElementNode subtrees and whitelist evaluation are
- * transform passes in the reference (HtmlPairingPass, HtmlSanitizePass)
- * and are out of scope for this port.
  */
 
-import { Module } from "./Module.js";
-import { Syntax } from "../Syntax.js";
-import { HtmlCommentNode, HtmlTagNode, TextNode } from "../nodes.js";
 import { decodeEntity, unescapeHtml } from "../helpers.js";
+import { HtmlCommentNode, HtmlTagNode, TextNode } from "../nodes.js";
+import { HtmlPairingPass } from "../Passes/HtmlPairingPass.js";
+import { HtmlSanitizePass } from "../Passes/HtmlSanitizePass.js";
 import { matchAll } from "../Regexp.js";
+import { Syntax } from "../Syntax.js";
+import { Module } from "./Module.js";
 
 export class HtmlModule extends Module {
   constructor(texy) {
     super();
     this.texy = texy;
+    texy.addPass(doc => this.processPassthrough(doc));
+  }
+
+  /**
+   * Pairs passthrough tags into HtmlElementNode trees and evaluates the
+   * tag whitelist over them (transform phase): rejected tags become text.
+   * @param {import('../nodes.js').DocumentNode} doc
+   */
+  processPassthrough(doc) {
+    if (!this.texy.allowed[Syntax.HtmlTag]) {
+      return;
+    }
+
+    const lint = this.texy.lintCollector;
+    new HtmlPairingPass(lint).process(doc);
+    new HtmlSanitizePass(this.texy.htmlPolicy, lint).process(doc);
   }
 
   beforeParse() {

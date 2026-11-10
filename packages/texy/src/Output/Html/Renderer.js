@@ -82,22 +82,18 @@ export class Renderer extends NodeRenderer {
    * @param {import('../../HtmlPolicy.js').HtmlPolicy} htmlPolicy
    * @param {import('../../UrlPolicy.js').UrlPolicy} urlPolicy
    * @param {?Function} postLine typography for isolated strings (title, alt); null = disabled
-   * @param {?Function} parseContextFactory fn(): ParseContext - needed to render block/html and block/texysource
    */
-  constructor(config, htmlPolicy, urlPolicy, postLine = null, parseContextFactory = null) {
+  constructor(config, htmlPolicy, urlPolicy, postLine = null) {
     super();
     this.config = config;
     this.htmlPolicy = htmlPolicy;
     this.urlPolicy = urlPolicy;
     this.postLine = postLine;
-    this.parseContextFactory = parseContextFactory;
+    /** rendering a wrapperless paragraph: hard line breaks are plain "\n" */
+    this.plainBreaks = false;
     this.noFollow = config.linkNoFollow;
     this.titleTypography = true;
-
-    // file-system sniffing is available only on Node.js; the loader resolves
-    // that once at module load, synchronously from the renderer's perspective
     this.imageDimensions = createImageDimensions(config);
-
     this.decorator = new ElementDecorator(htmlPolicy, urlPolicy, config, this);
 
     this.handlers.set(DocumentNode, n => this.renderDocument(n));
@@ -130,7 +126,7 @@ export class Renderer extends NodeRenderer {
     this.handlers.set(RawTextNode, n => escapeHtml(n.text));
     this.handlers.set(AnnotationNode, n => new Element("abbr", { title: n.annotation }).setText(n.text));
     this.handlers.set(EmoticonNode, n => this.renderEmoticon(n));
-    this.handlers.set(LineBreakNode, () => new Raw("<br>"));
+    this.handlers.set(LineBreakNode, () => (this.plainBreaks ? "\n" : new Raw("<br>")));
 
     // Autolink nodes
     this.handlers.set(UrlNode, n => this.renderUrl(n));
@@ -194,29 +190,6 @@ export class Renderer extends NodeRenderer {
    */
   renderNodes(content) {
     return content.map(child => this.renderNode(child));
-  }
-
-  /**
-   * Render content with only HTML tag/comment patterns (passthrough).
-   * @param {string} content
-   * @returns {Element}
-   */
-  renderHtmlPassthrough(content) {
-    const context = this.createParseContext();
-    const htmlParser = context.getInlineParser().withPatterns([Syntax.HtmlTag, Syntax.HtmlComment, Syntax.HtmlEntity]);
-    return this.wrapChildren(this.renderNodes(htmlParser.parse(context, content).children));
-  }
-
-  /**
-   * @returns {import('../../Parsing/ParseContext.js').ParseContext}
-   */
-  createParseContext() {
-    if (this.parseContextFactory === null) {
-      throw new Error(
-        "Rendering block/html and block/texysource requires a parse context; create the renderer via texy.createHtmlRenderer().",
-      );
-    }
-    return this.parseContextFactory();
   }
 
   /**
@@ -288,27 +261,33 @@ export class Renderer extends NodeRenderer {
    * @returns {Element}
    */
   renderParagraph(node) {
-    const children = this.renderNodes(node.content.children);
-
-    // Block HTML content - skip <p> wrapper entirely. The parse-time flag
-    // is stale when the sanitize pass turned the block tags into text, so
-    // its own predicate is re-checked over the transformed content:
-    // paragraphs degraded to visible text get a normal <p> again.
+    // Block HTML content - skip <p> wrapper entirely. The parse-time flag is
+    // stale when the sanitize pass turned the block tags into text, so its
+    // own predicate is re-checked over the transformed content: paragraphs
+    // degraded to visible text get a normal <p> again.
     if (node.blockHtml && this.containsBlockPassthrough(node.content.children)) {
-      return this.wrapChildren(children);
-    }
-
-    // Whole content rendered to nothing (consumed directives, comments)
-    // -> no paragraph at all
-    if (node.modifier === null && this.renderedToNothing(children)) {
-      return this.wrapChildren([]);
+      return this.renderWithoutBreaks(node.content.children);
     }
 
     const info = this.analyzeContent(node.content.children);
 
-    // Only markup (HTML tags/comments) without text -> no <p> wrapper
-    if (!info.hasText && !info.hasOther && info.hasMarkup && node.modifier === null) {
-      return this.wrapChildren(children);
+    // Only markup (HTML tags/comments) without text -> no <p> wrapper. Replaced content
+    // with a hard line break gets one for its <br>, unless it stands beside a block tag.
+    if (
+      !info.hasText &&
+      !info.hasOther &&
+      info.hasMarkup &&
+      node.modifier === null &&
+      (info.hasBlock || !info.hasReplaced || !info.hasBreak)
+    ) {
+      return this.renderWithoutBreaks(node.content.children);
+    }
+
+    const children = this.renderNodes(node.content.children);
+
+    // Whole content rendered to nothing (consumed directives, comments) -> no paragraph at all
+    if (node.modifier === null && this.renderedToNothing(children)) {
+      return this.wrapChildren([]);
     }
 
     // Only replaced content (images) -> use nontextParagraph
@@ -321,6 +300,21 @@ export class Renderer extends NodeRenderer {
     this.decorateElement(node.modifier, el);
     el.children = children;
     return el;
+  }
+
+  /**
+   * Renders the content of a paragraph without a wrapper, where a hard line
+   * break is only whitespace.
+   * @param {Array<*>} content
+   * @returns {Element}
+   */
+  renderWithoutBreaks(content) {
+    this.plainBreaks = true;
+    try {
+      return this.wrapChildren(this.renderNodes(content));
+    } finally {
+      this.plainBreaks = false;
+    }
   }
 
   /**
@@ -354,12 +348,9 @@ export class Renderer extends NodeRenderer {
    * @returns {Element|Raw|string}
    */
   renderCodeBlock(node) {
-    // block/texysource - parse as texy, then display resulting HTML as
-    // source code
+    // block/texysource - the HTML of the pre-parsed demo displayed as source code
     if (node.type === "texysource") {
-      const context = this.createParseContext();
-      const parsed = context.parseBlock(node.code);
-      const html = this.finalizeFragment(this.renderNodes(parsed.children));
+      const html = this.finalizeFragment(this.renderNodes(node.content !== null ? node.content.children : []));
       // Now escape the final HTML to show as source code
       const escaped = escapeHtml(html);
 
@@ -371,14 +362,13 @@ export class Renderer extends NodeRenderer {
       return el;
     }
 
-    // block/html - parse HTML tags/comments, escape unknown ones
+    // block/html - passthrough HTML tags/comments
     if (node.type === "html") {
-      const content = node.code;
-      if (content === "") {
+      if (node.code === "") {
         return "\n";
       }
 
-      return this.renderHtmlPassthrough(content).add(" ");
+      return this.wrapChildren(this.renderNodes(node.content !== null ? node.content.children : [])).add(" ");
     }
 
     // block/text - plain text with <br> for newlines (no wrapper)
@@ -396,9 +386,9 @@ export class Renderer extends NodeRenderer {
       el.attrs.class = [node.language, ...el.attrs.class];
     }
 
-    // PRE block - parse HTML tags, unescape entities
+    // PRE block - passthrough HTML tags and decoded entities
     if (node.type === "pre") {
-      el.children = [this.renderHtmlPassthrough(node.code)];
+      el.children = [this.wrapChildren(this.renderNodes(node.content !== null ? node.content.children : []))];
       return el;
     }
 
@@ -679,6 +669,15 @@ export class Renderer extends NodeRenderer {
    * @returns {Element}
    */
   renderImage(node) {
+    // Check URL scheme (security - filter dangerous schemes like javascript:)
+    if (node.url === null || !this.urlPolicy.isImageAllowed(node.url)) {
+      // URL is missing or fails scheme filter, return just the alternative text
+      return this.wrapChildren([this.postLineText(node.modifier !== null ? (node.modifier.title ?? "") : "")]);
+    }
+
+    // Detect dimensions from the file system (imageFileRoot)
+    const [width, height] = this.imageDimensions.detect(node);
+
     const el = new Element("img");
     let mod = node.modifier;
 
@@ -708,7 +707,7 @@ export class Renderer extends NodeRenderer {
     this.decorateElement(mod, el);
 
     // src
-    el.attrs.src = node.url !== null ? prependRoot(node.url, this.config.imageRoot) : null;
+    el.attrs.src = prependRoot(node.url, this.config.imageRoot);
 
     // alt: from title or empty (if not set by custom attrs)
     if (!hasCustomAlt && !Object.hasOwn(el.attrs, "alt")) {
@@ -721,10 +720,6 @@ export class Renderer extends NodeRenderer {
     }
 
     // dimensions
-
-    // Detect dimensions from the file system (imageFileRoot)
-    const [width, height] = this.imageDimensions.detect(node);
-
     el.attrs.width = width;
     el.attrs.height = height;
 
@@ -984,6 +979,8 @@ export class Renderer extends NodeRenderer {
     let hasText = false;
     let hasReplaced = false;
     let hasMarkup = false;
+    let hasBlock = false;
+    let hasBreak = false;
     let hasOther = false;
 
     for (const node of content) {
@@ -997,22 +994,27 @@ export class Renderer extends NodeRenderer {
         const inlineType = inlineElements.get(node.name.toLowerCase()) ?? null;
         if (inlineType === 1) {
           hasReplaced = true; // replaced element (img, br, input, ...)
+        } else if (inlineType === 0) {
+          hasMarkup = true; // inline markup (span, a, strong, ...)
         } else {
-          hasMarkup = true; // inline markup or block element
+          hasMarkup = hasBlock = true; // block element
         }
       } else if (node instanceof HtmlElementNode) {
         const inlineType = inlineElements.get(node.name.toLowerCase()) ?? null;
         if (inlineType === 1) {
           hasReplaced = true; // replaced element (script, object, ...)
-        } else {
+        } else if (inlineType === 0) {
           hasMarkup = true;
+        } else {
+          hasMarkup = hasBlock = true;
         }
-        // flat pre-pairing analysis saw all descendants at top level -
-        // propagate everything
+        // the element's descendants count as content of the paragraph
         const inner = this.analyzeContent(node.content.children);
         hasText = hasText || inner.hasText;
         hasReplaced = hasReplaced || inner.hasReplaced;
         hasMarkup = hasMarkup || inner.hasMarkup;
+        hasBlock = hasBlock || inner.hasBlock;
+        hasBreak = hasBreak || inner.hasBreak;
         hasOther = hasOther || inner.hasOther;
       } else if (node instanceof LinkNode) {
         const inner = this.analyzeContent(node.content.children);
@@ -1021,12 +1023,14 @@ export class Renderer extends NodeRenderer {
         } else if (inner.hasReplaced) {
           hasReplaced = true;
         }
+      } else if (node instanceof LineBreakNode) {
+        hasBreak = true;
       } else {
         hasOther = true;
       }
     }
 
-    return { hasText, hasReplaced, hasMarkup, hasOther };
+    return { hasText, hasReplaced, hasMarkup, hasBlock, hasBreak, hasOther };
   }
 
   /**

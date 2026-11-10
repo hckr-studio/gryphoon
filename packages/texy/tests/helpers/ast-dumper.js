@@ -8,6 +8,8 @@
  * reference fixtures.
  */
 
+import { OffsetMap } from "../../src/Parsing/OffsetMap.js";
+
 /** Maps UTF-16 code-unit indices in `s` to UTF-8 byte offsets. */
 export function byteOffsetMap(s) {
   const map = new Array(s.length + 1);
@@ -53,6 +55,21 @@ export function dump(node, source, map = null, indent = 0) {
     line += ` mod[${byteOffset},${byteLength}]`;
   }
 
+  // parts of the notation: every other range the node holds, plus offset maps
+  // (map offsets are converted to bytes like every other range)
+  for (const [prop, value] of Object.entries(node)) {
+    if (prop === "range") {
+      continue;
+    }
+    if (isRangeLike(value)) {
+      const byteOffset = map[value.offset];
+      const byteLength = map[value.offset + value.length] - byteOffset;
+      line += ` ${prop}[${byteOffset},${byteLength}]`;
+    } else if (value instanceof OffsetMap) {
+      line += ` ${prop}@${map[value.toAbsolute(0)]}`;
+    }
+  }
+
   const extra = getExtraInfo(node);
   if (extra !== "") {
     line += " " + extra;
@@ -65,6 +82,18 @@ export function dump(node, source, map = null, indent = 0) {
   return result;
 }
 
+/** Detects every range shape the port uses: {offset, length} plain objects
+ * and Range instances (an OffsetMap is not one; it precedes this check). */
+function isRangeLike(value) {
+  return (
+    value !== null &&
+    typeof value === "object" &&
+    value.constructor !== OffsetMap &&
+    typeof value.offset === "number" &&
+    typeof value.length === "number"
+  );
+}
+
 function getExtraInfo(node) {
   const cls = node.constructor.name;
   switch (cls) {
@@ -74,13 +103,17 @@ function getExtraInfo(node) {
     case "PhraseNode":
       return node.type;
     case "HeadingNode":
-      return "level=" + node.level;
+      return "level=" + node.level + (node.marker === null ? "" : " marker=" + node.marker);
     case "ListNode":
       return ListTypeOrder[node.type] ? ListTypeOrder[node.type] : node.type;
+    case "ListItemNode":
+      return node.bullet === null ? "" : "bullet=" + node.bullet;
     case "CodeBlockNode":
       return node.language ? "lang=" + node.language : "";
     case "LinkNode":
-      return phpTruthy(node.url) ? "url=" + node.url : "";
+      return [node.syntax, node.url === null ? null : "url=" + node.url, node.ref === null ? null : "ref=" + node.ref]
+        .filter(part => part !== null && part !== "")
+        .join(" ");
     case "ImageNode":
       return phpTruthy(node.url) ? "src=" + node.url : "";
     case "HtmlTagNode":

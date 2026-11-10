@@ -4,11 +4,11 @@
  * for emoticon.texy is named emoticon-on.* to flag the non-default setting.
  */
 
-import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, readdirSync } from "node:fs";
-import { fileURLToPath } from "node:url";
+import { readdirSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
+import { describe, it } from "node:test";
+import { fileURLToPath } from "node:url";
 import { Texy } from "../../src/Texy.js";
 
 const root = dirname(dirname(dirname(fileURLToPath(import.meta.url)))); // tests/helpers -> package root

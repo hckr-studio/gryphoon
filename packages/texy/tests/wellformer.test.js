@@ -4,12 +4,12 @@
  * trees - the same trees are rebuilt here.
  */
 
-import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { WellFormer } from "../src/Output/Html/WellFormer.js";
+import { describe, it } from "node:test";
+import { Config } from "../src/Output/Html/Config.js";
 import { Element } from "../src/Output/Html/Element.js";
 import { Raw } from "../src/Output/Html/Raw.js";
-import { Config } from "../src/Output/Html/Config.js";
+import { WellFormer } from "../src/Output/Html/WellFormer.js";
 
 /**
  * @param {Element|Raw|string} child

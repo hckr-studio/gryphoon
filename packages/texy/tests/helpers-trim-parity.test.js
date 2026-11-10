@@ -9,9 +9,9 @@
  * (npm test); run them with npm run test:fuzz - they are deliberately slow.
  */
 
-import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { phpTrim, phpRtrim, phpLtrim } from "../src/helpers.js";
+import { describe, it } from "node:test";
+import { phpLtrim, phpRtrim, phpTrim } from "../src/helpers.js";
 
 const TRIM_CHARS = " \t\n\r\0\x0B";
 

@@ -2,20 +2,19 @@
  * Processes image and figure (image with caption) syntax
  * (port of Texy\Modules\ImageModule).
  *
- * Reference resolution (resolveReferences) is a transform pass and is out
- * of scope for this port; parseImageNode/parseImageContent stay public for
- * consumers running their own passes.
+ * Reference resolution (resolveReferences) is a transform pass;
+ * parseImageContent stays public for consumers running their own passes.
  */
 
-import { Module } from "./Module.js";
-import { Syntax } from "../Syntax.js";
-import { Modifier as ModifierPattern, ModifierHAlign, LinkUrl } from "../Patterns.js";
-import { Modifier } from "../Modifier.js";
-import { ContentNode, FigureNode, ImageDefinitionNode, ImageNode, LinkNode } from "../nodes.js";
 import { removeSoftHyphens, toLower } from "../helpers.js";
-import { NodeTraverser } from "../NodeTraverser.js";
+import { Modifier } from "../Modifier.js";
 import { find } from "../NodeHelpers.js";
+import { NodeTraverser } from "../NodeTraverser.js";
+import { ContentNode, FigureNode, ImageDefinitionNode, ImageNode, LinkNode } from "../nodes.js";
+import { LinkUrl, ModifierHAlign, Modifier as ModifierPattern } from "../Patterns.js";
 import { match } from "../Regexp.js";
+import { Syntax } from "../Syntax.js";
+import { Module } from "./Module.js";
 
 /** The [* url .(title) alignment ] part, shared by the image and figure syntaxes. */
 const ImagePattern =
@@ -43,6 +42,7 @@ export class ImageModule extends Module {
     super();
     this.texy = texy;
     texy.allowed[Syntax.ImageDefinition] = true;
+    texy.addPass(doc => this.resolveReferences(doc));
     /** @type {Object<string, ImageDefinitionNode>} collected image definitions */
     this.definitions = {};
     /** @type {Object<string, ImageDefinitionNode>} user-defined definitions (persist across parse() calls) */
@@ -107,6 +107,10 @@ export class ImageModule extends Module {
     const [, mRef, mURLs, mMod] = matches;
     const parsed = this.parseImageContent(mURLs);
 
+    if (parsed.url === null) {
+      return new ContentNode();
+    }
+
     return new ImageDefinitionNode(
       mRef.trim(),
       parsed.url,
@@ -122,13 +126,26 @@ export class ImageModule extends Module {
    */
   parseImage(context, matches, offsets) {
     const [, mURLs, mMod, mAlign, mLink] = matches;
-    const parsed = this.parseImageContent(mURLs);
+    const parsed = this.parseImageContent(mURLs, offsets[1]);
     const modifier = Modifier.parse((mMod ?? "") + (mAlign ?? ""));
-    const range = { offset: offsets[0], length: matches[0].length };
 
-    const imageNode = new ImageNode(parsed.url, parsed.width, parsed.height, modifier, range);
+    if (parsed.url === null) {
+      return null;
+    }
 
-    return mLink ? this.wrapInLink(imageNode, mLink, range) : imageNode;
+    // ImageNode source span is "[* ... <alignment>]" (1 = "]")
+    const alignOffset = offsets[3] ?? offsets[0] + matches[0].length - 1 - (mAlign ? mAlign.length : 0);
+    const imageNode = new ImageNode(
+      parsed.url,
+      parsed.width,
+      parsed.height,
+      modifier,
+      { offset: offsets[0], length: alignOffset + (mAlign ?? "").length + 1 - offsets[0] },
+      null,
+      parsed.urlRange,
+    );
+
+    return mLink ? this.wrapInLink(imageNode, mLink, offsets[0], offsets[4], Syntax.Image) : imageNode;
   }
 
   /**
@@ -138,21 +155,24 @@ export class ImageModule extends Module {
   parseFigure(context, matches, offsets) {
     const [, mURLs, mImgMod, mAlign, mLink, mContent, mMod] = matches;
 
-    const parsed = this.parseImageContent(mURLs);
+    const parsed = this.parseImageContent(mURLs, offsets[1]);
     const modifier = Modifier.parse((mImgMod ?? "") + (mAlign ?? ""));
 
     if (parsed.url === null) return null;
 
     // ImageNode source span is "[* ... <alignment>]"
     const imageEnd = (offsets[3] ?? 0) + (mAlign ?? "").length + 1; // 1 = "]"
-    const imageNode = new ImageNode(parsed.url, parsed.width, parsed.height, modifier, {
-      offset: offsets[0],
-      length: imageEnd - offsets[0],
-    });
+    const imageNode = new ImageNode(
+      parsed.url,
+      parsed.width,
+      parsed.height,
+      modifier,
+      { offset: offsets[0], length: imageEnd - offsets[0] },
+      null,
+      parsed.urlRange,
+    );
 
-    const image = mLink
-      ? this.wrapInLink(imageNode, mLink, { offset: offsets[0], length: offsets[4] + mLink.length - offsets[0] })
-      : imageNode;
+    const image = mLink ? this.wrapInLink(imageNode, mLink, offsets[0], offsets[4], Syntax.Figure) : imageNode;
 
     // Parse caption as inline content
     let caption = null;
@@ -168,40 +188,43 @@ export class ImageModule extends Module {
   }
 
   /**
-   * Wraps an image node in a link node; bare ":" links to the image itself.
+   * Wraps the image written at $offset in the link written after it at
+   * $linkOffset. ':' links to the image itself; a reference like [ref] or
+   * [*img*] is recognized by the LinkReferenceModule Syntax pass.
+   * @param {ImageNode} imageNode
+   * @param {string} mLink
+   * @param {number} offset
+   * @param {number} linkOffset
+   * @param {string} syntax
    * @returns {LinkNode}
    */
-  wrapInLink(imageNode, mLink, range) {
-    let linkUrl;
-    let isImageLink;
+  wrapInLink(imageNode, mLink, offset, linkOffset, syntax) {
+    const isSelf = mLink === ":";
 
-    if (mLink === ":") {
-      // link to the image itself
-      linkUrl = imageNode.url;
-      isImageLink = true;
-    } else {
-      // direct URL or reference like [ref] or [*img*]
-      linkUrl = removeSoftHyphens(mLink);
-      // image reference [*...*] -> uses imageRoot
-      isImageLink =
-        mLink.length > 4 &&
-        mLink[0] === "[" &&
-        mLink[1] === "*" &&
-        mLink[mLink.length - 1] === "]" &&
-        mLink[mLink.length - 2] === "*";
-    }
-
-    return new LinkNode(linkUrl, new ContentNode([imageNode]), null, range, isImageLink);
+    return new LinkNode(
+      isSelf ? imageNode.url : removeSoftHyphens(mLink),
+      new ContentNode([imageNode]),
+      null,
+      { offset, length: linkOffset + mLink.length - offset },
+      isSelf,
+      null,
+      syntax,
+      null,
+      { offset: linkOffset, length: mLink.length },
+    );
   }
 
   /**
-   * Parses image content: "image.jpg 100x200" or "image.jpg 100X200".
+   * Parses image content: "image.jpg 100x200"; $offset is where the content
+   * is written.
    * @param {string} content
-   * @returns {{url: ?string, width: ?number, height: ?number}}
+   * @param {?number} offset
+   * @returns {{url: ?string, width: ?number, height: ?number, urlRange: ?Range}}
    */
-  parseImageContent(content) {
+  parseImageContent(content, offset = null) {
     const parts = content.split("|");
     const main = parts[0].trim();
+    let written = main;
 
     let url = removeSoftHyphens(main);
     let width = null;
@@ -210,7 +233,7 @@ export class ImageModule extends Module {
     // Parse dimensions: "image.jpg 100x200" or "image.jpg 100X200" (asMax)
     const m = match(main, String.raw`~^(.*)\ (\d+|\?)\ *[xX]\ *(\d+|\?)\ *$~U`);
     if (m) {
-      url = m.matches[1].trim();
+      url = written = m.matches[1].trim();
       width = m.matches[2] === "?" ? null : parseInt(m.matches[2], 10);
       height = m.matches[3] === "?" ? null : parseInt(m.matches[3], 10);
     }
@@ -220,7 +243,18 @@ export class ImageModule extends Module {
       url = null;
     }
 
-    return { url, width, height };
+    return {
+      url,
+      width,
+      height,
+      urlRange:
+        offset === null
+          ? null
+          : {
+              offset: offset + parts[0].length - parts[0].replace(/^[ \t\n\r\u0000\u000B]+/, "").length,
+              length: written.length,
+            },
+    };
   }
 
   /**

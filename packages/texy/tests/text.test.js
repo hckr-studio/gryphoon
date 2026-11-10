@@ -7,8 +7,8 @@
  * and non-breaking spaces are stripped by the text renderer itself.
  */
 
-import { renderConformance } from "./helpers/render-conformance.js";
 import { Syntax } from "../src/Syntax.js";
+import { renderConformance } from "./helpers/render-conformance.js";
 
 /**
  * Sources with known typography divergences of the @gryphoon/texy library

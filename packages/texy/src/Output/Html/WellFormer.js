@@ -14,21 +14,21 @@
  *   eating.
  */
 
+import { escapeHtml, freezeSpaces, unfreezeSpaces } from "../../helpers.js";
+import { matchAll, replace } from "../../Regexp.js";
+import { wordwrap } from "../../wordwrap.js";
 import { Element } from "./Element.js";
 import { Raw } from "./Raw.js";
 import {
-  Text,
   childContent,
   flowContent,
   hasOptionalEnd,
   inlineElements,
   isKnown,
   prohibitedAncestors,
+  Text,
   voidElements,
 } from "./Schema.js";
-import { escapeHtml, freezeSpaces, unfreezeSpaces } from "../../helpers.js";
-import { matchAll, replace } from "../../Regexp.js";
-import { wordwrap } from "../../wordwrap.js";
 
 const Normal = 0;
 const Pre = 1;

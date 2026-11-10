@@ -4,14 +4,14 @@
  * policy meets author-written modifiers).
  */
 
-import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { Element } from "../src/Output/Html/Element.js";
-import { Raw } from "../src/Output/Html/Raw.js";
-import { ElementDecorator } from "../src/Output/Html/ElementDecorator.js";
-import { Config } from "../src/Output/Html/Config.js";
+import { describe, it } from "node:test";
+import { All, HtmlPolicy } from "../src/HtmlPolicy.js";
 import { Modifier } from "../src/Modifier.js";
-import { HtmlPolicy, All } from "../src/HtmlPolicy.js";
+import { Config } from "../src/Output/Html/Config.js";
+import { Element } from "../src/Output/Html/Element.js";
+import { ElementDecorator } from "../src/Output/Html/ElementDecorator.js";
+import { Raw } from "../src/Output/Html/Raw.js";
 import { UrlPolicy } from "../src/UrlPolicy.js";
 
 describe("Element.formatAttrs", () => {

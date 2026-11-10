@@ -4,10 +4,8 @@
  * the AST constructs that produce them; rendering itself is out of scope).
  */
 
-import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { Texy } from "../src/Texy.js";
-import { Syntax } from "../src/Syntax.js";
+import { describe, it } from "node:test";
 import { findAll, findFirst } from "../src/NodeHelpers.js";
 import {
   BlockQuoteNode,
@@ -15,12 +13,13 @@ import {
   CommentNode,
   DirectiveNode,
   EmailNode,
+  EmoticonNode,
   FigureNode,
   HorizontalRuleNode,
   HtmlCommentNode,
+  HtmlElementNode,
   HtmlTagNode,
   ImageDefinitionNode,
-  HtmlElementNode,
   ImageNode,
   LineBreakNode,
   LinkDefinitionNode,
@@ -32,8 +31,9 @@ import {
   TableNode,
   TextNode,
   UrlNode,
-  EmoticonNode,
 } from "../src/nodes.js";
+import { Syntax } from "../src/Syntax.js";
+import { Texy } from "../src/Texy.js";
 
 function parse(text, { mergeLines = true, emoticon = false, allowed = {} } = {}) {
   const texy = new Texy();
@@ -42,7 +42,9 @@ function parse(text, { mergeLines = true, emoticon = false, allowed = {} } = {})
   texy.allowed[Syntax.Hyphenation] = false;
   if (emoticon) texy.allowed.emoticon = true;
   Object.assign(texy.allowed, allowed);
-  return texy.parse(text).content.children;
+  const document = texy.parse(text);
+  texy.transform(document); // reference resolution runs in the transform phase now
+  return document.content.children;
 }
 
 describe("phrases", () => {
@@ -365,6 +367,7 @@ describe("directives", () => {
   it("{{name: arg, arg}} parses with content", () => {
     const texy = new Texy();
     const doc = texy.parse("{{texy: nofollow}}");
+    texy.transform(doc); // directives are consumed in the transform phase
     assert.equal(doc.meta.nofollow, true); // consumed into document meta
     assert.equal(
       findFirst(doc, n => n instanceof DirectiveNode),

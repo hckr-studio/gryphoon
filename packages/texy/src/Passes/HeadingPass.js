@@ -3,11 +3,10 @@
  * and generates heading IDs (transform phase). Port of Texy\Passes\HeadingPass.
  */
 
-import { HeadingNode, SectionNode } from "../nodes.js";
-import { NodeTraverser } from "../NodeTraverser.js";
-import { extractText, find } from "../NodeHelpers.js";
 import { webalize } from "../helpers.js";
-import { HeadingType } from "../nodes.js";
+import { extractText, find } from "../NodeHelpers.js";
+import { NodeTraverser } from "../NodeTraverser.js";
+import { CodeBlockNode, HeadingNode, HeadingType, SectionNode } from "../nodes.js";
 
 export class HeadingPass {
   /**
@@ -127,15 +126,17 @@ export function getTitle(node) {
 }
 
 /**
- * Headings in document order, skipping texysource sections (demo sources are
- * not part of the document outline).
+ * Headings in document order, skipping code blocks (the pre-parsed content
+ * of /--texysource samples is not part of the document outline).
  * @param {import('../nodes.js').Node} root
  * @returns {HeadingNode[]}
  */
 export function collectHeadings(root) {
   const headings = [];
   new NodeTraverser().traverse(root, node => {
-    if (node instanceof SectionNode && node.type === "texysource") {
+    if (node instanceof CodeBlockNode) {
+      // the reference HeadingNode::collectFrom does not traverse into
+      // CodeBlockNode, so /--texysource samples keep their written levels
       return NodeTraverser.DontTraverseChildren;
     }
 

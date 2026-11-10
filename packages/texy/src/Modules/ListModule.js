@@ -3,13 +3,13 @@
  * Texy\Modules\ListModule).
  */
 
-import { Module } from "./Module.js";
-import { Syntax } from "../Syntax.js";
-import { ModifierHAlign } from "../Patterns.js";
 import { Modifier } from "../Modifier.js";
 import { DefinitionListNode, ListItemNode, ListNode, ListType } from "../nodes.js";
-import { match, quote } from "../Regexp.js";
 import { OffsetMap } from "../Parsing/OffsetMap.js";
+import { ModifierHAlign } from "../Patterns.js";
+import { match, quote } from "../Regexp.js";
+import { Syntax } from "../Syntax.js";
+import { Module } from "./Module.js";
 
 export class ListModule extends Module {
   constructor(texy) {
@@ -127,10 +127,7 @@ export class ListModule extends Module {
 
     if (items.length < min) return null;
 
-    return new ListNode(items, listType, start, Modifier.parse(mMod, offsets[1]), {
-      offset: offsets[0],
-      length: matches[0].length,
-    });
+    return new ListNode(items, listType, start, Modifier.parse(mMod, offsets[1]), createRange(offsets[0], items));
   }
 
   /**
@@ -183,10 +180,7 @@ export class ListModule extends Module {
       break;
     }
 
-    return new DefinitionListNode(items, Modifier.parse(mMod, offsets[1]), {
-      offset: offsets[0],
-      length: matches[0].length,
-    });
+    return new DefinitionListNode(items, Modifier.parse(mMod, offsets[1]), createRange(offsets[0], items));
   }
 
   /**
@@ -202,27 +196,28 @@ export class ListModule extends Module {
       String.raw`~^
 			\n?
 			(${spacesBase})                            # base indentation (1)
-			${bullet}                                # bullet character
+			(${bullet})                               # bullet character (2)
 			[ \t]*
-			( \S .* )?                              # content (2)
+			( \S .* )?                              # content (3)
 			` +
       ModifierHAlign +
-      String.raw`?           # modifier (3)
+      String.raw`?           # modifier (4)
 		$~mAUx`;
 
     const first = context.getBlockParser().next(patternItem);
     if (first === null) return null;
 
-    const [, mIndent, mContent, mMod] = first.matches;
+    const [, mIndent, mBullet, mContent, mMod] = first.matches;
     const itemOffset = first.offsets[0];
-    const modOffset = first.offsets[3] ?? null;
+    const bulletRange = { offset: first.offsets[2], length: mBullet.trimEnd().length };
+    const modOffset = first.offsets[4] ?? null;
     let itemEnd = itemOffset + first.length;
 
     // Assemble content and map local line starts to absolute source offsets
     const map = {};
     let content = " " + (mContent ?? "");
     if (mContent !== null) {
-      map[1] = first.offsets[2]; // 1 = the leading space
+      map[1] = first.offsets[3]; // 1 = the leading space
     }
 
     // next lines
@@ -264,9 +259,19 @@ export class ListModule extends Module {
       new OffsetMap(map, skipped).applyTo(parsed);
     }
 
-    return new ListItemNode(parsed, false, Modifier.parse(mMod, modOffset), {
-      offset: itemOffset,
-      length: itemEnd - itemOffset,
-    });
+    return new ListItemNode(
+      parsed,
+      false,
+      Modifier.parse(mMod, modOffset),
+      { offset: itemOffset, length: itemEnd - itemOffset },
+      mBullet.trimEnd(),
+      bulletRange,
+    );
   }
+}
+
+/** The list range spans from its start to the end of the last item. */
+function createRange(offset, items) {
+  const last = items[items.length - 1].range;
+  return { offset, length: last.offset + last.length - offset };
 }

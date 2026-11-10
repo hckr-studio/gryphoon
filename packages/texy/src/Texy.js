@@ -17,6 +17,7 @@
  */
 
 import { HtmlPolicy } from "./HtmlPolicy.js";
+import { LintCollector } from "./Lint.js";
 import { AutolinkModule } from "./Modules/AutolinkModule.js";
 import { BlockModule } from "./Modules/BlockModule.js";
 import { BlockQuoteModule } from "./Modules/BlockQuoteModule.js";
@@ -38,17 +39,10 @@ import { Config } from "./Output/Html/Config.js";
 import { Renderer } from "./Output/Html/Renderer.js";
 import { Renderer as TextRenderer } from "./Output/Text/Renderer.js";
 import { Engine } from "./Parsing/Engine.js";
-import { LintCollector } from "./Lint.js";
-import { HeadingPass } from "./Passes/HeadingPass.js";
-import { HtmlPairingPass } from "./Passes/HtmlPairingPass.js";
-import { HtmlSanitizePass } from "./Passes/HtmlSanitizePass.js";
 import { TextRunPass } from "./Passes/TextRunPass.js";
+import { Stage } from "./Stage.js";
 import { Syntax } from "./Syntax.js";
 import { UrlPolicy } from "./UrlPolicy.js";
-
-/** @typedef {import('./nodes.js').DocumentNode} DocumentNode */
-/** @typedef {import('./Lint.js').LintCollector} LintCollector */
-/** @typedef {import('./Lint.js').LintIssue} LintIssue */
 
 export class Texy {
   constructor() {
@@ -73,8 +67,13 @@ export class Texy {
 
     this.inModulePrepare = false;
 
-    /** @type {Function[]} consumer transform passes, run after the module passes */
-    this.passes = [];
+    /**
+     * The transient lint issue collector while transform() runs: passes
+     * read it (texy.lintCollector), it never changes the output. null
+     * outside lint().
+     * @type {?LintCollector}
+     */
+    this.lintCollector = null;
 
     /** HTML security policy: allowed tags, classes and inline styles */
     this.htmlPolicy = new HtmlPolicy(this.urlPolicy);
@@ -95,6 +94,7 @@ export class Texy {
     this.hyphenationModule = null;
 
     this.loadModules();
+    this.engine.addPass(document => this.applyAstTypography(document), Stage.Finalize);
     this.engine.setGapHandler((context, gapText, offset) => this.paragraphModule.parseText(context, gapText, offset));
   }
 
@@ -178,10 +178,9 @@ export class Texy {
    * Parses text to an AST. The text is normalized first (idempotent).
    * @param {string} text
    * @param {boolean} singleLine
-   * @param {?LintCollector} lint optional issue collector; never changes the output
-   * @returns {DocumentNode}
+   * @returns {import('./nodes.js').DocumentNode}
    */
-  parse(text, singleLine = false, lint = null) {
+  parse(text, singleLine = false) {
     text = normalize(text);
 
     // let modules do per-parse initialization (pattern registration, state reset)
@@ -194,39 +193,39 @@ export class Texy {
       this.inModulePrepare = false;
     }
 
-    const document = this.engine.parse(text, this.allowed, singleLine);
-
-    // the transform passes, in module order
-    this.directiveModule.processDirectives(document);
-    this.processHtmlPassthrough(document, lint);
-    this.imageModule.resolveReferences(document);
-    this.linkModule.resolveReferences(document, lint);
-    this.emoticonModule.resolveEmoticons(document);
-    new HeadingPass(
-      this.headingModule.top,
-      this.headingModule.balancing === HeadingModule.Dynamic,
-      this.headingModule.generateID,
-      this.headingModule.idPrefix,
-    ).process(document);
-
-    for (const pass of this.passes) {
-      pass(document);
-    }
-
-    this.applyAstTypography(document);
-    return document;
+    // the Syntax passes run inside the engine's parse()
+    return this.engine.parse(text, this.allowed, singleLine);
   }
 
   /**
-   * Parses text and collects lint issues alongside the AST, so a consumer
-   * (e.g. a language server) gets both without parsing twice.
+   * Turns the syntax tree into the document: resolves references, balances
+   * headings, sanitizes HTML, applies typography and the consumer's passes.
+   * Changes the tree in place; a document is transformed only once.
+   * @param {import('./nodes.js').DocumentNode} document
+   * @param {?LintCollector} lintCollector optional issue collector; never changes the output
+   */
+  transform(document, lintCollector = null) {
+    try {
+      this.lintCollector = lintCollector;
+      this.engine.transform(document);
+    } finally {
+      this.lintCollector = null;
+    }
+  }
+
+  /**
+   * Parses and transforms text and collects lint issues alongside the
+   * document, so a consumer (e.g. a language server) gets both in one
+   * pipeline run. Collection is passive - the collector never changes the
+   * output.
    * @param {string} text
    * @param {boolean} singleLine
-   * @returns {{ document: DocumentNode, issues: LintIssue[] }}
+   * @returns {{ document: import('./nodes.js').DocumentNode, issues: Array<import('./Lint.js').LintIssue> }}
    */
   lint(text, singleLine = false) {
     const collector = new LintCollector();
-    const document = this.parse(text, singleLine, collector);
+    const document = this.parse(text, singleLine);
+    this.transform(document, collector);
     return { document, issues: collector.issues };
   }
 
@@ -239,7 +238,7 @@ export class Texy {
    * case: a document built by a different parser, which is still an
    * ordinary Texy AST and still wants the typography. Calling it on an
    * already typographed document does nothing.
-   * @param {DocumentNode} document
+   * @param {import('./nodes.js').DocumentNode} document
    */
   applyAstTypography(document) {
     if (document.meta.typographed) {
@@ -263,28 +262,13 @@ export class Texy {
   }
 
   /**
-   * Pairs passthrough HTML tags into elements and evaluates the tag
-   * whitelist over them; both are transform passes that protect every
-   * output format. Only when html/tag is allowed.
-   * @param {DocumentNode} document
-   * @param {?LintCollector} lint optional issue collector
-   */
-  processHtmlPassthrough(document, lint = null) {
-    if (!this.allowed[Syntax.HtmlTag]) {
-      return;
-    }
-
-    new HtmlPairingPass(lint).process(document);
-    new HtmlSanitizePass(this.htmlPolicy, lint).process(document);
-  }
-
-  /**
-   * Registers a consumer transform pass: fn(DocumentNode): void, called after
-   * parsing and the module passes, in registration order.
+   * Registers a consumer transform pass: fn(DocumentNode): void, called with
+   * the whole document in transform(), in registration order.
    * @param {Function} pass
+   * @param {string} stage one of Stage
    */
-  addPass(pass) {
-    this.passes.push(pass);
+  addPass(pass, stage = Stage.Transform) {
+    this.engine.addPass(pass, stage);
   }
 
   /**
@@ -302,13 +286,15 @@ export class Texy {
    * @returns {string}
    */
   process(text, singleLine = false) {
-    return this.renderHtml(this.parse(text, singleLine));
+    const document = this.parse(text, singleLine);
+    this.transform(document);
+    return this.renderHtml(document);
   }
 
   /**
    * Renders a parsed document to HTML. Separate from parse() so a
    * consumer can read or transform the AST in between.
-   * @param {DocumentNode} document
+   * @param {import('./nodes.js').DocumentNode} document
    * @returns {string}
    */
   renderHtml(document) {
@@ -319,8 +305,8 @@ export class Texy {
    * Renders a parsed document onto a linkedom Document (content in
    * <body>) for DOM-side transformation; serialize afterwards via
    * linkedom (e.g. document.body.innerHTML).
-   * @param {DocumentNode} document
-   * @returns {Document} the DOM Document
+   * @param {import('./nodes.js').DocumentNode} document
+   * @returns the linkedom Document
    */
   renderDom(document) {
     return this.createHtmlRenderer().renderToDom(document);
@@ -337,7 +323,6 @@ export class Texy {
       this.htmlPolicy,
       this.urlPolicy,
       this.allowed[Syntax.Typography] ? s => this.typographyModule.postLine(s) : null,
-      () => this.createParseContext(),
     );
   }
 
@@ -367,12 +352,14 @@ export class Texy {
    * @returns {string}
    */
   toText(text) {
-    return this.renderText(this.parse(text));
+    const document = this.parse(text);
+    this.transform(document);
+    return this.renderText(document);
   }
 
   /**
    * Renders a parsed document to plain text.
-   * @param {DocumentNode} document
+   * @param {import('./nodes.js').DocumentNode} document
    * @returns {string}
    */
   renderText(document) {

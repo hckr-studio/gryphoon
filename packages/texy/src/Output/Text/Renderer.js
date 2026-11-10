@@ -4,8 +4,6 @@
  * structure (blank lines between blocks) are kept.
  */
 
-import { NodeRenderer } from "../NodeRenderer.js";
-import { replace } from "../../Regexp.js";
 import { phpTrim } from "../../helpers.js";
 import {
   AnnotationNode,
@@ -29,18 +27,20 @@ import {
   LineBreakNode,
   LinkDefinitionNode,
   LinkNode,
-  ListNode,
   ListItemNode,
+  ListNode,
   ParagraphNode,
   PhraseNode,
   RawTextNode,
   SectionNode,
-  TableNode,
   TableCellNode,
+  TableNode,
   TableRowNode,
   TextNode,
   UrlNode,
 } from "../../nodes.js";
+import { replace } from "../../Regexp.js";
+import { NodeRenderer } from "../NodeRenderer.js";
 
 export class Renderer extends NodeRenderer {
   constructor() {

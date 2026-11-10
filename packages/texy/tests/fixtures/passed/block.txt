@@ -7,13 +7,13 @@ DocumentNode
             TextNode [24,4] "auto"
         SectionNode [29,86] mod[39,7]
           ContentNode
-            ListNode [49,19] unordered
-              ListItemNode [49,19] mod[59,9]
+            ListNode [49,28] unordered
+              ListItemNode [49,19] mod[59,9] bulletRange[49,1] bullet=-
                 ContentNode
                   ParagraphNode [51,5]
                     ContentNode
                       TextNode [51,5] "Úvod"
-              ListItemNode [71,6]
+              ListItemNode [71,6] bulletRange[71,1] bullet=-
                 ContentNode
                   ParagraphNode [73,4]
                     ContentNode
@@ -31,84 +31,84 @@ DocumentNode
           ContentNode
             SectionNode [171,381] mod[181,7]
               ContentNode
-                ListNode [195,46] unordered
-                  ListItemNode [195,169] mod[225,16]
+                ListNode [195,169] unordered
+                  ListItemNode [195,169] mod[225,16] bulletRange[195,1] bullet=-
                     ContentNode
                       ParagraphNode [197,21]
                         ContentNode
-                          LinkNode [197,21] url=about
+                          LinkNode [197,21] textRange[198,11] urlRange[211,7] phrase/span url=about ref=about
                             ContentNode
                               TextNode [198,11] "co je Texy!"
-                      ListNode [248,27] unordered
-                        ListItemNode [248,27]
+                      ListNode [248,116] unordered
+                        ListItemNode [248,27] bulletRange[248,1] bullet=-
                           ContentNode
                             ParagraphNode [250,25]
                               ContentNode
-                                LinkNode [250,25] url=about-usage
+                                LinkNode [250,25] textRange[251,9] urlRange[262,13] phrase/span url=about-usage ref=about-usage
                                   ContentNode
                                     TextNode [251,9] "využití"
-                        ListItemNode [282,38]
+                        ListItemNode [282,38] bulletRange[282,1] bullet=-
                           ContentNode
                             ParagraphNode [284,36]
                               ContentNode
-                                LinkNode [284,36] url=about-why-texy
+                                LinkNode [284,36] textRange[285,17] urlRange[304,16] phrase/span url=about-why-texy ref=about-why-texy
                                   ContentNode
                                     TextNode [285,17] "v čem je lepší"
-                        ListItemNode [327,37]
+                        ListItemNode [327,37] bulletRange[327,1] bullet=-
                           ContentNode
                             ParagraphNode [329,35]
                               ContentNode
-                                LinkNode [329,35] url=about-wysiwig
+                                LinkNode [329,35] textRange[330,17] urlRange[349,15] phrase/span url=about-wysiwig ref=about-wysiwig
                                   ContentNode
                                     TextNode [330,17] "Texy! vs. WYSIWIG"
-                ListNode [371,19] unordered
-                  ListItemNode [371,19]
+                ListNode [371,181] unordered
+                  ListItemNode [371,19] bulletRange[371,1] bullet=-
                     ContentNode
                       ParagraphNode [373,17]
                         ContentNode
-                          LinkNode [373,17] url=syntax
+                          LinkNode [373,17] textRange[374,6] urlRange[382,8] phrase/span url=syntax ref=syntax
                             ContentNode
                               TextNode [374,6] "syntax"
-                  ListItemNode [395,14]
+                  ListItemNode [395,14] bulletRange[395,1] bullet=-
                     ContentNode
                       ParagraphNode [397,12]
                         ContentNode
-                          LinkNode [397,12] url=try
+                          LinkNode [397,12] textRange[398,4] urlRange[404,5] phrase/span url=try ref=try
                             ContentNode
                               TextNode [398,4] "demo"
-                  ListItemNode [414,33]
+                  ListItemNode [414,33] bulletRange[414,1] bullet=-
                     ContentNode
                       ParagraphNode [416,31]
                         ContentNode
-                          LinkNode [416,31] url=implementation
+                          LinkNode [416,31] textRange[417,12] urlRange[431,16] phrase/span url=implementation ref=implementation
                             ContentNode
                               TextNode [417,12] "implementace"
-                  ListItemNode [452,23]
+                  ListItemNode [452,23] bulletRange[452,1] bullet=-
                     ContentNode
                       ParagraphNode [454,21]
                         ContentNode
-                          LinkNode [454,21] url=download
+                          LinkNode [454,21] textRange[455,8] urlRange[465,10] phrase/span url=download ref=download
                             ContentNode
                               TextNode [455,8] "download"
-                  ListItemNode [480,21]
+                  ListItemNode [480,21] bulletRange[480,1] bullet=-
                     ContentNode
                       ParagraphNode [482,19]
                         ContentNode
-                          LinkNode [482,19] url=license
+                          LinkNode [482,19] textRange[483,7] urlRange[492,9] phrase/span url=license ref=license
                             ContentNode
                               TextNode [483,7] "licence"
-                  ListItemNode [506,20]
+                  ListItemNode [506,20] bulletRange[506,1] bullet=-
                     ContentNode
                       ParagraphNode [508,18]
                         ContentNode
-                          LinkNode [508,18] url=news
+                          LinkNode [508,18] textRange[509,9] urlRange[520,6] phrase/span url=news ref=news
                             ContentNode
                               TextNode [509,9] "aktuality"
-                  ListItemNode [531,21]
+                  ListItemNode [531,21] bulletRange[531,1] bullet=-
                     ContentNode
                       ParagraphNode [533,19]
                         ContentNode
-                          LinkNode [533,19] url=contact
+                          LinkNode [533,19] textRange[534,7] urlRange[543,9] phrase/span url=contact ref=contact
                             ContentNode
                               TextNode [534,7] "kontakt"
         ParagraphNode [561,7]
@@ -119,28 +119,28 @@ DocumentNode
             TextNode [572,17] "Sponzor hostingu:"
         ParagraphNode [593,54]
           ContentNode
-            LinkNode [593,54] url=6
+            LinkNode [593,54] textRange[594,48] urlRange[644,3] phrase/span url=6 ref=6
               ContentNode
-                ImageNode [594,48] src=[7]
+                ImageNode [594,48] urlRange[597,3] src=[7]
     ParagraphNode [656,124]
       ContentNode
         TextNode [656,12] "Texy! forma "
-        LinkNode [668,24] url=syntax.texy
+        LinkNode [668,24] textRange[669,8] urlRange[679,13] phrase/span url=syntax.texy ref=syntax.texy
           ContentNode
             TextNode [669,8] "stránky"
         TextNode [692,1] " "
         HtmlElementNode [693,7]
           ContentNode
             TextNode [700,1] "("
-            LinkNode [701,18] url=menu.texy
+            LinkNode [701,18] textRange[702,4] urlRange[708,11] phrase/span url=menu.texy ref=menu.texy
               ContentNode
                 TextNode [702,4] "menu"
             TextNode [719,2] ", "
-            LinkNode [721,24] url=footer.texy
+            LinkNode [721,24] textRange[722,8] urlRange[732,13] phrase/span url=footer.texy ref=footer.texy
               ContentNode
                 TextNode [722,8] "patička"
             TextNode [745,2] ", "
-            LinkNode [747,24] url=../links.texy
+            LinkNode [747,24] textRange[748,6] urlRange[756,15] phrase/span url=../links.texy ref=../links.texy
               ContentNode
                 TextNode [748,6] "odkazy"
             TextNode [771,1] ")"
@@ -155,7 +155,7 @@ DocumentNode
               ContentNode
                 TextNode [812,5] "Texy!"
             TextNode [819,5] " (C) "
-            LinkNode [824,17] url=8
+            LinkNode [824,17] textRange[825,11] urlRange[838,3] phrase/span url=8 ref=8
               ContentNode
                 TextNode [825,11] "David Grudl"
             TextNode [841,10] " 2003-2005"
@@ -163,13 +163,13 @@ DocumentNode
       ContentNode
         SectionNode [884,53] mod[894,7]
           ContentNode
-            ListNode [904,19] unordered
-              ListItemNode [904,19] mod[914,9]
+            ListNode [904,28] unordered
+              ListItemNode [904,19] mod[914,9] bulletRange[904,1] bullet=-
                 ContentNode
                   ParagraphNode [906,5]
                     ContentNode
                       TextNode [906,5] "Úvod"
-              ListItemNode [926,6]
+              ListItemNode [926,6] bulletRange[926,1] bullet=-
                 ContentNode
                   ParagraphNode [928,4]
                     ContentNode

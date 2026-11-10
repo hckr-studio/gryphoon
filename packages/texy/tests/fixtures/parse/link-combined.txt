@@ -1,10 +1,10 @@
 DocumentNode
   ContentNode
-    HeadingNode [0,13] level=3
+    HeadingNode [0,13] textRange[0,6] level=3 marker=-
       ContentNode
         TextNode [0,6] "Odkazy"
-    ListNode [15,63] unordered
-      ListItemNode [15,63]
+    ListNode [15,871] unordered
+      ListItemNode [15,63] bulletRange[15,1] bullet=-
         ContentNode
           ParagraphNode [17,61]
             ContentNode
@@ -12,7 +12,7 @@ DocumentNode
               HtmlTagNode [23,46] <a>
               TextNode [69,5] "pokus"
               HtmlTagNode [74,4] <a>
-      ListItemNode [79,52]
+      ListItemNode [79,52] bulletRange[79,1] bullet=-
         ContentNode
           ParagraphNode [81,50]
             ContentNode
@@ -20,7 +20,7 @@ DocumentNode
               HtmlTagNode [87,35] <a>
               TextNode [122,5] "pokus"
               HtmlTagNode [127,4] <a>
-      ListItemNode [132,35]
+      ListItemNode [132,35] bulletRange[132,1] bullet=-
         ContentNode
           ParagraphNode [134,33]
             ContentNode
@@ -28,7 +28,7 @@ DocumentNode
               HtmlTagNode [140,13] <a>
               HtmlTagNode [153,4] <a>
               TextNode [157,10] " prázdný"
-      ListItemNode [168,29]
+      ListItemNode [168,29] bulletRange[168,1] bullet=-
         ContentNode
           ParagraphNode [170,27]
             ContentNode
@@ -37,628 +37,648 @@ DocumentNode
               TextNode [179,4] "test"
               HtmlTagNode [183,4] <a>
               TextNode [187,10] " prázdný"
-      ListItemNode [198,56]
+      ListItemNode [198,56] bulletRange[199,1] bullet=-
         ContentNode
           ParagraphNode [201,53]
             ContentNode
               TextNode [201,16] "Klasický odkaz "
-              LinkNode [217,36] url=http://phpfashion.com/
+              LinkNode [217,36] textRange[218,11] urlRange[231,22] phrase/span url=http://phpfashion.com/
                 ContentNode
                   TextNode [218,11] "php Fashion"
               TextNode [253,1] "?"
-      ListItemNode [255,42]
+      ListItemNode [255,42] bulletRange[255,1] bullet=-
         ContentNode
           ParagraphNode [257,40]
             ContentNode
               TextNode [257,16] "Klasický odkaz "
-              LinkNode [273,23] url=[/trine/]
+              LinkNode [273,23] textRange[274,11] urlRange[287,9] phrase/span ref=/trine/
                 ContentNode
                   TextNode [274,11] "php Fashion"
               TextNode [296,1] "x"
-      ListItemNode [298,57]
+      ListItemNode [298,57] bulletRange[298,1] bullet=-
         ContentNode
           ParagraphNode [300,55]
             ContentNode
               TextNode [300,16] "Klasický odkaz "
-              LinkNode [316,38] mod[330,12] url=[./trine/]
+              LinkNode [316,38] mod[330,12] textRange[317,11] urlRange[344,10] phrase/span ref=./trine/
                 ContentNode
                   TextNode [317,11] "php Fashion"
               TextNode [354,1] "x"
-      ListItemNode [356,51]
+      ListItemNode [356,51] bulletRange[356,1] bullet=-
         ContentNode
           ParagraphNode [358,49]
             ContentNode
               TextNode [358,16] "Klasický odkaz "
-              LinkNode [374,32] url=[dave@example.com]
+              LinkNode [374,32] textRange[375,11] urlRange[388,18] phrase/span ref=dave@example.com
                 ContentNode
                   TextNode [375,11] "php Fashion"
               TextNode [406,1] "x"
-      ListItemNode [408,48]
+      ListItemNode [408,48] bulletRange[408,1] bullet=-
         ContentNode
           ParagraphNode [410,46]
             ContentNode
               TextNode [410,16] "Klasický odkaz "
-              LinkNode [426,30] url=dave@example.com
+              LinkNode [426,30] textRange[427,11] urlRange[440,16] phrase/span url=dave@example.com
                 ContentNode
                   TextNode [427,11] "php Fashion"
-      ListItemNode [457,50]
+      ListItemNode [457,50] bulletRange[458,1] bullet=-
         ContentNode
           ParagraphNode [460,47]
             ContentNode
               TextNode [460,19] "Referenční odkaz "
-              LinkNode [479,28] url=[php Fashion1]
+              LinkNode [479,28] textRange[480,11] urlRange[493,14] phrase/span ref=php Fashion1
                 ContentNode
                   TextNode [480,11] "php Fashion"
-      ListItemNode [508,49]
+      ListItemNode [508,49] bulletRange[508,1] bullet=-
         ContentNode
           ParagraphNode [510,47]
             ContentNode
               TextNode [510,19] "Referenční odkaz "
-              LinkNode [529,28] url=[php Fashion2]
+              LinkNode [529,28] textRange[530,11] urlRange[543,14] phrase/span ref=php Fashion2
                 ContentNode
                   TextNode [530,11] "php Fashion"
-      ListItemNode [558,49]
+      ListItemNode [558,49] bulletRange[558,1] bullet=-
         ContentNode
           ParagraphNode [560,47]
             ContentNode
               TextNode [560,19] "Referenční odkaz "
-              LinkNode [579,28] url=[php Fashion3]
+              LinkNode [579,28] textRange[580,11] urlRange[593,14] phrase/span ref=php Fashion3
                 ContentNode
                   TextNode [580,11] "php Fashion"
-      ListItemNode [608,42]
+      ListItemNode [608,42] bulletRange[608,1] bullet=-
         ContentNode
           ParagraphNode [610,40]
             ContentNode
               TextNode [610,19] "Referenční odkaz "
-              LinkNode [629,21] url=[email]
+              LinkNode [629,21] textRange[630,11] urlRange[643,7] phrase/span ref=email
                 ContentNode
                   TextNode [630,11] "php Fashion"
-      ListItemNode [651,64]
+      ListItemNode [651,64] bulletRange[651,1] bullet=-
         ContentNode
           ParagraphNode [653,62]
             ContentNode
               TextNode [653,19] "Referenční odkaz "
-              LinkNode [672,42] mod[686,12] url=[php Fashion1]
+              LinkNode [672,42] mod[686,12] textRange[673,11] urlRange[700,14] phrase/span ref=php Fashion1
                 ContentNode
                   TextNode [673,11] "php Fashion"
               TextNode [714,1] "?"
-      ListItemNode [716,60]
+      ListItemNode [716,60] bulletRange[716,1] bullet=-
         ContentNode
           ParagraphNode [718,58]
             ContentNode
               TextNode [718,19] "Referenční odkaz "
-              LinkNode [737,38] mod[751,8] url=[php Fashion2]
+              LinkNode [737,38] mod[751,8] textRange[738,11] urlRange[761,14] phrase/span ref=php Fashion2
                 ContentNode
                   TextNode [738,11] "php Fashion"
               TextNode [775,1] "?"
-      ListItemNode [777,53]
+      ListItemNode [777,53] bulletRange[777,1] bullet=-
         ContentNode
           ParagraphNode [779,51]
             ContentNode
               TextNode [779,19] "Referenční odkaz "
-              LinkNode [798,31] url=[php Fashion1#12]
+              LinkNode [798,31] textRange[799,11] urlRange[812,17] phrase/span ref=php Fashion1#12
                 ContentNode
                   TextNode [799,11] "php Fashion"
               TextNode [829,1] "?"
-      ListItemNode [831,55]
+      ListItemNode [831,55] bulletRange[831,1] bullet=-
         ContentNode
           ParagraphNode [833,53]
             ContentNode
               TextNode [833,19] "Referenční odkaz "
-              LinkNode [852,33] url=[php Fashion2?a=45]
+              LinkNode [852,33] textRange[853,11] urlRange[866,19] phrase/span ref=php Fashion2?a=45
                 ContentNode
                   TextNode [853,11] "php Fashion"
               TextNode [885,1] "?"
-    ListNode [889,35] unordered
-      ListItemNode [889,35]
+    ListNode [889,267] unordered
+      ListItemNode [889,35] bulletRange[889,1] bullet=-
         ContentNode
           ParagraphNode [891,33]
             ContentNode
               TextNode [891,10] "wiki link "
-              LinkNode [901,23] url=http://texy.info
+              LinkNode [901,23] textRange[902,4] urlRange[907,16] phrase/wikilink url=http://texy.info
                 ContentNode
                   TextNode [902,4] "Texy"
-      ListItemNode [925,51]
+      ListItemNode [925,51] bulletRange[925,1] bullet=-
         ContentNode
           ParagraphNode [927,49]
             ContentNode
               TextNode [927,10] "wiki link "
-              LinkNode [937,39] url=http://texy.info
+              LinkNode [937,39] textRange[938,4] urlRange[945,16] phrase/wikilink url=http://texy.info
                 ContentNode
                   TextNode [938,4] "Texy"
-      ListItemNode [977,40]
+      ListItemNode [977,40] bulletRange[977,1] bullet=-
         ContentNode
           ParagraphNode [979,38]
             ContentNode
               TextNode [979,14] "markdown link "
-              LinkNode [993,24] url=http://texy.info
+              LinkNode [993,24] textRange[994,4] urlRange[1000,16] phrase/markdown url=http://texy.info
                 ContentNode
                   TextNode [994,4] "Texy"
-      ListItemNode [1018,54]
+      ListItemNode [1018,54] bulletRange[1018,1] bullet=-
         ContentNode
           ParagraphNode [1020,52]
             ContentNode
               TextNode [1020,14] "markdown link "
-              LinkNode [1034,38] url=http://texy.info
+              LinkNode [1034,38] textRange[1035,4] urlRange[1055,16] phrase/markdown url=http://texy.info
                 ContentNode
                   TextNode [1035,4] "Texy"
-    HeadingNode [1074,37] level=3
+      ListItemNode [1073,35] bulletRange[1073,1] bullet=-
+        ContentNode
+          ParagraphNode [1075,33]
+            ContentNode
+              TextNode [1075,10] "code link "
+              LinkNode [1085,23] textRange[1086,4] urlRange[1092,16] phrase/code url=http://texy.info
+                ContentNode
+                  PhraseNode [1085,23] phrase/code
+                    ContentNode
+                      TextNode [1086,4] "Texy"
+      ListItemNode [1109,47] bulletRange[1109,1] bullet=-
+        ContentNode
+          ParagraphNode [1111,45]
+            ContentNode
+              TextNode [1111,10] "code link "
+              LinkNode [1121,35] textRange[1122,4] urlRange[1142,14] phrase/code ref=php Fashion1
+                ContentNode
+                  PhraseNode [1121,35] mod[1128,12] phrase/code
+                    ContentNode
+                      TextNode [1122,4] "Texy"
+    HeadingNode [1158,37] textRange[1158,19] level=3 marker=-
       ContentNode
-        TextNode [1074,19] "Obrázkové odkazy:"
-    ListNode [1113,46] unordered
-      ListItemNode [1113,46]
+        TextNode [1158,19] "Obrázkové odkazy:"
+    ListNode [1197,271] unordered
+      ListItemNode [1197,46] bulletRange[1197,1] bullet=-
         ContentNode
-          ParagraphNode [1115,44]
+          ParagraphNode [1199,44]
             ContentNode
-              TextNode [1115,16] "Klasický odkaz "
-              LinkNode [1131,28] url=[* texy-big.jpg *]
+              TextNode [1199,16] "Klasický odkaz "
+              LinkNode [1215,28] textRange[1216,7] urlRange[1225,18] phrase/span ref=texy-big.jpg
                 ContentNode
-                  TextNode [1132,7] "obrazek"
-      ListItemNode [1160,46]
+                  TextNode [1216,7] "obrazek"
+      ListItemNode [1244,46] bulletRange[1244,1] bullet=-
         ContentNode
-          ParagraphNode [1162,44]
+          ParagraphNode [1246,44]
             ContentNode
-              TextNode [1162,16] "Klasický odkaz "
-              LinkNode [1178,28] url=[* texy-big.jpg >]
+              TextNode [1246,16] "Klasický odkaz "
+              LinkNode [1262,28] textRange[1263,7] urlRange[1272,18] phrase/span ref=texy-big.jpg
                 ContentNode
-                  TextNode [1179,7] "obrazek"
-      ListItemNode [1207,44]
+                  TextNode [1263,7] "obrazek"
+      ListItemNode [1291,44] bulletRange[1291,1] bullet=-
         ContentNode
-          ParagraphNode [1209,42]
+          ParagraphNode [1293,42]
             ContentNode
-              TextNode [1209,16] "Klasický odkaz "
-              LinkNode [1225,26] url=[*texy-big.jpg*]
+              TextNode [1293,16] "Klasický odkaz "
+              LinkNode [1309,26] textRange[1310,7] urlRange[1319,16] phrase/span ref=texy-big.jpg
                 ContentNode
-                  TextNode [1226,7] "obrazek"
-      ListItemNode [1252,44]
+                  TextNode [1310,7] "obrazek"
+      ListItemNode [1336,44] bulletRange[1337,1] bullet=-
         ContentNode
-          ParagraphNode [1255,41]
+          ParagraphNode [1339,41]
             ContentNode
-              TextNode [1255,19] "Referenční odkaz "
-              LinkNode [1274,22] url=[neobrazek1]
+              TextNode [1339,19] "Referenční odkaz "
+              LinkNode [1358,22] textRange[1359,7] urlRange[1368,12] phrase/span ref=neobrazek1
                 ContentNode
-                  TextNode [1275,7] "obrazek"
-      ListItemNode [1297,43]
+                  TextNode [1359,7] "obrazek"
+      ListItemNode [1381,43] bulletRange[1381,1] bullet=-
         ContentNode
-          ParagraphNode [1299,41]
+          ParagraphNode [1383,41]
             ContentNode
-              TextNode [1299,19] "Referenční odkaz "
-              LinkNode [1318,22] url=[*obrazek1*]
+              TextNode [1383,19] "Referenční odkaz "
+              LinkNode [1402,22] textRange[1403,7] urlRange[1412,12] phrase/span ref=obrazek1
                 ContentNode
-                  TextNode [1319,7] "obrazek"
-      ListItemNode [1341,43]
+                  TextNode [1403,7] "obrazek"
+      ListItemNode [1425,43] bulletRange[1425,1] bullet=-
         ContentNode
-          ParagraphNode [1343,41]
+          ParagraphNode [1427,41]
             ContentNode
-              TextNode [1343,19] "Referenční odkaz "
-              LinkNode [1362,22] url=[*obrazek3*]
+              TextNode [1427,19] "Referenční odkaz "
+              LinkNode [1446,22] textRange[1447,7] urlRange[1456,12] phrase/span ref=obrazek3
                 ContentNode
-                  TextNode [1363,7] "obrazek"
-    HeadingNode [1388,42] level=3
+                  TextNode [1447,7] "obrazek"
+    HeadingNode [1472,42] textRange[1472,22] level=3 marker=-
       ContentNode
-        TextNode [1388,22] "Odkazující obrázky:"
-    ListNode [1432,54] unordered
-      ListItemNode [1432,54]
+        TextNode [1472,22] "Odkazující obrázky:"
+    ListNode [1516,827] unordered
+      ListItemNode [1516,54] bulletRange[1516,1] bullet=-
         ContentNode
-          ParagraphNode [1434,52]
+          ParagraphNode [1518,52]
             ContentNode
-              TextNode [1434,16] "Klasický odkaz "
-              LinkNode [1450,35] url=http://phpfashion.com/
+              TextNode [1518,16] "Klasický odkaz "
+              LinkNode [1534,35] urlRange[1547,22] image url=http://phpfashion.com/
                 ContentNode
-                  ImageNode [1450,35] src=texy.jpg
-              TextNode [1485,1] "?"
-      ListItemNode [1487,67]
+                  ImageNode [1534,12] urlRange[1536,8] src=texy.jpg
+              TextNode [1569,1] "?"
+      ListItemNode [1571,67] bulletRange[1571,1] bullet=-
         ContentNode
-          ParagraphNode [1489,65]
+          ParagraphNode [1573,65]
             ContentNode
-              TextNode [1489,16] "Klasický odkaz "
-              LinkNode [1505,48] url=[dave@example.com]
+              TextNode [1573,16] "Klasický odkaz "
+              LinkNode [1589,48] urlRange[1619,18] image ref=dave@example.com
                 ContentNode
-                  ImageNode [1505,48] src=texy.jpg
-              TextNode [1553,1] "x"
-      ListItemNode [1555,49]
+                  ImageNode [1589,29] urlRange[1591,8] src=texy.jpg
+              TextNode [1637,1] "x"
+      ListItemNode [1639,49] bulletRange[1640,1] bullet=-
         ContentNode
-          ParagraphNode [1558,46]
+          ParagraphNode [1642,46]
             ContentNode
-              TextNode [1558,46] "Referenční odkaz [neobrazek1]:[php Fashion1]"
-      ListItemNode [1605,47]
+              TextNode [1642,46] "Referenční odkaz [neobrazek1]:[php Fashion1]"
+      ListItemNode [1689,47] bulletRange[1689,1] bullet=-
         ContentNode
-          ParagraphNode [1607,45]
+          ParagraphNode [1691,45]
             ContentNode
-              TextNode [1607,19] "Referenční odkaz "
-              LinkNode [1626,26] url=[*obrazek2*]
+              TextNode [1691,19] "Referenční odkaz "
+              LinkNode [1710,26] textRange[1711,11] urlRange[1724,12] phrase/span ref=obrazek2
                 ContentNode
-                  TextNode [1627,11] "php Fashion"
-      ListItemNode [1653,47]
+                  TextNode [1711,11] "php Fashion"
+      ListItemNode [1737,47] bulletRange[1737,1] bullet=-
         ContentNode
-          ParagraphNode [1655,45]
+          ParagraphNode [1739,45]
             ContentNode
-              TextNode [1655,19] "Referenční odkaz "
-              LinkNode [1674,26] url=[*obrazek3*]
+              TextNode [1739,19] "Referenční odkaz "
+              LinkNode [1758,26] textRange[1759,11] urlRange[1772,12] phrase/span ref=obrazek3
                 ContentNode
-                  TextNode [1675,11] "php Fashion"
-      ListItemNode [1701,41]
+                  TextNode [1759,11] "php Fashion"
+      ListItemNode [1785,41] bulletRange[1785,1] bullet=-
         ContentNode
-          ParagraphNode [1703,39]
+          ParagraphNode [1787,39]
             ContentNode
-              TextNode [1703,19] "Referenční odkaz "
-              LinkNode [1722,20] url=[email]
+              TextNode [1787,19] "Referenční odkaz "
+              LinkNode [1806,20] urlRange[1819,7] image ref=email
                 ContentNode
-                  ImageNode [1722,20] src=obrazek2
-      ListItemNode [1743,62]
+                  ImageNode [1806,12] urlRange[1808,8] src=obrazek2
+      ListItemNode [1827,62] bulletRange[1827,1] bullet=-
         ContentNode
-          ParagraphNode [1745,60]
+          ParagraphNode [1829,60]
             ContentNode
-              TextNode [1745,19] "Referenční odkaz "
-              LinkNode [1764,40] mod[1778,12] url=[*obrazek2*]
+              TextNode [1829,19] "Referenční odkaz "
+              LinkNode [1848,40] mod[1862,12] textRange[1849,11] urlRange[1876,12] phrase/span ref=obrazek2
                 ContentNode
-                  TextNode [1765,11] "php Fashion"
-              TextNode [1804,1] "?"
-      ListItemNode [1806,58]
+                  TextNode [1849,11] "php Fashion"
+              TextNode [1888,1] "?"
+      ListItemNode [1890,58] bulletRange[1890,1] bullet=-
         ContentNode
-          ParagraphNode [1808,56]
+          ParagraphNode [1892,56]
             ContentNode
-              TextNode [1808,19] "Referenční odkaz "
-              LinkNode [1827,36] mod[1841,8] url=[*obrazek3*]
+              TextNode [1892,19] "Referenční odkaz "
+              LinkNode [1911,36] mod[1925,8] textRange[1912,11] urlRange[1935,12] phrase/span ref=obrazek3
                 ContentNode
-                  TextNode [1828,11] "php Fashion"
-              TextNode [1863,1] "?"
-      ListItemNode [1865,49]
+                  TextNode [1912,11] "php Fashion"
+              TextNode [1947,1] "?"
+      ListItemNode [1949,49] bulletRange[1950,1] bullet=-
         ContentNode
-          ParagraphNode [1868,46]
+          ParagraphNode [1952,46]
             ContentNode
-              TextNode [1868,19] "Referenční odkaz "
-              LinkNode [1887,27] url=[php Fashion2]
+              TextNode [1952,19] "Referenční odkaz "
+              LinkNode [1971,27] urlRange[1984,14] image ref=php Fashion2
                 ContentNode
-                  ImageNode [1887,27] src=obrazek1
-      ListItemNode [1915,44]
+                  ImageNode [1971,12] urlRange[1973,8] src=obrazek1
+      ListItemNode [1999,44] bulletRange[1999,1] bullet=-
         ContentNode
-          ParagraphNode [1917,42]
+          ParagraphNode [2001,42]
             ContentNode
-              TextNode [1917,19] "Referenční odkaz "
-              LinkNode [1936,22] url=[/trine/]
+              TextNode [2001,19] "Referenční odkaz "
+              LinkNode [2020,22] urlRange[2033,9] image ref=/trine/
                 ContentNode
-                  ImageNode [1936,22] src=obrazek2
-              TextNode [1958,1] "x"
-      ListItemNode [1960,35]
+                  ImageNode [2020,12] urlRange[2022,8] src=obrazek2
+              TextNode [2042,1] "x"
+      ListItemNode [2044,35] bulletRange[2044,1] bullet=-
         ContentNode
-          ParagraphNode [1962,33]
+          ParagraphNode [2046,33]
             ContentNode
-              TextNode [1962,19] "Referenční odkaz "
-              LinkNode [1981,14] url=obrazek3
+              TextNode [2046,19] "Referenční odkaz "
+              LinkNode [2065,14] urlRange[2078,1] image url=obrazek3
                 ContentNode
-                  ImageNode [1981,14] src=obrazek3
-      ListItemNode [1996,35]
+                  ImageNode [2065,12] urlRange[2067,8] src=obrazek3
+      ListItemNode [2080,35] bulletRange[2080,1] bullet=-
         ContentNode
-          ParagraphNode [1998,33]
+          ParagraphNode [2082,33]
             ContentNode
-              TextNode [1998,19] "Referenční odkaz "
-              LinkNode [2017,14] url=obrazek2
+              TextNode [2082,19] "Referenční odkaz "
+              LinkNode [2101,14] urlRange[2114,1] image url=obrazek2
                 ContentNode
-                  ImageNode [2017,14] src=obrazek2
-      ListItemNode [2032,46]
+                  ImageNode [2101,12] urlRange[2103,8] src=obrazek2
+      ListItemNode [2116,46] bulletRange[2116,1] bullet=-
         ContentNode
-          ParagraphNode [2034,44]
+          ParagraphNode [2118,44]
             ContentNode
-              TextNode [2034,19] "Referenční odkaz "
-              LinkNode [2053,25] url=[*obrazek1*]
+              TextNode [2118,19] "Referenční odkaz "
+              LinkNode [2137,25] urlRange[2150,12] image ref=obrazek1
                 ContentNode
-                  ImageNode [2053,25] src=obrazek4
-      ListItemNode [2079,45]
+                  ImageNode [2137,12] urlRange[2139,8] src=obrazek4
+      ListItemNode [2163,45] bulletRange[2164,1] bullet=-
         ContentNode
-          ParagraphNode [2082,42]
+          ParagraphNode [2166,42]
             ContentNode
-              TextNode [2082,30] "Čistě referenční obrázek "
-              ImageNode [2112,12] src=obrazek1
-      ListItemNode [2125,44]
+              TextNode [2166,30] "Čistě referenční obrázek "
+              ImageNode [2196,12] urlRange[2198,8] src=obrazek1
+      ListItemNode [2209,44] bulletRange[2209,1] bullet=-
         ContentNode
-          ParagraphNode [2127,42]
+          ParagraphNode [2211,42]
             ContentNode
-              TextNode [2127,30] "Čistě referenční obrázek "
-              ImageNode [2157,12] src=obrazek2
-      ListItemNode [2170,44]
+              TextNode [2211,30] "Čistě referenční obrázek "
+              ImageNode [2241,12] urlRange[2243,8] src=obrazek2
+      ListItemNode [2254,44] bulletRange[2254,1] bullet=-
         ContentNode
-          ParagraphNode [2172,42]
+          ParagraphNode [2256,42]
             ContentNode
-              TextNode [2172,30] "Čistě referenční obrázek "
-              ImageNode [2202,12] src=obrazek3
-      ListItemNode [2215,44]
+              TextNode [2256,30] "Čistě referenční obrázek "
+              ImageNode [2286,12] urlRange[2288,8] src=obrazek3
+      ListItemNode [2299,44] bulletRange[2299,1] bullet=-
         ContentNode
-          ParagraphNode [2217,42]
+          ParagraphNode [2301,42]
             ContentNode
-              TextNode [2217,30] "Čistě referenční obrázek "
-              ImageNode [2247,12] src=obrazek4
-    HeadingNode [2262,38] level=3
+              TextNode [2301,30] "Čistě referenční obrázek "
+              ImageNode [2331,12] urlRange[2333,8] src=obrazek4
+    HeadingNode [2346,38] textRange[2346,19] level=3 marker=-
       ContentNode
-        TextNode [2262,19] "Obrázek s popiskou"
-    ParagraphNode [2302,56]
+        TextNode [2346,19] "Obrázek s popiskou"
+    ParagraphNode [2386,56]
       ContentNode
-        LinkNode [2302,21] url=[home]
+        LinkNode [2386,21] urlRange[2401,6] image ref=home
           ContentNode
-            ImageNode [2302,21] src=texy.gif
-        TextNode [2323,35] " * popiska s plným formátováním"
-    HeadingNode [2361,25] level=3
+            ImageNode [2386,14] urlRange[2389,8] src=texy.gif
+        TextNode [2407,35] " * popiska s plným formátováním"
+    HeadingNode [2445,25] textRange[2445,12] level=3 marker=-
       ContentNode
-        TextNode [2361,12] "Rel nofollow"
-    ListNode [2388,69] unordered
-      ListItemNode [2388,69]
+        TextNode [2445,12] "Rel nofollow"
+    ListNode [2472,608] unordered
+      ListItemNode [2472,69] bulletRange[2472,1] bullet=-
         ContentNode
-          ParagraphNode [2390,67]
+          ParagraphNode [2474,67]
             ContentNode
-              TextNode [2390,18] "relnofollow odkaz "
-              LinkNode [2408,48] mod[2422,10] url=http://phpfashion.com/
+              TextNode [2474,18] "relnofollow odkaz "
+              LinkNode [2492,48] mod[2506,10] textRange[2493,11] urlRange[2518,22] phrase/span url=http://phpfashion.com/
                 ContentNode
-                  TextNode [2409,11] "php Fashion"
-              TextNode [2456,1] "?"
-      ListItemNode [2458,56]
+                  TextNode [2493,11] "php Fashion"
+              TextNode [2540,1] "?"
+      ListItemNode [2542,56] bulletRange[2542,1] bullet=-
         ContentNode
-          ParagraphNode [2460,54]
+          ParagraphNode [2544,54]
             ContentNode
-              TextNode [2460,18] "relnofollow odkaz "
-              LinkNode [2478,35] mod[2492,10] url=[/trine/]
+              TextNode [2544,18] "relnofollow odkaz "
+              LinkNode [2562,35] mod[2576,10] textRange[2563,11] urlRange[2588,9] phrase/span ref=/trine/
                 ContentNode
-                  TextNode [2479,11] "php Fashion"
-              TextNode [2513,1] "x"
-      ListItemNode [2515,59]
+                  TextNode [2563,11] "php Fashion"
+              TextNode [2597,1] "x"
+      ListItemNode [2599,59] bulletRange[2599,1] bullet=-
         ContentNode
-          ParagraphNode [2517,57]
+          ParagraphNode [2601,57]
             ContentNode
-              TextNode [2517,18] "relnofollow odkaz "
-              LinkNode [2535,38] mod[2549,12] url=[./trine/]
+              TextNode [2601,18] "relnofollow odkaz "
+              LinkNode [2619,38] mod[2633,12] textRange[2620,11] urlRange[2647,10] phrase/span ref=./trine/
                 ContentNode
-                  TextNode [2536,11] "php Fashion"
-              TextNode [2573,1] "x"
-      ListItemNode [2575,70]
+                  TextNode [2620,11] "php Fashion"
+              TextNode [2657,1] "x"
+      ListItemNode [2659,70] bulletRange[2659,1] bullet=-
         ContentNode
-          ParagraphNode [2577,68]
+          ParagraphNode [2661,68]
             ContentNode
-              TextNode [2577,18] "relnofollow odkaz "
-              LinkNode [2595,49] mod[2609,15] url=[dave@example.com]
+              TextNode [2661,18] "relnofollow odkaz "
+              LinkNode [2679,49] mod[2693,15] textRange[2680,11] urlRange[2710,18] phrase/span ref=dave@example.com
                 ContentNode
-                  TextNode [2596,11] "php Fashion"
-              TextNode [2644,1] "x"
-      ListItemNode [2646,63]
+                  TextNode [2680,11] "php Fashion"
+              TextNode [2728,1] "x"
+      ListItemNode [2730,63] bulletRange[2730,1] bullet=-
         ContentNode
-          ParagraphNode [2648,61]
+          ParagraphNode [2732,61]
             ContentNode
-              TextNode [2648,18] "relnofollow odkaz "
-              LinkNode [2666,43] mod[2680,11] url=dave@example.com
+              TextNode [2732,18] "relnofollow odkaz "
+              LinkNode [2750,43] mod[2764,11] textRange[2751,11] urlRange[2777,16] phrase/span url=dave@example.com
                 ContentNode
-                  TextNode [2667,11] "php Fashion"
-      ListItemNode [2710,45]
+                  TextNode [2751,11] "php Fashion"
+      ListItemNode [2794,45] bulletRange[2794,1] bullet=-
         ContentNode
-          ParagraphNode [2712,43]
+          ParagraphNode [2796,43]
             ContentNode
-              TextNode [2712,18] "relnofollow odkaz "
-              HtmlTagNode [2730,16] <a>
-              TextNode [2746,5] "test1"
-              HtmlTagNode [2751,4] <a>
-      ListItemNode [2756,59]
+              TextNode [2796,18] "relnofollow odkaz "
+              HtmlTagNode [2814,16] <a>
+              TextNode [2830,5] "test1"
+              HtmlTagNode [2835,4] <a>
+      ListItemNode [2840,59] bulletRange[2840,1] bullet=-
         ContentNode
-          ParagraphNode [2758,57]
+          ParagraphNode [2842,57]
             ContentNode
-              TextNode [2758,18] "relnofollow odkaz "
-              HtmlTagNode [2776,30] <a>
-              TextNode [2806,5] "test2"
-              HtmlTagNode [2811,4] <a>
-      ListItemNode [2816,53]
+              TextNode [2842,18] "relnofollow odkaz "
+              HtmlTagNode [2860,30] <a>
+              TextNode [2890,5] "test2"
+              HtmlTagNode [2895,4] <a>
+      ListItemNode [2900,53] bulletRange[2900,1] bullet=-
         ContentNode
-          ParagraphNode [2818,51]
+          ParagraphNode [2902,51]
             ContentNode
-              TextNode [2818,18] "relnofollow odkaz "
-              HtmlTagNode [2836,24] <a>
-              TextNode [2860,5] "test3"
-              HtmlTagNode [2865,4] <a>
-      ListItemNode [2870,58]
+              TextNode [2902,18] "relnofollow odkaz "
+              HtmlTagNode [2920,24] <a>
+              TextNode [2944,5] "test3"
+              HtmlTagNode [2949,4] <a>
+      ListItemNode [2954,58] bulletRange[2954,1] bullet=-
         ContentNode
-          ParagraphNode [2872,56]
+          ParagraphNode [2956,56]
             ContentNode
-              TextNode [2872,18] "relnofollow odkaz "
-              HtmlTagNode [2890,29] <a>
-              TextNode [2919,5] "test4"
-              HtmlTagNode [2924,4] <a>
-      ListItemNode [2929,67]
+              TextNode [2956,18] "relnofollow odkaz "
+              HtmlTagNode [2974,29] <a>
+              TextNode [3003,5] "test4"
+              HtmlTagNode [3008,4] <a>
+      ListItemNode [3013,67] bulletRange[3013,1] bullet=-
         ContentNode
-          ParagraphNode [2931,65]
+          ParagraphNode [3015,65]
             ContentNode
-              TextNode [2931,18] "relnofollow odkaz "
-              HtmlTagNode [2949,38] <a>
-              TextNode [2987,5] "test5"
-              HtmlTagNode [2992,4] <a>
-    HeadingNode [2999,19] level=3
+              TextNode [3015,18] "relnofollow odkaz "
+              HtmlTagNode [3033,38] <a>
+              TextNode [3071,5] "test5"
+              HtmlTagNode [3076,4] <a>
+    HeadingNode [3083,19] textRange[3083,9] level=3 marker=-
       ContentNode
-        TextNode [2999,9] "Specialni"
-    ListNode [3020,21] unordered
-      ListItemNode [3020,21]
+        TextNode [3083,9] "Specialni"
+    ListNode [3104,413] unordered
+      ListItemNode [3104,21] bulletRange[3104,1] bullet=-
         ContentNode
-          ParagraphNode [3022,19]
+          ParagraphNode [3106,19]
             ContentNode
-              LinkNode [3022,19] url=www.text.cz
+              LinkNode [3106,19] textRange[3107,5] urlRange[3114,11] phrase/span url=www.text.cz
                 ContentNode
-                  TextNode [3023,5] "text1"
-      ListItemNode [3042,22]
+                  TextNode [3107,5] "text1"
+      ListItemNode [3126,22] bulletRange[3126,1] bullet=-
         ContentNode
-          ParagraphNode [3044,20]
+          ParagraphNode [3128,20]
             ContentNode
-              LinkNode [3044,19] url=www.text.cz
+              LinkNode [3128,19] textRange[3129,5] urlRange[3136,11] phrase/span url=www.text.cz
                 ContentNode
-                  TextNode [3045,5] "text1"
-              TextNode [3063,1] ")"
-      ListItemNode [3065,23]
+                  TextNode [3129,5] "text1"
+              TextNode [3147,1] ")"
+      ListItemNode [3149,23] bulletRange[3149,1] bullet=-
         ContentNode
-          ParagraphNode [3067,21]
+          ParagraphNode [3151,21]
             ContentNode
-              LinkNode [3067,20] url=www.text.cz(
+              LinkNode [3151,20] textRange[3152,5] urlRange[3159,12] phrase/span url=www.text.cz(
                 ContentNode
-                  TextNode [3068,5] "text1"
-              TextNode [3087,1] ")"
-      ListItemNode [3089,24]
+                  TextNode [3152,5] "text1"
+              TextNode [3171,1] ")"
+      ListItemNode [3173,24] bulletRange[3173,1] bullet=-
         ContentNode
-          ParagraphNode [3091,22]
+          ParagraphNode [3175,22]
             ContentNode
-              LinkNode [3091,21] url=www.text.cz(x
+              LinkNode [3175,21] textRange[3176,5] urlRange[3183,13] phrase/span url=www.text.cz(x
                 ContentNode
-                  TextNode [3092,5] "text1"
-              TextNode [3112,1] ")"
-      ListItemNode [3114,22]
+                  TextNode [3176,5] "text1"
+              TextNode [3196,1] ")"
+      ListItemNode [3198,22] bulletRange[3198,1] bullet=-
         ContentNode
-          ParagraphNode [3116,20]
+          ParagraphNode [3200,20]
             ContentNode
-              LinkNode [3116,20] url=hxxp://test/
+              LinkNode [3200,20] textRange[3201,5] urlRange[3208,12] phrase/span url=hxxp://test/
                 ContentNode
-                  TextNode [3117,5] "text2"
-      ListItemNode [3137,30]
+                  TextNode [3201,5] "text2"
+      ListItemNode [3221,30] bulletRange[3221,1] bullet=-
         ContentNode
-          ParagraphNode [3139,28]
+          ParagraphNode [3223,28]
             ContentNode
-              LinkNode [3139,27] url=javascript:alert(''
+              LinkNode [3223,27] textRange[3224,5] urlRange[3231,19] phrase/span url=javascript:alert(''
                 ContentNode
-                  TextNode [3140,5] "text3"
-              TextNode [3166,1] ")"
-      ListItemNode [3168,33]
+                  TextNode [3224,5] "text3"
+              TextNode [3250,1] ")"
+      ListItemNode [3252,33] bulletRange[3252,1] bullet=-
         ContentNode
-          ParagraphNode [3170,31]
+          ParagraphNode [3254,31]
             ContentNode
-              LinkNode [3170,31] url=mailto:dave@example.com
+              LinkNode [3254,31] textRange[3255,5] urlRange[3262,23] phrase/span url=mailto:dave@example.com
                 ContentNode
-                  TextNode [3171,5] "text4"
-      ListItemNode [3202,33]
+                  TextNode [3255,5] "text4"
+      ListItemNode [3286,33] bulletRange[3286,1] bullet=-
         ContentNode
-          ParagraphNode [3204,31]
+          ParagraphNode [3288,31]
             ContentNode
-              LinkNode [3204,31] url=mailTO:dave@example.com
+              LinkNode [3288,31] textRange[3289,5] urlRange[3296,23] phrase/span url=mailTO:dave@example.com
                 ContentNode
-                  TextNode [3205,5] "text4"
-      ListItemNode [3236,12]
+                  TextNode [3289,5] "text4"
+      ListItemNode [3320,12] bulletRange[3320,1] bullet=-
         ContentNode
-          ParagraphNode [3238,10]
+          ParagraphNode [3322,10]
             ContentNode
-              LinkNode [3238,10] url=#id
+              LinkNode [3322,10] textRange[3323,4] urlRange[3329,3] phrase/span url=#id
                 ContentNode
-                  TextNode [3239,4] "text"
-      ListItemNode [3249,13]
+                  TextNode [3323,4] "text"
+      ListItemNode [3333,13] bulletRange[3333,1] bullet=-
         ContentNode
-          ParagraphNode [3251,11]
+          ParagraphNode [3335,11]
             ContentNode
-              LinkNode [3251,11] url=./xx
+              LinkNode [3335,11] textRange[3336,4] urlRange[3342,4] phrase/span url=./xx
                 ContentNode
-                  TextNode [3252,4] "text"
-      ListItemNode [3263,12]
+                  TextNode [3336,4] "text"
+      ListItemNode [3347,12] bulletRange[3347,1] bullet=-
         ContentNode
-          ParagraphNode [3265,10]
+          ParagraphNode [3349,10]
             ContentNode
-              LinkNode [3265,10] url=/xx
+              LinkNode [3349,10] textRange[3350,4] urlRange[3356,3] phrase/span url=/xx
                 ContentNode
-                  TextNode [3266,4] "text"
-      ListItemNode [3276,33]
+                  TextNode [3350,4] "text"
+      ListItemNode [3360,33] bulletRange[3360,1] bullet=-
         ContentNode
-          ParagraphNode [3278,31]
+          ParagraphNode [3362,31]
             ContentNode
-              HtmlTagNode [3278,22] <a>
-              TextNode [3300,5] "test5"
-              HtmlTagNode [3305,4] <a>
-      ListItemNode [3310,34]
+              HtmlTagNode [3362,22] <a>
+              TextNode [3384,5] "test5"
+              HtmlTagNode [3389,4] <a>
+      ListItemNode [3394,34] bulletRange[3394,1] bullet=-
         ContentNode
-          ParagraphNode [3312,32]
+          ParagraphNode [3396,32]
             ContentNode
-              HtmlTagNode [3312,23] <a>
-              TextNode [3335,5] "test6"
-              HtmlTagNode [3340,4] <a>
-      ListItemNode [3345,42]
+              HtmlTagNode [3396,23] <a>
+              TextNode [3419,5] "test6"
+              HtmlTagNode [3424,4] <a>
+      ListItemNode [3429,42] bulletRange[3429,1] bullet=-
         ContentNode
-          ParagraphNode [3347,40]
+          ParagraphNode [3431,40]
             ContentNode
-              HtmlTagNode [3347,31] <a>
-              TextNode [3378,5] "test7"
-              HtmlTagNode [3383,4] <a>
-      ListItemNode [3388,45]
+              HtmlTagNode [3431,31] <a>
+              TextNode [3462,5] "test7"
+              HtmlTagNode [3467,4] <a>
+      ListItemNode [3472,45] bulletRange[3472,1] bullet=-
         ContentNode
-          ParagraphNode [3390,43]
+          ParagraphNode [3474,43]
             ContentNode
-              HtmlTagNode [3390,34] <a>
-              TextNode [3424,5] "test8"
-              HtmlTagNode [3429,4] <a>
-    HeadingNode [3435,11] level=3
+              HtmlTagNode [3474,34] <a>
+              TextNode [3508,5] "test8"
+              HtmlTagNode [3513,4] <a>
+    HeadingNode [3519,11] textRange[3519,4] level=3 marker=-
       ContentNode
-        TextNode [3435,4] "Pure"
-    ListNode [3447,15] unordered
-      ListItemNode [3447,15]
+        TextNode [3519,4] "Pure"
+    ListNode [3531,323] unordered
+      ListItemNode [3531,15] bulletRange[3531,1] bullet=-
         ContentNode
-          ParagraphNode [3449,13]
+          ParagraphNode [3533,13]
             ContentNode
-              UrlNode [3449,13]
-      ListItemNode [3463,81]
+              UrlNode [3533,13]
+      ListItemNode [3547,81] bulletRange[3547,1] bullet=-
         ContentNode
-          ParagraphNode [3465,79]
+          ParagraphNode [3549,79]
             ContentNode
-              UrlNode [3465,18]
-              TextNode [3483,2] ", "
-              UrlNode [3485,19]
-              TextNode [3504,1] " "
-              UrlNode [3505,18]
-              TextNode [3523,2] "! "
-              UrlNode [3525,18]
-              TextNode [3543,1] ")"
-      ListItemNode [3545,25]
+              UrlNode [3549,18]
+              TextNode [3567,2] ", "
+              UrlNode [3569,19]
+              TextNode [3588,1] " "
+              UrlNode [3589,18]
+              TextNode [3607,2] "! "
+              UrlNode [3609,18]
+              TextNode [3627,1] ")"
+      ListItemNode [3629,25] bulletRange[3629,1] bullet=-
         ContentNode
-          ParagraphNode [3547,23]
+          ParagraphNode [3631,23]
             ContentNode
-              UrlNode [3547,23]
-      ListItemNode [3571,28]
+              UrlNode [3631,23]
+      ListItemNode [3655,28] bulletRange[3655,1] bullet=-
         ContentNode
-          ParagraphNode [3573,26]
+          ParagraphNode [3657,26]
             ContentNode
-              UrlNode [3573,26]
-      ListItemNode [3600,18]
+              UrlNode [3657,26]
+      ListItemNode [3684,18] bulletRange[3684,1] bullet=-
         ContentNode
-          ParagraphNode [3602,16]
+          ParagraphNode [3686,16]
             ContentNode
-              UrlNode [3602,16]
-      ListItemNode [3619,19]
+              UrlNode [3686,16]
+      ListItemNode [3703,19] bulletRange[3703,1] bullet=-
         ContentNode
-          ParagraphNode [3621,17]
+          ParagraphNode [3705,17]
             ContentNode
-              UrlNode [3621,17]
-      ListItemNode [3639,19]
+              UrlNode [3705,17]
+      ListItemNode [3723,19] bulletRange[3723,1] bullet=-
         ContentNode
-          ParagraphNode [3641,17]
+          ParagraphNode [3725,17]
             ContentNode
-              UrlNode [3641,17]
-      ListItemNode [3659,20]
+              UrlNode [3725,17]
+      ListItemNode [3743,20] bulletRange[3743,1] bullet=-
         ContentNode
-          ParagraphNode [3661,18]
+          ParagraphNode [3745,18]
             ContentNode
-              TextNode [3661,18] "ftps://example.com"
-      ListItemNode [3680,30]
+              TextNode [3745,18] "ftps://example.com"
+      ListItemNode [3764,30] bulletRange[3764,1] bullet=-
         ContentNode
-          ParagraphNode [3682,28]
+          ParagraphNode [3766,28]
             ContentNode
-              TextNode [3682,28] "ftps://user:pass@example.com"
-      ListItemNode [3711,18]
+              TextNode [3766,28] "ftps://user:pass@example.com"
+      ListItemNode [3795,18] bulletRange[3795,1] bullet=-
         ContentNode
-          ParagraphNode [3713,16]
+          ParagraphNode [3797,16]
             ContentNode
-              EmailNode [3713,16]
-      ListItemNode [3730,17]
+              EmailNode [3797,16]
+      ListItemNode [3814,17] bulletRange[3814,1] bullet=-
         ContentNode
-          ParagraphNode [3732,15]
+          ParagraphNode [3816,15]
             ContentNode
-              UrlNode [3732,14]
-              TextNode [3746,1] ")"
-      ListItemNode [3748,22]
+              UrlNode [3816,14]
+              TextNode [3830,1] ")"
+      ListItemNode [3832,22] bulletRange[3832,1] bullet=-
         ContentNode
-          ParagraphNode [3750,20]
+          ParagraphNode [3834,20]
             ContentNode
-              UrlNode [3750,20]
-    LinkDefinitionNode [3773,38]
-    LinkDefinitionNode [3812,23]
-    LinkDefinitionNode [3836,24]
-    LinkDefinitionNode [3861,25]
-    LinkDefinitionNode [3888,30]
-    LinkDefinitionNode [3919,30]
-    LinkDefinitionNode [3950,30]
-    LinkDefinitionNode [3981,26]
-    ImageDefinitionNode [4009,30] mod[4033,6]
-    ImageDefinitionNode [4040,28]
-    ImageDefinitionNode [4069,22]
-    ImageDefinitionNode [4092,26]
+              UrlNode [3834,20]
+    LinkDefinitionNode [3857,38]
+    LinkDefinitionNode [3896,23]
+    LinkDefinitionNode [3920,24]
+    LinkDefinitionNode [3945,25]
+    LinkDefinitionNode [3972,30]
+    LinkDefinitionNode [4003,30]
+    LinkDefinitionNode [4034,30]
+    LinkDefinitionNode [4065,26]
+    ImageDefinitionNode [4093,30] mod[4117,6]
+    ImageDefinitionNode [4124,28]
+    ImageDefinitionNode [4153,22]
+    ImageDefinitionNode [4176,26]

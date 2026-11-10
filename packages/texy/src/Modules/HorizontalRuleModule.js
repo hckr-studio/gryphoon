@@ -3,11 +3,11 @@
  * Texy\Modules\HorizontalRuleModule).
  */
 
-import { Module } from "./Module.js";
-import { Syntax } from "../Syntax.js";
-import { Modifier as ModifierPattern } from "../Patterns.js";
 import { Modifier } from "../Modifier.js";
 import { HorizontalRuleNode } from "../nodes.js";
+import { Modifier as ModifierPattern } from "../Patterns.js";
+import { Syntax } from "../Syntax.js";
+import { Module } from "./Module.js";
 
 export class HorizontalRuleModule extends Module {
   constructor(texy) {

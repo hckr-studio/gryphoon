@@ -1,27 +1,60 @@
 DocumentNode
   ContentNode
-    CodeBlockNode [0,21]
-    CodeBlockNode [23,23]
+    CodeBlockNode [0,21] codeMap@10
+      ContentNode
+        TextNode [10,5] "space"
+    CodeBlockNode [23,23] codeMap@34
     ParagraphNode [48,20]
       ContentNode
         TextNode [48,20] "/--.[texy] te st \\--"
-    CodeBlockNode [70,21] mod[75,6]
-    CodeBlockNode [93,9]
-    CodeBlockNode [104,18] mod[113,3]
-    CodeBlockNode [124,27] mod[138,3] lang=html
-    CodeBlockNode [153,23] lang=html
-    CodeBlockNode [180,138]
-    CodeBlockNode [321,58]
-    CodeBlockNode [381,56]
-    CodeBlockNode [439,34]
-    CodeBlockNode [475,52]
-    CodeBlockNode [529,34]
-    CodeBlockNode [565,52]
-    CodeBlockNode [619,34]
-    CodeBlockNode [655,50]
-    CodeBlockNode [708,33]
-    CodeBlockNode [743,50]
-    CodeBlockNode [795,32]
+    CodeBlockNode [70,21] mod[75,6] codeMap@82
+    CodeBlockNode [93,9] codeMap@97
+    CodeBlockNode [104,18] mod[113,3] codeMap@117
+    CodeBlockNode [124,27] mod[138,3] codeMap@142 lang=html
+    CodeBlockNode [153,23] codeMap@167 lang=html
+    CodeBlockNode [180,138] codeMap@225
+    CodeBlockNode [321,58] codeMap@335
+      ContentNode
+        ParagraphNode [335,40]
+          ContentNode
+            TextNode [335,6] "Code: "
+            PhraseNode [341,13] phrase/em-alt
+              ContentNode
+                TextNode [342,11] "formátovat"
+            LineBreakNode [354,3]
+            TextNode [357,6] " "
+            TextNode [363,1] " "
+            HtmlTagNode [364,6] <br>
+            TextNode [370,1] " "
+            TextNode [371,4] "<xx>"
+    CodeBlockNode [381,56] codeMap@389
+    CodeBlockNode [439,34] codeMap@448
+    CodeBlockNode [475,52] codeMap@483
+      ContentNode
+        TextNode [483,22] "HTML: *formátovat*\n  "
+        TextNode [505,6] " "
+        TextNode [511,1] " "
+        HtmlTagNode [512,6] <br>
+        TextNode [518,1] " "
+        TextNode [519,4] "<xx>"
+    CodeBlockNode [529,34] codeMap@537
+      ContentNode
+        TextNode [537,22] "\tHtml: Odsazeny\n\t text"
+    CodeBlockNode [565,52] codeMap@573
+    CodeBlockNode [619,34] codeMap@627
+    CodeBlockNode [655,50] codeMap@659
+    CodeBlockNode [708,33] codeMap@713
+    CodeBlockNode [743,50] codeMap@750
+      ContentNode
+        TextNode [750,21] "PRE: *formátovat*\n  "
+        TextNode [771,6] " "
+        TextNode [777,1] " "
+        HtmlTagNode [778,6] <br>
+        TextNode [784,1] " "
+        TextNode [785,4] "<xx>"
+    CodeBlockNode [795,32] codeMap@803
+      ContentNode
+        TextNode [803,20] "PRE: Odsazeny\n text"
     CommentNode [829,58] # Comment: *formátova
     SectionNode [889,50]
       ContentNode

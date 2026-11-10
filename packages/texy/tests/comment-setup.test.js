@@ -11,11 +11,11 @@
  * (undefined !== null) - enabling these syntaxes crashed before.
  */
 
-import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { Texy } from "../src/Texy.js";
+import { describe, it } from "node:test";
 import { Configurator } from "../src/Configurator.js";
 import { Syntax } from "../src/Syntax.js";
+import { Texy } from "../src/Texy.js";
 
 /**
  * @param {Array<{link?: string}>} references

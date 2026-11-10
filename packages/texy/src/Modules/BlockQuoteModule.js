@@ -3,12 +3,12 @@
  * Texy\Modules\BlockQuoteModule).
  */
 
-import { Module } from "./Module.js";
-import { Syntax } from "../Syntax.js";
-import { ModifierHAlign } from "../Patterns.js";
 import { Modifier } from "../Modifier.js";
 import { BlockQuoteNode } from "../nodes.js";
 import { OffsetMap } from "../Parsing/OffsetMap.js";
+import { ModifierHAlign } from "../Patterns.js";
+import { Syntax } from "../Syntax.js";
+import { Module } from "./Module.js";
 
 export class BlockQuoteModule extends Module {
   constructor(texy) {

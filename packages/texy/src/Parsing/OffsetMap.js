@@ -18,6 +18,18 @@ function commonPrefixLength(a, b) {
   return i;
 }
 
+/** Detects every range shape the port uses: {offset, length} plain objects
+ * and Range instances (an OffsetMap is not one). */
+function isRangeLike(value) {
+  return (
+    value !== null &&
+    typeof value === "object" &&
+    value.constructor !== OffsetMap &&
+    typeof value.offset === "number" &&
+    typeof value.length === "number"
+  );
+}
+
 /** Length of the leading run of characters from the set (strspn). */
 function spanLength(s, set) {
   let i = 0;
@@ -147,10 +159,25 @@ export class OffsetMap {
     this.applyToNode(node);
   }
 
-  /** @param {import('../Range.js').Node} node */
+  /**
+   * Recursively rewrites node positions from local to absolute coordinates:
+   * every Range and OffsetMap the node holds. Length of multi-line spans
+   * grows by the stripped prefixes they cover in the source.
+   * @param {import('../Range.js').Node} node
+   */
   applyToNode(node) {
-    if (node.range !== null) {
-      node.range = this.rangeToAbsolute(node.range);
+    for (const [name, value] of Object.entries(node)) {
+      if (isRangeLike(value)) {
+        node[name] = this.rangeToAbsolute(value);
+      } else if (value instanceof OffsetMap) {
+        // a map of text nested in the text of this one; mapping the
+        // entries is enough because both maps have one at every line start
+        const map = {};
+        for (const [local, offset] of value.pairs) {
+          map[local] = this.toAbsolute(offset);
+        }
+        node[name] = new OffsetMap(map);
+      }
     }
 
     const modifier = node.getModifier ? node.getModifier() : null;

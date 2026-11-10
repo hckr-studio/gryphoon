@@ -4,14 +4,14 @@
  * integration.
  */
 
-import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { describe, it } from "node:test";
+import { fileURLToPath } from "node:url";
 import { HyphenationModule } from "../src/Modules/HyphenationModule.js";
-import { Texy } from "../src/Texy.js";
 import { Syntax } from "../src/Syntax.js";
+import { Texy } from "../src/Texy.js";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const corpus = JSON.parse(readFileSync(join(root, "tests", "fixtures", "hyphenation-corpus.json"), "utf8"));

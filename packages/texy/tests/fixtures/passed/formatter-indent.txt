@@ -5,30 +5,30 @@ DocumentNode
         TextNode [0,31] "Normální text další řádek"
         LineBreakNode [31,2]
         TextNode [33,25] "odsazeno přesně mezerou"
-    ListNode [60,14] ordered
-      ListItemNode [60,25]
+    ListNode [60,51] ordered
+      ListItemNode [60,25] bulletRange[60,4] bullet=III)
         ContentNode
           ParagraphNode [65,20]
             ContentNode
               TextNode [65,20] "odrážka text"
-      ListItemNode [86,25]
+      ListItemNode [86,25] bulletRange[87,4] bullet=III)
         ContentNode
           ParagraphNode [92,19]
             ContentNode
               TextNode [92,19] "odrážka text"
-    ListNode [113,11] unordered
-      ListItemNode [113,20]
+    ListNode [113,20] unordered
+      ListItemNode [113,20] bulletRange[113,1] bullet=*
         ContentNode
           ParagraphNode [115,18]
             ContentNode
               TextNode [115,18] "odrážka text"
-    ListNode [135,11] unordered
-      ListItemNode [135,17]
+    ListNode [135,172] unordered
+      ListItemNode [135,17] bulletRange[135,1] bullet=-
         ContentNode
           ParagraphNode [137,15]
             ContentNode
               TextNode [137,15] "odrážka text"
-      ListItemNode [153,154]
+      ListItemNode [153,154] bulletRange[154,1] bullet=-
         ContentNode
           ParagraphNode [156,77]
             ContentNode

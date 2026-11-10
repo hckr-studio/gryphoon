@@ -3,19 +3,19 @@
  * the reference implementation (PHP html_entity_decode with ENT_QUOTES|ENT_HTML5).
  */
 
-import { describe, it } from "node:test";
 import assert from "node:assert/strict";
+import { describe, it } from "node:test";
 import {
-  EntityPattern,
   decodeEntities,
   decodeEntity,
+  EntityPattern,
+  phpLooseNull,
   removeSoftHyphens,
-  toAscii,
-  webalize,
   stripControlChars,
+  toAscii,
   toLower,
   unescapeHtml,
-  phpLooseNull,
+  webalize,
 } from "../src/helpers.js";
 import { match } from "../src/Regexp.js";
 

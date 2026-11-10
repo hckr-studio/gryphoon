@@ -103,8 +103,10 @@ export class HeadingNode extends BlockNode {
    * @param {string} type one of HeadingType
    * @param {?import('./Modifier.js').Modifier} modifier
    * @param {?Range} range
+   * @param {?string} marker the underline character or the opening sequence as written, e.g. '-' or '###'
+   * @param {?Range} textRange
    */
-  constructor(content, level, type, modifier = null, range = null) {
+  constructor(content, level, type, modifier = null, range = null, marker = null, textRange = null) {
     super();
     this.content = content;
     this.level = level;
@@ -114,6 +116,8 @@ export class HeadingNode extends BlockNode {
     this.id = null;
     this.titleOverride = null;
     this.range = range;
+    this.marker = marker;
+    this.textRange = textRange;
   }
 
   getChildren() {
@@ -154,18 +158,22 @@ export class CodeBlockNode extends BlockNode {
    * @param {?string} language
    * @param {?import('./Modifier.js').Modifier} modifier
    * @param {?Range} range
+   * @param {?ContentNode} content parsed content (pre, html, texysource)
+   * @param {?OffsetMap} codeMap maps offsets in code to the source, which differs from it by the stripped indentation
    */
-  constructor(type, code, language = null, modifier = null, range = null) {
+  constructor(type, code, language = null, modifier = null, range = null, content = null, codeMap = null) {
     super();
     this.type = type;
     this.code = code;
     this.language = language;
     this.modifier = modifier;
     this.range = range;
+    this.content = content;
+    this.codeMap = codeMap;
   }
 
   getChildren() {
-    return [];
+    return this.content !== null ? [this.content] : [];
   }
 
   getModifier() {
@@ -266,13 +274,24 @@ export class ListItemNode extends BlockNode {
    * @param {boolean} term definition-list term (dt) vs description (dd)
    * @param {?import('./Modifier.js').Modifier} modifier
    * @param {?Range} range
+   * @param {?string} bullet the bullet as written, e.g. '-' or '1)'; null for a term
+   * @param {?Range} bulletRange
    */
-  constructor(content = new ContentNode(), term = false, modifier = null, range = null) {
+  constructor(
+    content = new ContentNode(),
+    term = false,
+    modifier = null,
+    range = null,
+    bullet = null,
+    bulletRange = null,
+  ) {
     super();
     this.content = content;
     this.term = term;
     this.modifier = modifier;
     this.range = range;
+    this.bullet = bullet;
+    this.bulletRange = bulletRange;
   }
 
   getChildren() {
@@ -507,8 +526,21 @@ export class LinkNode extends InlineNode {
    * @param {?Range} range
    * @param {boolean} isImageLink link targets an image URL
    * @param {?string} ref original reference name for links written as [ref]
+   * @param {?string} syntax name of the syntax the link is written in, e.g. Syntax.WikiLink
+   * @param {?Range} textRange
+   * @param {?Range} urlRange where the target is written; for [ref] the same as textRange
    */
-  constructor(url = null, content = new ContentNode(), modifier = null, range = null, isImageLink = false, ref = null) {
+  constructor(
+    url = null,
+    content = new ContentNode(),
+    modifier = null,
+    range = null,
+    isImageLink = false,
+    ref = null,
+    syntax = null,
+    textRange = null,
+    urlRange = null,
+  ) {
     super();
     this.url = url;
     this.content = content;
@@ -516,6 +548,9 @@ export class LinkNode extends InlineNode {
     this.range = range;
     this.isImageLink = isImageLink;
     this.ref = ref;
+    this.syntax = syntax;
+    this.textRange = textRange;
+    this.urlRange = urlRange;
   }
 
   getChildren() {
@@ -535,8 +570,9 @@ export class ImageNode extends InlineNode {
    * @param {?import('./Modifier.js').Modifier} modifier
    * @param {?Range} range
    * @param {?string} ref original reference name for images written as [*ref*]
+   * @param {?Range} urlRange
    */
-  constructor(url = null, width = null, height = null, modifier = null, range = null, ref = null) {
+  constructor(url = null, width = null, height = null, modifier = null, range = null, ref = null, urlRange = null) {
     super();
     this.url = url;
     this.width = width;
@@ -544,6 +580,7 @@ export class ImageNode extends InlineNode {
     this.modifier = modifier;
     this.range = range;
     this.ref = ref;
+    this.urlRange = urlRange;
   }
 
   getChildren() {

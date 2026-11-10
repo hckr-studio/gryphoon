@@ -3,11 +3,11 @@
  * (port of Texy\Modules\AutolinkModule).
  */
 
-import { Module } from "./Module.js";
-import { Syntax } from "../Syntax.js";
-import { Email, Letter } from "../Patterns.js";
-import { EmailNode, UrlNode } from "../nodes.js";
 import { removeSoftHyphens } from "../helpers.js";
+import { EmailNode, UrlNode } from "../nodes.js";
+import { Email, Letter } from "../Patterns.js";
+import { Syntax } from "../Syntax.js";
+import { Module } from "./Module.js";
 
 export class AutolinkModule extends Module {
   constructor(texy) {

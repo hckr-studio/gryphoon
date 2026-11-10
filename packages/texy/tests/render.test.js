@@ -9,8 +9,8 @@
  * flag the non-default setting.
  */
 
-import { renderConformance } from "./helpers/render-conformance.js";
 import { Syntax } from "../src/Syntax.js";
+import { renderConformance } from "./helpers/render-conformance.js";
 
 renderConformance({
   suite: "conformance: rendered HTML matches the reference implementation",

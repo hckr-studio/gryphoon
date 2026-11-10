@@ -1,6 +1,75 @@
 DocumentNode
   ContentNode
-    CodeBlockNode [0,681]
+    CodeBlockNode [0,681] codeMap@10
+      ContentNode
+        HtmlTagNode [10,7] <TABLE>
+        HtmlTagNode [17,4] <TR>
+        HtmlTagNode [21,15] <TD>
+        TextNode [36,8] "Deal 15."
+        HtmlTagNode [44,4] <BR>
+        HtmlTagNode [48,32] <IMG>
+        TextNode [80,1] "\n"
+        HtmlTagNode [81,4] <TD>
+        HtmlTagNode [85,21] <IMG>
+        TextNode [106,6] " A 7 6"
+        HtmlTagNode [112,4] <BR>
+        HtmlTagNode [116,21] <IMG>
+        TextNode [137,5] " 10 6"
+        HtmlTagNode [142,4] <BR>
+        TextNode [146,1] "\n"
+        HtmlTagNode [147,21] <IMG>
+        TextNode [168,8] " J 5 4 2"
+        HtmlTagNode [176,4] <BR>
+        HtmlTagNode [180,21] <IMG>
+        TextNode [201,11] " A 10 7 3\n\n"
+        HtmlTagNode [212,4] <TR>
+        HtmlTagNode [216,4] <TD>
+        HtmlTagNode [220,21] <IMG>
+        TextNode [241,8] " Q J 8 4"
+        HtmlTagNode [249,4] <BR>
+        HtmlTagNode [253,21] <IMG>
+        TextNode [274,6] " K Q 3"
+        HtmlTagNode [280,4] <BR>
+        TextNode [284,1] "\n"
+        HtmlTagNode [285,21] <IMG>
+        TextNode [306,8] " A Q 9 8"
+        HtmlTagNode [314,4] <BR>
+        HtmlTagNode [318,21] <IMG>
+        TextNode [339,5] " J 8\n"
+        HtmlTagNode [344,4] <TD>
+        HtmlTagNode [348,29] <IMG>
+        TextNode [377,1] "\n"
+        HtmlTagNode [378,4] <TD>
+        HtmlTagNode [382,21] <IMG>
+        TextNode [403,2] " 2"
+        HtmlTagNode [405,4] <BR>
+        HtmlTagNode [409,21] <IMG>
+        TextNode [430,8] " J 8 4 2"
+        HtmlTagNode [438,4] <BR>
+        TextNode [442,1] "\n"
+        HtmlTagNode [443,21] <IMG>
+        TextNode [464,9] " K 10 7 6"
+        HtmlTagNode [473,4] <BR>
+        HtmlTagNode [477,21] <IMG>
+        TextNode [498,10] " 9 6 5 4\n\n"
+        HtmlTagNode [508,4] <TR>
+        HtmlTagNode [512,18] <TD>
+        TextNode [530,1] "\n"
+        HtmlTagNode [531,4] <TD>
+        HtmlTagNode [535,21] <IMG>
+        TextNode [556,11] " K 10 9 5 3"
+        HtmlTagNode [567,4] <BR>
+        HtmlTagNode [571,21] <IMG>
+        TextNode [592,8] " A 9 7 5"
+        HtmlTagNode [600,4] <BR>
+        TextNode [604,2] "\n\n"
+        HtmlTagNode [606,21] <IMG>
+        TextNode [627,2] " 3"
+        HtmlTagNode [629,4] <BR>
+        HtmlTagNode [633,21] <IMG>
+        TextNode [654,6] " K Q 2"
+        HtmlTagNode [660,8] <TABLE>
+        HtmlTagNode [668,3] <P>
     ParagraphNode [686,200]
       ContentNode
         HtmlTagNode [686,7] <TABLE>

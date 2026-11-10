@@ -7,10 +7,10 @@
  * fails here.
  */
 
-import { describe, it } from "node:test";
 import assert from "node:assert/strict";
+import { describe, it } from "node:test";
+import { hasOptionalEnd, inlineElements, isKnown, urlAttribute, voidElements } from "../src/Output/Html/Schema.js";
 import { Texy } from "../src/Texy.js";
-import { urlAttribute, inlineElements, voidElements, isKnown, hasOptionalEnd } from "../src/Output/Html/Schema.js";
 
 describe("Schema keys are user-controlled", () => {
   it("urlAttribute misses on Object.prototype property names", () => {

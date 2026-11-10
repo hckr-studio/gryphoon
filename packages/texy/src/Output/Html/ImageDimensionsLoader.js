@@ -11,9 +11,7 @@
  */
 
 /** @type {typeof import('./ImageDimensions.js').ImageDimensions | null} null without file-system access */
-const ImageDimensions = await import("./ImageDimensions.js")
-  .then(module => module.ImageDimensions)
-  .catch(() => null);
+const ImageDimensions = await import("./ImageDimensions.js").then(module => module.ImageDimensions).catch(() => null);
 
 /**
  * Creates the dimension sniffer for the renderer: the real implementation

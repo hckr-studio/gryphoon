@@ -10,9 +10,9 @@
  * and the PHP walk() pruning semantics.
  */
 
-import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { NodeTraverser, DontTraverseChildren, StopTraversal, RemoveNode } from "../src/NodeTraverser.js";
+import { describe, it } from "node:test";
+import { DontTraverseChildren, NodeTraverser, RemoveNode, StopTraversal } from "../src/NodeTraverser.js";
 
 const DontTraverseChildrenOracle = 1;
 const StopTraversalOracle = 2;

@@ -48,7 +48,7 @@ export class Configurator {
     texy.htmlPolicy.allowedTags = { ...SafeTags, "*": ["title", "lang", "dir"] };
     texy.urlPolicy.linkPattern = String.raw`~https?:|ftp:|mailto:~A`;
     texy.urlPolicy.imagePattern = String.raw`~https?:~A`;
-    texy.allowed[Syntax.Image] = false; // disable images
+    Configurator.disableImages(texy);
     texy.allowed[Syntax.LinkDefinition] = false; // disable [ref]: URL reference definitions
     texy.allowed[Syntax.HtmlComment] = false; // disable HTML comments
     texy.htmlOutput.linkNoFollow = true; // force rel="nofollow"

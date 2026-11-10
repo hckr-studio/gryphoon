@@ -6,12 +6,12 @@
  * src.slice(offset, offset + length) must return the construct's source.
  */
 
-import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { Texy } from "../src/Texy.js";
-import { normalize } from "../src/normalize.js";
+import { describe, it } from "node:test";
 import { findFirst } from "../src/NodeHelpers.js";
 import { PhraseNode, TextNode } from "../src/nodes.js";
+import { normalize } from "../src/normalize.js";
+import { Texy } from "../src/Texy.js";
 
 function parse(text) {
   return new Texy().parse(normalize(text));

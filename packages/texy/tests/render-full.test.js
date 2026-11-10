@@ -9,8 +9,8 @@
  * are skipped with justification.
  */
 
-import { renderConformance } from "./helpers/render-conformance.js";
 import { Syntax } from "../src/Syntax.js";
+import { renderConformance } from "./helpers/render-conformance.js";
 
 const knownDivergences = new Set();
 

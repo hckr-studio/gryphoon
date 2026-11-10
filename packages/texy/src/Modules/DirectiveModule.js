@@ -7,11 +7,11 @@
  * addDirective for consumers running their own passes.
  */
 
-import { Module } from "./Module.js";
-import { Syntax } from "../Syntax.js";
-import { DirectiveNode } from "../nodes.js";
-import { NodeTraverser, RemoveNode } from "../NodeTraverser.js";
 import { toLower } from "../helpers.js";
+import { NodeTraverser, RemoveNode } from "../NodeTraverser.js";
+import { DirectiveNode } from "../nodes.js";
+import { Syntax } from "../Syntax.js";
+import { Module } from "./Module.js";
 
 export class DirectiveModule extends Module {
   constructor(texy) {
@@ -20,6 +20,7 @@ export class DirectiveModule extends Module {
     this.handlers = {};
     this.fallback = null;
     this.texy = texy;
+    texy.addPass(doc => this.processDirectives(doc));
   }
 
   /**

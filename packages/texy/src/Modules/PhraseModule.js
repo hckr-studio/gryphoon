@@ -3,13 +3,13 @@
  * (port of Texy\Modules\PhraseModule).
  */
 
-import { Module } from "./Module.js";
-import { Syntax } from "../Syntax.js";
-import { Letter, LinkUrl, Modifier as ModifierPattern } from "../Patterns.js";
-import { Modifier } from "../Modifier.js";
-import { Range } from "../Range.js";
-import { ContentNode, LinkNode, PhraseNode, RawTextNode, TextNode } from "../nodes.js";
 import { decodeEntities, removeSoftHyphens, unescapeHtml } from "../helpers.js";
+import { Modifier } from "../Modifier.js";
+import { ContentNode, LinkNode, PhraseNode, RawTextNode, TextNode } from "../nodes.js";
+import { Letter, LinkUrl, Modifier as ModifierPattern } from "../Patterns.js";
+import { Range } from "../Range.js";
+import { Syntax } from "../Syntax.js";
+import { Module } from "./Module.js";
 
 const bt = String.fromCharCode(96); // backtick; cannot appear literally in these sources
 
@@ -237,7 +237,7 @@ export class PhraseModule extends Module {
         LinkUrl +
         ") )??  # optional link (3)\n" +
         "~Ux",
-      (context, matches, offsets) => this.parseCode(context, matches, offsets, Syntax.Code),
+      (context, matches, offsets) => this.parsePhrase(Syntax.Code, context, matches, offsets),
     );
 
     // ....:LINK
@@ -251,7 +251,7 @@ export class PhraseModule extends Module {
         LinkUrl +
         String.raw`)          # link (3)
 			~Ux`,
-      (context, matches, offsets) => this.parseLink(context, matches, offsets),
+      (context, matches, offsets, name) => this.parseLink(context, matches, offsets, name),
     );
 
     // [text |link]
@@ -271,7 +271,7 @@ export class PhraseModule extends Module {
 				]
 				(?! ] )                          # not followed by ]
 			~Ux`,
-      (context, matches, offsets) => this.parseWikilink(context, matches, offsets),
+      (context, matches, offsets, name) => this.parseWikilink(context, matches, offsets, name),
     );
 
     // [text](link)
@@ -291,7 +291,7 @@ export class PhraseModule extends Module {
 				( (?: [^\r )]++ | [ ] )+ )      # link (3)
 				\)
 			~Ux`,
-      (context, matches, offsets) => this.parseLink(context, matches, offsets),
+      (context, matches, offsets, name) => this.parseLink(context, matches, offsets, name),
     );
 
     // \* escaped asterisk
@@ -311,39 +311,50 @@ export class PhraseModule extends Module {
     const [, mContent, mMod, mLink = null] = matches;
     const range = { offset: offsets[0], length: matches[0].length };
     const contentOffset = offsets[1];
+    const textRange = trimRange(mContent, contentOffset);
+    const urlRange = mLink === null ? null : { offset: offsets[3], length: mLink.length };
 
     // For phrase/span and phrase/span-alt, URL makes it a link
     if (phrase === Syntax.SpanQuotes || phrase === Syntax.SpanTilde) {
-      if (mLink !== null) {
-        const content = context.parseInline(mContent.trim(), contentOffset);
-        return new LinkNode(removeSoftHyphens(mLink), content, Modifier.parse(mMod, offsets[2] ?? null), range);
-      } else if (mMod === null) {
+      if (mLink !== null && this.linksAllowed) {
+        return new LinkNode(
+          removeSoftHyphens(mLink),
+          context.parseInline(mContent.trim(), contentOffset),
+          Modifier.parse(mMod, offsets[2] ?? null),
+          range,
+          false,
+          null,
+          phrase,
+          textRange,
+          urlRange,
+        );
+      } else if (mLink === null && mMod === null) {
         return null;
       }
     }
 
     const mod = Modifier.parse(mMod, offsets[2] ?? null);
-    const content = context.parseInline(mContent.trim(), contentOffset);
+    const content =
+      phrase === Syntax.Code
+        ? new ContentNode([new TextNode(mContent.trim(), textRange)]) // code content is not parsed recursively
+        : context.parseInline(mContent.trim(), contentOffset);
 
     // Other phrases with link
-    if (mLink !== null) {
-      // wrap phrase in link
-      const phraseNode = new PhraseNode(content, phrase, mod, range);
-      return new LinkNode(removeSoftHyphens(mLink), new ContentNode([phraseNode]), null, range);
+    if (mLink !== null && this.linksAllowed) {
+      return new LinkNode(
+        removeSoftHyphens(mLink),
+        new ContentNode([new PhraseNode(content, phrase, mod, range)]),
+        null,
+        range,
+        false,
+        null,
+        phrase,
+        textRange,
+        urlRange,
+      );
     }
 
     return new PhraseNode(content, phrase, mod, range);
-  }
-
-  /** Parses a code phrase; code content is not parsed recursively. */
-  parseCode(context, matches, offsets, phrase) {
-    const [, mContent, mMod] = matches;
-    const contentOffset = offsets[1];
-    const content = [new TextNode(mContent, { offset: contentOffset, length: mContent.length })];
-    return new PhraseNode(new ContentNode(content), phrase, Modifier.parse(mMod, offsets[2] ?? null), {
-      offset: offsets[0],
-      length: matches[0].length,
-    });
   }
 
   /** Parses superscript/subscript alternative (m^2, H_2O). */
@@ -377,20 +388,53 @@ export class PhraseModule extends Module {
   }
 
   /** Parses links (phrase/quicklink, phrase/markdown); modifiers are intentionally ignored. */
-  parseLink(context, matches, offsets) {
+  parseLink(context, matches, offsets, name) {
     const [, mContent, , mLink] = matches;
-    return new LinkNode(removeSoftHyphens(mLink.trim()), context.parseInline(mContent.trim(), offsets[1]), null, {
-      offset: offsets[0],
-      length: matches[0].length,
-    });
+    const content = context.parseInline(mContent.trim(), offsets[1]);
+    if (!this.linksAllowed) {
+      return content;
+    }
+
+    return new LinkNode(
+      removeSoftHyphens(mLink.trim()),
+      content,
+      null, // quicklink and markdown links don't support modifiers
+      { offset: offsets[0], length: matches[0].length },
+      false,
+      null,
+      name,
+      trimRange(mContent, offsets[1]),
+      trimRange(mLink, offsets[3]),
+    );
   }
 
   /** Parses wikilink [text|link]; modifiers are intentionally ignored. */
-  parseWikilink(context, matches, offsets) {
+  parseWikilink(context, matches, offsets, name) {
     const [, mContent, mLink] = matches;
-    return new LinkNode(removeSoftHyphens(mLink.trim()), context.parseInline(mContent.trim(), offsets[1]), null, {
-      offset: offsets[0],
-      length: matches[0].length,
-    });
+    const content = context.parseInline(mContent.trim(), offsets[1]);
+    if (!this.linksAllowed) {
+      return content;
+    }
+
+    return new LinkNode(
+      removeSoftHyphens(mLink.trim()),
+      content,
+      null, // wikilinks don't support modifiers
+      { offset: offsets[0], length: matches[0].length },
+      false,
+      null,
+      name,
+      trimRange(mContent, offsets[1]),
+      trimRange(mLink, offsets[2]),
+    );
   }
+}
+
+/** Range of the text without its surrounding whitespace. */
+const trimChars = " \t\n\r\u0000\u000B"; // PHP trim()'s set
+function trimRange(text, offset) {
+  return {
+    offset: offset + text.length - text.replace(new RegExp("^[" + trimChars + "]+"), "").length,
+    length: text.replace(new RegExp("^[" + trimChars + "]+|[" + trimChars + "]+$"), "").length,
+  };
 }

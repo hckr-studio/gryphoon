@@ -7,10 +7,10 @@
  * as defense in depth.
  */
 
+import { decodeEntities } from "../helpers.js";
+import { Severity } from "../Lint.js";
 import { NodeTraverser } from "../NodeTraverser.js";
 import { ContentNode, HtmlElementNode, HtmlTagNode, TextNode } from "../nodes.js";
-import { Severity } from "../Lint.js";
-import { decodeEntities } from "../helpers.js";
 
 export class HtmlSanitizePass {
   /**

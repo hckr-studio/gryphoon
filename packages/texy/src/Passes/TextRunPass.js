@@ -12,12 +12,11 @@
  * unambiguously.
  */
 
-import { NodeTraverser, DontTraverseChildren } from "../NodeTraverser.js";
 import { extractText } from "../NodeHelpers.js";
-import { inlineElements } from "../Output/Html/Schema.js";
-import { Syntax } from "../Syntax.js";
+import { DontTraverseChildren, NodeTraverser } from "../NodeTraverser.js";
 import {
   AnnotationNode,
+  CodeBlockNode,
   CommentNode,
   ContentNode,
   DirectiveNode,
@@ -35,6 +34,8 @@ import {
   TextNode,
   UrlNode,
 } from "../nodes.js";
+import { inlineElements } from "../Output/Html/Schema.js";
+import { Syntax } from "../Syntax.js";
 
 /** Opaque protected text (code, URL); breaks words, not transparent to patterns. */
 export const Textual = "\x15";
@@ -62,6 +63,10 @@ export class TextRunPass {
   process(doc) {
     new NodeTraverser().traverse(doc, node => {
       this.transformTitle(node);
+
+      if (node instanceof CodeBlockNode) {
+        return DontTraverseChildren; // code blocks are protected from typography
+      }
 
       if (node instanceof ContentNode && this.isInlineContainer(node)) {
         this.processUnit(node);

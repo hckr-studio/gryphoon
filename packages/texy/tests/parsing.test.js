@@ -3,13 +3,13 @@
  * tests/Texy/InlineParser.phpt and tests/Texy/BlockParser.phpt.
  */
 
-import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { ContentNode, PhraseNode, TextNode, BlockNode } from "../src/nodes.js";
-import { Range } from "../src/Range.js";
-import { InlineParser } from "../src/Parsing/InlineParser.js";
+import { describe, it } from "node:test";
+import { BlockNode, ContentNode, PhraseNode, TextNode } from "../src/nodes.js";
 import { BlockParser } from "../src/Parsing/BlockParser.js";
+import { InlineParser } from "../src/Parsing/InlineParser.js";
 import { ParseContext } from "../src/Parsing/ParseContext.js";
+import { Range } from "../src/Range.js";
 
 /** Simple block node for testing. */
 class TestBlockNode extends BlockNode {

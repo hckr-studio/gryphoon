@@ -4,14 +4,14 @@
  * plus the policy values they set.
  */
 
-import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { Texy } from "../src/Texy.js";
+import { describe, it } from "node:test";
+import { fileURLToPath } from "node:url";
 import { Configurator, SafeTags } from "../src/Configurator.js";
 import { None } from "../src/HtmlPolicy.js";
+import { Texy } from "../src/Texy.js";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const corpus = JSON.parse(readFileSync(join(root, "tests", "fixtures", "configurator-corpus.json"), "utf8"));

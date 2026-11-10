@@ -7,16 +7,17 @@
  * enabled via allowed['emoticon'].
  */
 
-import { Module } from "./Module.js";
-import { Syntax } from "../Syntax.js";
+import { find } from "../NodeHelpers.js";
 import { EmoticonNode } from "../nodes.js";
 import { quote } from "../Regexp.js";
-import { find } from "../NodeHelpers.js";
+import { Syntax } from "../Syntax.js";
+import { Module } from "./Module.js";
 
 export class EmoticonModule extends Module {
   constructor(texy) {
     super();
     this.texy = texy;
+    texy.addPass(doc => this.resolveEmoticons(doc));
 
     /** @type {Object<string, string>} emoticon -> emoji/image mapping */
     this.icons = {

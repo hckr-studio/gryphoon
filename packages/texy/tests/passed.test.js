@@ -7,14 +7,14 @@
  * (typography deliberately absent from both sides).
  */
 
-import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, readdirSync } from "node:fs";
-import { fileURLToPath } from "node:url";
+import { readdirSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
-import { Texy } from "../src/Texy.js";
-import { Syntax } from "../src/Syntax.js";
+import { describe, it } from "node:test";
+import { fileURLToPath } from "node:url";
 import { normalize } from "../src/normalize.js";
+import { Syntax } from "../src/Syntax.js";
+import { Texy } from "../src/Texy.js";
 import { dump } from "./helpers/ast-dumper.js";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
@@ -35,6 +35,7 @@ describe("conformance: post-transform ASTs match the reference implementation", 
       texy.allowed[Syntax.Typography] = false; // the oracle's pass pipeline runs without typography
       texy.allowed[Syntax.Hyphenation] = false;
       const document = texy.parse(source);
+      texy.transform(document);
       const actual = dump(document, source);
 
       if (actual !== expected) {

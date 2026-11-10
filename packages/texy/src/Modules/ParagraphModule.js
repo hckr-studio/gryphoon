@@ -3,13 +3,13 @@
  * Texy\Modules\ParagraphModule - the block gap handler).
  */
 
-import { Module } from "./Module.js";
-import { Modifier as ModifierPattern, ModifierHAlign } from "../Patterns.js";
 import { Modifier } from "../Modifier.js";
-import { Range } from "../Range.js";
-import { ContentNode, LineBreakNode, ParagraphNode, PhraseNode, LinkNode, TextNode, HtmlTagNode } from "../nodes.js";
+import { ContentNode, HtmlTagNode, LineBreakNode, LinkNode, ParagraphNode, PhraseNode, TextNode } from "../nodes.js";
 import { OffsetMap } from "../Parsing/OffsetMap.js";
+import { ModifierHAlign, Modifier as ModifierPattern } from "../Patterns.js";
+import { Range } from "../Range.js";
 import { match, split } from "../Regexp.js";
+import { Module } from "./Module.js";
 
 /** Phrasing elements per the reference Schema; anything else counts as block HTML. */
 export const inlineElements = new Set([

@@ -26,16 +26,16 @@
  * suite).
  */
 
-import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { Texy } from "../src/Texy.js";
-import { Syntax } from "../src/Syntax.js";
-import { CodeBlockNode, HtmlElementNode, ImageNode, RawTextNode } from "../src/nodes.js";
+import { describe, it } from "node:test";
+import { escapeHtml } from "../src/helpers.js";
 import { Modifier } from "../src/Modifier.js";
+import { NodeTraverser } from "../src/NodeTraverser.js";
+import { CodeBlockNode, HtmlElementNode, ImageNode, RawTextNode } from "../src/nodes.js";
 import { Element } from "../src/Output/Html/Element.js";
 import { Raw } from "../src/Output/Html/Raw.js";
-import { NodeTraverser } from "../src/NodeTraverser.js";
-import { escapeHtml } from "../src/helpers.js";
+import { Syntax } from "../src/Syntax.js";
+import { Texy } from "../src/Texy.js";
 
 /**
  * PHP rawurlencode: percent encoding of the RFC 3986 reserved set -

@@ -93,7 +93,7 @@ function appendNode(parent, child, doc) {
  * in the document's <body>.
  * @param {import('./Element.js').Element|import('./Raw.js').Raw|string} root
  * @param {Object} [options]
- * @param {Document} [options.document] an existing DOM Document to fill
+ * @param {*} [options.document] an existing linkedom document to fill
  *   (its body is used as the content root)
  * @returns the linkedom Document
  */

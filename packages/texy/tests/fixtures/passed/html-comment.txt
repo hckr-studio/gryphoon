@@ -1,6 +1,10 @@
 DocumentNode
   ContentNode
-    CodeBlockNode [0,26]
+    CodeBlockNode [0,26] codeMap@8
+      ContentNode
+        HtmlTagNode [8,3] <p>
+        TextNode [11,1] "\n"
+        HtmlCommentNode [12,10]
     ParagraphNode [29,76]
       ContentNode
         TextNode [29,7] "První "

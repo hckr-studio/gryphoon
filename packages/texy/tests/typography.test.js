@@ -7,16 +7,16 @@
  * (reference TypographyModule::postLine, cs locale).
  */
 
-import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { processTypo } from "../src/Typography.js";
-import { Texy } from "../src/Texy.js";
+import { describe, it } from "node:test";
+import { fileURLToPath } from "node:url";
+import { Module } from "../src/Modules/Module.js";
 import { TypographyModule } from "../src/Modules/TypographyModule.js";
 import { Syntax } from "../src/Syntax.js";
-import { Module } from "../src/Modules/Module.js";
+import { Texy } from "../src/Texy.js";
+import { processTypo } from "../src/Typography.js";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const probe = JSON.parse(readFileSync(join(root, "tests", "fixtures", "typo-probe.json"), "utf8"));
@@ -120,8 +120,12 @@ describe("typography in the pipeline", () => {
   it("marks the document typographed and is idempotent", () => {
     const texy = new Texy();
     const doc = texy.parse("a... b");
+    texy.transform(doc); // typography is a Finalize pass
     assert.strictEqual(doc.meta.typographed, true);
-    assert.strictEqual(texy.parse("x... y").content.children[0].content.children[0].text, "x\u2026 y");
+
+    const again = texy.parse("x... y");
+    texy.transform(again);
+    assert.strictEqual(again.content.children[0].content.children[0].text, "x\u2026 y");
 
     const before = doc.content.children[0].content.children[0].text;
     texy.applyAstTypography(doc); // already typographed: no-op
@@ -134,7 +138,8 @@ describe("typography in the pipeline", () => {
     assert.strictEqual(texy.process("Hello world..."), "<p>Hello world...</p>\n");
 
     const doc = texy.parse("x... y");
-    assert.strictEqual(doc.meta.typographed, true); // pass ran, but with no transformers
+    texy.transform(doc); // the pass runs, but with no transformers
+    assert.strictEqual(doc.meta.typographed, true);
     assert.strictEqual(doc.content.children[0].content.children[0].text, "x... y");
   });
 

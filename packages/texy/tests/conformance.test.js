@@ -8,13 +8,13 @@
  * typography, no rendering - the scope of this port).
  */
 
-import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, readdirSync } from "node:fs";
-import { fileURLToPath } from "node:url";
+import { readdirSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
-import { Texy } from "../src/Texy.js";
+import { describe, it } from "node:test";
+import { fileURLToPath } from "node:url";
 import { normalize } from "../src/normalize.js";
+import { Texy } from "../src/Texy.js";
 import { dump } from "./helpers/ast-dumper.js";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));

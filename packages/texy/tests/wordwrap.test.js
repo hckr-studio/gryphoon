@@ -3,11 +3,11 @@
  * (tools/wordwrap-oracle.php), plus targeted behaviors.
  */
 
-import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { describe, it } from "node:test";
+import { fileURLToPath } from "node:url";
 import { wordwrap } from "../src/wordwrap.js";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));

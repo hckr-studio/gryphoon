@@ -22,6 +22,8 @@ wiki link Texy
 wiki link Texy
 markdown link Texy
 markdown link Texy
+code link Texy
+code link Texy
 
 Obrázkové odkazy:
 

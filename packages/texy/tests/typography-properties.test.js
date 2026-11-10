@@ -13,9 +13,9 @@
  * (npm test); run them with npm run test:fuzz - they are deliberately slow.
  */
 
-import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { definePatterns, bindLastShortWord } from "../src/Typography.js";
+import { describe, it } from "node:test";
+import { bindLastShortWord, definePatterns } from "../src/Typography.js";
 
 /** Deterministic PRNG (mulberry32) - a failing case reproduces from its seed. */
 function rng(seed) {

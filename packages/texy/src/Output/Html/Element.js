@@ -10,8 +10,8 @@
  * projection of the same tree is available via DomBuilder.
  */
 
-import { voidElements } from "./Schema.js";
 import { freezeSpaces, phpLooseNull } from "../../helpers.js";
+import { voidElements } from "./Schema.js";
 
 export class Element {
   /**

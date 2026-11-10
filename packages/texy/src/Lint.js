@@ -43,8 +43,6 @@ export class LintCollector {
    * @param {Object} [options] { severity, code }
    */
   report(range, message, options = {}) {
-    this.issues.push(
-      new LintIssue(range, message, options.severity ?? Severity.Warning, options.code ?? null),
-    );
+    this.issues.push(new LintIssue(range, message, options.severity ?? Severity.Warning, options.code ?? null));
   }
 }

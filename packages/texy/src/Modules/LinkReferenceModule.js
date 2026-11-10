@@ -11,33 +11,35 @@
  * with the use-site text (form-url-encoded).
  */
 
-import { Module } from "./Module.js";
-import { Syntax } from "../Syntax.js";
-import { Email, Modifier as ModifierPattern } from "../Patterns.js";
-import { match } from "../Regexp.js";
-import { ContentNode, LinkDefinitionNode, LinkNode, TextNode, UrlNode } from "../nodes.js";
 import { decodeEntities, formUrlencode, toLower } from "../helpers.js";
 import { Modifier, mergeModifiers } from "../Modifier.js";
 import { extractText, find } from "../NodeHelpers.js";
+import { NodeTraverser } from "../NodeTraverser.js";
+import { ContentNode, LinkDefinitionNode, LinkNode, TextNode, UrlNode } from "../nodes.js";
+import { Email, Modifier as ModifierPattern } from "../Patterns.js";
+import { match } from "../Regexp.js";
+import { Stage } from "../Stage.js";
+import { Syntax } from "../Syntax.js";
+import { Module } from "./Module.js";
 
 /**
  * Is the bracketed link target a direct URL rather than a reference use?
  * Texy is forgiving: an undefined reference falls back to a relative URL,
  * so only URL-shaped targets can be told apart from reference typos -
- * those are direct links by intent (lint skips them).
+ * those are direct links by intent (linting skips them).
  * @param {string} target
  */
 function looksLikeUrl(target) {
   return (
     /^[a-z][a-z0-9+.-]*:/i.test(target) || // scheme (https:, mailto:, ...)
-    /^(www\.|\/\/|\/|\.\.?(\/|$)|#|\?)/i.test(target) || // site-relative, anchor, query
+    /^(www\.|\/\/|\/|\.\.?($|\/)|#|\?)/i.test(target) || // site-relative, anchor, query
     Boolean(match(target, "~" + Email + "(\\?\\S*)?$~A")) // e-mail target
   );
 }
 
 /**
  * The [*img*] link-target form: a file-path-like name is a direct image
- * URL, not a reference use (lint skips those).
+ * URL, not a reference use (linting skips those).
  * @param {string} target
  */
 function looksLikeImageUrl(target) {
@@ -50,6 +52,8 @@ export class LinkReferenceModule extends Module {
     this.texy = texy;
     texy.allowed[Syntax.LinkDefinition] = true;
     texy.allowed[Syntax.LinkReference] = false;
+    texy.addPass(doc => this.recognizeReferences(doc), Stage.Syntax);
+    texy.addPass(doc => this.resolveReferences(doc));
 
     /**
      * Texy 3 reference semantics, opt-in for historical documents
@@ -114,14 +118,17 @@ export class LinkReferenceModule extends Module {
    */
   parseReference(context, matches, offsets) {
     const [, mRef] = matches;
-    const range = { offset: offsets[0], length: matches[0].length };
+    const refRange = { offset: offsets[1], length: mRef.length };
     return new LinkNode(
-      "[" + mRef + "]", // bracket form is resolved against definitions like "text":[ref]
-      new ContentNode([new TextNode(decodeEntities(mRef), range)]),
       null,
-      range,
+      new ContentNode([new TextNode(decodeEntities(mRef), refRange)]),
+      null,
+      { offset: offsets[0], length: matches[0].length },
       false,
       mRef,
+      Syntax.LinkReference,
+      refRange,
+      refRange,
     );
   }
 
@@ -152,12 +159,38 @@ export class LinkReferenceModule extends Module {
   }
 
   /**
+   * Recognizes link targets written as a reference, [ref] or [*img*]: the
+   * name goes to LinkNode.ref and the URL is left to resolveReferences()
+   * (a Syntax pass, runs inside parse()).
+   * @param {import('../nodes.js').DocumentNode} doc
+   */
+  recognizeReferences(doc) {
+    for (const node of find(doc, n => n instanceof LinkNode)) {
+      const url = node.url ?? "";
+      const len = url.length;
+      if (
+        len > 4 &&
+        url[0] === "[" &&
+        url[1] === "*" &&
+        url[len - 1] === "]" &&
+        ["*", "<", ">"].includes(url[len - 2])
+      ) {
+        node.ref = url.slice(2, -2).trim();
+        node.isImageLink = true;
+        node.url = null;
+      } else if (len > 2 && url[0] === "[" && url[len - 1] === "]") {
+        node.ref = url.slice(1, -1);
+        node.url = null;
+      }
+    }
+  }
+
+  /**
    * Resolve link references in the document (transform phase; runs after
    * image references, so [*img*] targets can use image definitions).
    * @param {import('../nodes.js').DocumentNode} doc
-   * @param {?import('../Lint.js').LintCollector} lint optional issue collector
    */
-  resolveReferences(doc, lint = null) {
+  resolveReferences(doc) {
     // Start with user-defined definitions
     this.definitions = { ...this.userDefinitions };
 
@@ -166,11 +199,24 @@ export class LinkReferenceModule extends Module {
       this.definitions[toLower(node.reference)] = node;
     }
 
-    // Pass 2: Resolve references in LinkNode.url
+    // Pass 2: Resolve references in LinkNode.url; an undefined bare [ref]
+    // in legacy mode is replaced by literal text (the Texy 3 rendering
+    // without a newReference handler)
     this.livelock = new Set(); // circular label references (the Texy 3 livelock)
-    for (const node of find(doc, n => n instanceof LinkNode)) {
-      this.resolveLinkNodeUrl(node, lint);
-    }
+    this.resolveLinkTree(doc);
+  }
+
+  /**
+   * Resolves the LinkNodes of a subtree, replacing undefined bare [ref]
+   * uses with literal text nodes (the Texy 3 behavior without a
+   * newReference handler).
+   * @param {Node} root a DocumentNode or a parsed ContentNode subtree
+   * @returns {?Node} the root, when the traversal replaced it
+   */
+  resolveLinkTree(root) {
+    return new NodeTraverser().traverse(root, node =>
+      node instanceof LinkNode ? this.resolveLinkNodeUrl(node) : null,
+    );
   }
 
   /**
@@ -204,14 +250,12 @@ export class LinkReferenceModule extends Module {
           node.content = new ContentNode([new TextNode(def.label)]);
         } else {
           this.livelock.add(key);
+          const content = this.texy.createParseContext().parseInline(def.label);
           try {
-            node.content = this.texy.createParseContext().parseInline(def.label);
             // references inside the label resolve too (recursively,
             // with this name locked - the Texy 3 livelock stays on
             // for the whole label resolution, not just the parse)
-            for (const inner of find(node.content, n => n instanceof LinkNode)) {
-              this.resolveLinkNodeUrl(inner);
-            }
+            node.content = this.resolveLinkTree(content) ?? content;
           } finally {
             this.livelock.delete(key);
           }
@@ -224,79 +268,74 @@ export class LinkReferenceModule extends Module {
   }
 
   /**
-   * Resolve URL in LinkNode that might be [ref] or [*img*].
+   * Resolve URL in LinkNode written as [ref] or [*img*]; a reference not
+   * found is used as the URL.
    * @param {LinkNode} node
-   * @param {?import('../Lint.js').LintCollector} lint optional issue collector
+   * @returns {?TextNode} a literal-text replacement for an undefined bare
+   * [ref] in legacy mode, null otherwise
    */
-  resolveLinkNodeUrl(node, lint = null) {
-    if (node.url === null) {
-      return;
-    }
-
+  resolveLinkNodeUrl(node) {
     // the bare [ref] form carries the written name since parsing
-    const bare = node.ref !== null && node.ref !== undefined;
+    const bare = node.syntax === Syntax.LinkReference;
 
-    const len = node.url.length;
-
-    // [*img*], [*img <], [*img >] format - resolve to image URL
-    if (
-      len > 4 &&
-      node.url[0] === "[" &&
-      node.url[1] === "*" &&
-      node.url[len - 1] === "]" &&
-      ["*", "<", ">"].includes(node.url[len - 2])
-    ) {
-      const imgRef = node.url.slice(2, -2).trim();
-      node.ref = imgRef; // keep the written reference name for analyzers
-      const imgDef = this.texy.imageModule.getDefinition(imgRef);
-      if (imgDef !== null && imgDef.url !== null) {
-        node.url = imgDef.url;
-        if (this.legacyReferences) {
-          // the image definition's modifier applies to the <a> too
-          // (the Texy 3 factoryLink); %s takes the use-site text
-          if (imgDef.modifier !== null) {
-            node.modifier = mergeModifiers(imgDef.modifier, node.modifier);
+    if (node.url === null && node.ref != null) {
+      if (node.isImageLink) {
+        const imgDef = this.texy.imageModule.getDefinition(node.ref);
+        if (imgDef != null && imgDef.url !== null) {
+          node.url = imgDef.url;
+          if (this.legacyReferences) {
+            // the image definition's modifier applies to the <a> too
+            // (the Texy 3 factoryLink); %s takes the use-site text
+            if (imgDef.modifier != null) {
+              node.modifier = mergeModifiers(imgDef.modifier, node.modifier);
+            }
+            if (node.url.includes("%s")) {
+              node.url = node.url.replaceAll("%s", formUrlencode(extractText(node.content)));
+            }
           }
-          if (node.url.includes("%s")) {
-            node.url = node.url.replaceAll("%s", formUrlencode(extractText(node.content)));
+        } else {
+          // Image reference not found - use the name as URL; a
+          // file-path-like name is a direct image URL by intent
+          if (!looksLikeImageUrl(node.ref)) {
+            this.texy.lintCollector?.report(node.range, `Image reference "${node.ref}" is not defined - used as URL.`, {
+              code: "image/reference-undefined",
+            });
           }
+          node.url = node.ref;
         }
-      } else {
-        // Image reference not found - use content as URL; a path-like
-        // target is a direct image URL, not a reference typo
-        if (!looksLikeImageUrl(imgRef)) {
-          lint?.report(node.range, `Image reference "${imgRef}" is not defined - used as URL.`, {
-            code: "image/reference-undefined",
-          });
-        }
-        node.url = imgRef;
+        return null;
       }
-      node.isImageLink = true;
-      return;
-    }
 
-    // [ref] format
-    if (len > 2 && node.url[0] === "[" && node.url[len - 1] === "]") {
-      const refName = node.url.slice(1, -1);
-      node.ref = refName; // keep the written reference name for analyzers
-      const def = this.resolveDefinition(refName);
+      const def = this.resolveDefinition(node.ref);
       if (def !== null) {
         node.url = def.url;
-        this.applyDefinition(node, def, bare);
-        // Check if resolved URL is email
+        if (this.legacyReferences) {
+          this.applyDefinition(node, def, bare);
+        }
+      } else if (this.legacyReferences && bare) {
+        // Texy 3 backward compatibility: an undefined bare [ref] is
+        // not a link - with no newReference handler registered, the
+        // match renders as the literal [ref] text (the labeled
+        // "text":[ref] form still falls back to the name as URL).
+        // Normal rendering, not an anomaly - nothing to lint.
+        return new TextNode(`[${node.ref}]`, node.range);
+      } else {
+        // Reference not found - use the reference text as URL; a
+        // URL-shaped target is a direct link by intent
+        if (!looksLikeUrl(node.ref)) {
+          this.texy.lintCollector?.report(node.range, `Reference "${node.ref}" is not defined - used as URL.`, {
+            code: "link/reference-undefined",
+          });
+        }
+        node.url = node.ref;
         this.convertEmailUrl(node);
-        return;
+        return null;
       }
-      // Reference not found - use inner content as URL; a URL-shaped
-      // target is a direct link, not a reference typo
-      if (!looksLikeUrl(refName)) {
-        lint?.report(node.range, `Reference "${refName}" is not defined - used as URL.`, {
-          code: "link/reference-undefined",
-        });
-      }
-      node.url = refName;
-      this.convertEmailUrl(node);
-      return;
+    }
+
+    // A %s in the URL stands for the link text (not for the bare [ref] form)
+    if (node.url !== null && !bare && node.url.includes("%s")) {
+      node.url = node.url.replaceAll("%s", formUrlencode(extractText(node.content)));
     }
 
     this.convertEmailUrl(node);

@@ -3,8 +3,8 @@
  * real DOM for transformation before serialization.
  */
 
-import { describe, it } from "node:test";
 import assert from "node:assert/strict";
+import { describe, it } from "node:test";
 import { Texy } from "../src/Texy.js";
 
 describe("renderDom", () => {

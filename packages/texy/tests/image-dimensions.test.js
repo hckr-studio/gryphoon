@@ -4,14 +4,14 @@
  * arithmetic of the reference.
  */
 
-import { describe, it, beforeEach, afterEach } from "node:test";
 import assert from "node:assert/strict";
 import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { ImageDimensions, imageSize } from "../src/Output/Html/ImageDimensions.js";
-import { Config } from "../src/Output/Html/Config.js";
+import { afterEach, beforeEach, describe, it } from "node:test";
 import { ImageNode } from "../src/nodes.js";
+import { Config } from "../src/Output/Html/Config.js";
+import { ImageDimensions, imageSize } from "../src/Output/Html/ImageDimensions.js";
 
 const dir = join(tmpdir(), "texy-image-dimensions-test");
 

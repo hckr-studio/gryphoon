@@ -10,8 +10,8 @@
  * repo's git tags) with the identical inputs.
  */
 
-import { describe, it } from "node:test";
 import assert from "node:assert/strict";
+import { describe, it } from "node:test";
 import { Texy } from "../src/Texy.js";
 
 /** A Texy with both flags on: bare [ref] + the Texy 3 semantics. */
@@ -142,6 +142,36 @@ describe("Texy 3 references: the addDefinition API", () => {
     assert.equal(
       texy.process("check [api]"),
       '<p>check <a href="https://example.com/api" title="The API">API\n<strong>docs</strong></a></p>\n',
+    );
+  });
+});
+
+describe("Texy 3 references: undefined bare reference", () => {
+  it("an undefined bare [ref] stays literal text (Texy 3 without a newReference handler)", () => {
+    assert.equal(texy3().process("See [nowhere] text."), "<p>See [nowhere] text.</p>\n");
+  });
+
+  it("a defined bare [ref] still resolves", () => {
+    assert.equal(
+      texy3().process("[d]: http://e.com/ name\n\nuse [d]"),
+      '<p>use <a href="http://e.com/">name</a></p>\n',
+    );
+  });
+
+  it("the labeled undefined form still falls back to the name as URL", () => {
+    assert.equal(texy3().process('see "x":[nowhere]'), '<p>see <a href="nowhere">x</a></p>\n');
+  });
+
+  it("without the legacy flag the 4-dev behavior stays: the name becomes the URL", () => {
+    const texy = new Texy();
+    texy.allowed["link/reference"] = true;
+    assert.equal(texy.process("See [nowhere] text."), '<p>See <a href="nowhere">nowhere</a> text.</p>\n');
+  });
+
+  it("an undefined bare [ref] inside a resolved label stays literal too", () => {
+    assert.equal(
+      texy3().process("[a]: http://e.com/ see [missing]\n\nuse [a]"),
+      '<p>use <a href="http://e.com/">see [missing]</a></p>\n',
     );
   });
 });

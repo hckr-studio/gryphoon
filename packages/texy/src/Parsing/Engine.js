@@ -16,9 +16,10 @@
  */
 
 import { ContentNode, DocumentNode } from "../nodes.js";
-import { compile } from "../Regexp.js";
-import { InlineParser } from "./InlineParser.js";
+import { compile, match } from "../Regexp.js";
+import { Stage } from "../Stage.js";
 import { BlockParser } from "./BlockParser.js";
+import { InlineParser } from "./InlineParser.js";
 import { ParseContext } from "./ParseContext.js";
 
 export class Engine {
@@ -31,6 +32,9 @@ export class Engine {
 
     /** @type {Function} (context, text, offset) => BlockNode[] */
     this.gapHandler = () => [];
+
+    /** @type {Object<string, Function[]>} passes of each stage, in registration order */
+    this.passes = { [Stage.Syntax]: [], [Stage.Transform]: [], [Stage.Finalize]: [] };
   }
 
   /**
@@ -63,7 +67,17 @@ export class Engine {
   }
 
   /**
-   * Parse text into an AST.
+   * Registers a pass: fn(DocumentNode): void. Passes of a stage run in
+   * registration order.
+   * @param {Function} pass
+   * @param {string} stage one of Stage
+   */
+  addPass(pass, stage = Stage.Transform) {
+    this.passes[stage].push(pass);
+  }
+
+  /**
+   * Parse text into an AST, including the Syntax passes.
    * @param {string} text normalized source
    * @param {Object<string, boolean>} allowedSyntaxes map of syntax name => enabled
    * @param {boolean} singleLine parse as single line (inline only)
@@ -73,7 +87,46 @@ export class Engine {
     const context = this.createParseContext(allowedSyntaxes);
     const content = singleLine ? context.parseInline(text) : context.parseBlock(text);
 
-    return new DocumentNode(content);
+    const document = new DocumentNode(content);
+    this.runPasses(document, Stage.Syntax);
+    return document;
+  }
+
+  /**
+   * Does the pattern of an allowed block syntax match the text? Its handler
+   * could still refuse it.
+   * @param {string} text
+   * @param {Object<string, boolean>} allowedSyntaxes
+   * @returns {boolean}
+   */
+  matchesBlockSyntax(text, allowedSyntaxes) {
+    for (const [name, info] of this.blockPatterns) {
+      if (allowedSyntaxes[name] && match(text, info.pattern)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Runs the Transform and Finalize passes over a parsed document, changing
+   * it in place. A document is transformed once; further calls do nothing.
+   * @param {DocumentNode} document
+   */
+  transform(document) {
+    if (!document.meta.transformed) {
+      document.meta.transformed = true;
+      this.runPasses(document, Stage.Transform);
+      this.runPasses(document, Stage.Finalize);
+    }
+  }
+
+  /** @param {DocumentNode} document @param {string} stage */
+  runPasses(document, stage) {
+    for (const pass of this.passes[stage]) {
+      pass(document);
+    }
   }
 
   /**

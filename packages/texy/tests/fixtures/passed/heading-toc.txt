@@ -1,15 +1,26 @@
 DocumentNode
   ContentNode
-    HeadingNode [0,11] level=1
+    HeadingNode [0,11] textRange[0,5] level=1 marker=*
       ContentNode
         TextNode [0,5] "Title"
-    HeadingNode [13,29] level=2
+    HeadingNode [13,29] textRange[13,14] level=2 marker==
       ContentNode
         TextNode [13,14] "subtitle * 123"
-    CodeBlockNode [44,46]
-    HeadingNode [93,29] mod[100,15] level=1
+    CodeBlockNode [44,46] codeMap@58
+      ContentNode
+        HeadingNode [58,13] textRange[58,6] level=2 marker==
+          ContentNode
+            PhraseNode [58,6] phrase/strong
+              ContentNode
+                TextNode [60,2] "aa"
+        HeadingNode [73,13] textRange[73,6] level=3 marker=-
+          ContentNode
+            PhraseNode [73,6] phrase/strong
+              ContentNode
+                TextNode [75,2] "bb"
+    HeadingNode [93,29] mod[100,15] textRange[93,5] level=1 marker=*
       ContentNode
         TextNode [93,5] "Title"
-    HeadingNode [124,21] level=3
+    HeadingNode [124,21] textRange[124,10] level=3 marker=-
       ContentNode
         TextNode [124,10] "last title"

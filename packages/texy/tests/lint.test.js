@@ -5,25 +5,20 @@
  * changes parse output.
  */
 
-import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { Texy } from "../src/Texy.js";
+import { describe, it } from "node:test";
+import { fileURLToPath } from "node:url";
 import { Configurator } from "../src/Configurator.js";
 import { Severity } from "../src/Lint.js";
 import { normalize } from "../src/normalize.js";
+import { Texy } from "../src/Texy.js";
 import { dump } from "./helpers/ast-dumper.js";
 
 /** Issues of one lint() run as comparable rows: [code, offset, length, severity]. */
 function lintRows(texy, text) {
-  return texy.lint(text).issues.map(i => [
-    i.code,
-    i.range?.offset ?? null,
-    i.range?.length ?? null,
-    i.severity,
-  ]);
+  return texy.lint(text).issues.map(i => [i.code, i.range?.offset ?? null, i.range?.length ?? null, i.severity]);
 }
 
 /** A safeMode-configured Texy (restrictive tag/attribute whitelist). */
@@ -35,15 +30,11 @@ function safeTexy() {
 
 describe("lint: html pairing", () => {
   it("unclosed opening tag is reported at its source range", () => {
-    assert.deepEqual(lintRows(new Texy(), "<b>bold"), [
-      ["html/tag-unclosed", 0, 3, Severity.Warning],
-    ]);
+    assert.deepEqual(lintRows(new Texy(), "<b>bold"), [["html/tag-unclosed", 0, 3, Severity.Warning]]);
   });
 
   it("stray closing tag is reported at its source range", () => {
-    assert.deepEqual(lintRows(new Texy(), "text</b>"), [
-      ["html/tag-stray", 4, 4, Severity.Warning],
-    ]);
+    assert.deepEqual(lintRows(new Texy(), "text</b>"), [["html/tag-stray", 4, 4, Severity.Warning]]);
   });
 
   it("crossed tags report the crossing and the stray close, without re-reporting the crossed tag as unclosed", () => {
@@ -60,9 +51,7 @@ describe("lint: html pairing", () => {
   it("ranges inside stripped block content are absolute (blockquote prefix)", () => {
     // the "> " prefix is stripped before recursive parsing; OffsetMap rewrites
     // the local <b> position back to source offset 2
-    assert.deepEqual(lintRows(new Texy(), "> <b>text"), [
-      ["html/tag-unclosed", 2, 3, Severity.Warning],
-    ]);
+    assert.deepEqual(lintRows(new Texy(), "> <b>text"), [["html/tag-unclosed", 2, 3, Severity.Warning]]);
   });
 });
 
@@ -126,22 +115,24 @@ describe("lint: references", () => {
 
   it("the reported real-world case stays clean", () => {
     const text =
-      "Používáme vzor \"Application Shell\":[https://developer.chrome.com/blog/app-shell], kdy hlavní script zavádí jednotlivé\n" +
+      'Používáme vzor "Application Shell":[https://developer.chrome.com/blog/app-shell], kdy hlavní script zavádí jednotlivé\n' +
       "moduly dynamicky, podle aktuální potřeby.";
     assert.deepEqual(lintRows(new Texy(), text), []);
   });
 });
 
 describe("lint: passivity", () => {
-  it("a collector never changes the parse output", () => {
+  it("a collector never changes the output", () => {
     const texy = new Texy();
-    const inputs = [
-      "<b><i>x</b></i>",
-      '"click":[nowhere]',
-      "> <b>text\n\nsecond paragraph .(note)",
-    ];
+    /** parse + transform without a collector - the same pipeline lint() runs */
+    const plainRun = text => {
+      const document = texy.parse(text);
+      texy.transform(document);
+      return dump(document, text);
+    };
+    const inputs = ["<b><i>x</b></i>", '"click":[nowhere]', "> <b>text\n\nsecond paragraph .(note)"];
     for (const text of inputs) {
-      const plain = dump(texy.parse(text), text);
+      const plain = plainRun(text);
       const { document, issues } = texy.lint(text);
       assert.ok(issues.length > 0, `expected issues for ${JSON.stringify(text)}`);
       assert.equal(dump(document, text), plain, `AST changed for ${JSON.stringify(text)}`);
@@ -155,7 +146,10 @@ describe("lint: passivity", () => {
       const text = normalize(readFileSync(join(dir, name), "utf8"));
       const { issues } = new Texy().lint(text);
       for (const issue of issues) {
-        assert.ok(issue.range === null || (issue.range.offset >= 0 && issue.range.offset + issue.range.length <= text.length), `${name}: range out of bounds`);
+        assert.ok(
+          issue.range === null || (issue.range.offset >= 0 && issue.range.offset + issue.range.length <= text.length),
+          `${name}: range out of bounds`,
+        );
       }
     }
   });

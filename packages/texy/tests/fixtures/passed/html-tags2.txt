@@ -1,6 +1,33 @@
 DocumentNode
   ContentNode
-    CodeBlockNode [0,777]
+    CodeBlockNode [0,777] codeMap@8
+      ContentNode
+        HtmlElementNode [8,5]
+          ContentNode
+            TextNode [13,3] "\n  "
+            HtmlCommentNode [16,17]
+            TextNode [33,3] "\n  "
+            HtmlElementNode [36,146]
+              ContentNode
+                TextNode [182,3] "\n  "
+                HtmlCommentNode [185,17]
+                TextNode [202,4] "\n\n  "
+                HtmlCommentNode [206,316]
+                HtmlCommentNode [522,8]
+                TextNode [530,7] "\n      "
+                HtmlTagNode [537,35] <param>
+                TextNode [572,7] "\n      "
+                HtmlTagNode [579,35] <param>
+                TextNode [614,7] "\n      "
+                HtmlTagNode [621,39] <param>
+                TextNode [660,8] "\n\n      "
+                HtmlElementNode [668,3]
+                  ContentNode
+                    TextNode [671,58] "Pro přehrání je třeba mít nainstalovaný FLASH Player"
+                TextNode [733,3] "\n  "
+            TextNode [745,3] "\n  "
+            HtmlCommentNode [748,17]
+            TextNode [765,1] "\n"
     ParagraphNode [780,673]
       ContentNode
         HtmlElementNode [780,48]
@@ -78,7 +105,7 @@ DocumentNode
         HtmlElementNode [2431,27]
           ContentNode
             TextNode [2458,1] " "
-            LinkNode [2459,26] url=stranka.html
+            LinkNode [2459,26] textRange[2460,11] urlRange[2473,12] phrase/span url=stranka.html
               ContentNode
                 TextNode [2460,11] "alternativa"
             TextNode [2485,1] " "

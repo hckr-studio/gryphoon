@@ -4,7 +4,7 @@
  * scheme-less (relative) URLs always pass.
  */
 
-import { match } from "./Regexp.js";
+import { match, replace } from "./Regexp.js";
 
 export class UrlPolicy {
   /** @type {?string} PCRE pattern matching allowed link schemes, e.g. '~https?:|ftp:|mailto:~A'; null = allow all */
@@ -35,8 +35,13 @@ export class UrlPolicy {
    * @returns {boolean}
    */
   isAllowed(url, pattern) {
+    if (pattern === null) {
+      return true;
+    }
+    // browsers delete control characters from URLs before parsing, so they are
+    // removed here too, otherwise "java\tscript:alert(1)" would look scheme-less and pass as a relative URL
+    url = replace(url, String.raw`~[\x00-\x1F]+~`);
     return (
-      pattern === null ||
       !match(url, String.raw`~\s*[a-z][a-z0-9+.-]{0,20}:~Ai`) || // no scheme (relative URL)
       match(url, pattern) !== null
     );

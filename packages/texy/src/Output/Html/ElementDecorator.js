@@ -10,7 +10,7 @@
  */
 
 import { All } from "../../HtmlPolicy.js";
-import { urlAttribute, UrlImage } from "./Schema.js";
+import { UrlImage, urlAttribute } from "./Schema.js";
 
 /**
  * PHP settype($attrs[$key], 'array'): an existing array or map passes

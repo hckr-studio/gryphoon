@@ -1,6 +1,6 @@
 DocumentNode
   ContentNode
-    TableNode [0,27]
+    TableNode [0,127]
       TableRowNode [0,27]
         TableCellNode [1,15]
           ContentNode
@@ -29,7 +29,7 @@ DocumentNode
         TableCellNode [120,7]
           ContentNode
             TextNode [121,6] "Junior"
-    TableNode [132,27]
+    TableNode [132,88]
       TableRowNode [132,27]
         TableCellNode [133,15]
           ContentNode
@@ -48,7 +48,7 @@ DocumentNode
         TableCellNode [213,7]
           ContentNode
             TextNode [214,6] "Junior"
-    TableNode [225,27]
+    TableNode [225,154]
       TableRowNode [225,27]
         TableCellNode [226,15]
           ContentNode
@@ -65,7 +65,7 @@ DocumentNode
                 LineBreakNode [285,22]
                 TextNode [307,3] "row"
             ListNode [326,6] unordered
-              ListItemNode [326,6]
+              ListItemNode [326,6] bulletRange[326,1] bullet=-
                 ContentNode
                   ParagraphNode [328,4]
                     ContentNode
@@ -88,7 +88,7 @@ DocumentNode
         TableCellNode [372,7]
           ContentNode
             TextNode [373,6] "Junior"
-    TableNode [382,29]
+    TableNode [382,60]
       TableRowNode [382,29]
         TableCellNode [383,17]
           ContentNode
@@ -116,7 +116,7 @@ DocumentNode
         TableCellNode [436,6]
           ContentNode
             TextNode [437,5] "item2"
-    TableNode [446,27]
+    TableNode [446,143]
       TableRowNode [446,27]
         TableCellNode [447,15]
           ContentNode
@@ -130,13 +130,13 @@ DocumentNode
             ParagraphNode [500,6]
               ContentNode
                 TextNode [500,6] "Street"
-            ListNode [522,6] unordered
-              ListItemNode [522,6]
+            ListNode [522,29] unordered
+              ListItemNode [522,6] bulletRange[522,1] bullet=-
                 ContentNode
                   ParagraphNode [524,4]
                     ContentNode
                       TextNode [524,4] "City"
-              ListItemNode [544,7]
+              ListItemNode [544,7] bulletRange[544,1] bullet=-
                 ContentNode
                   ParagraphNode [546,5]
                     ContentNode
@@ -154,7 +154,7 @@ DocumentNode
         TableCellNode [567,17]
           ContentNode
             TextNode [568,9] "- Village"
-    TableNode [594,23]
+    TableNode [594,182]
       TableRowNode [594,23]
         TableCellNode [595,14]
           ContentNode
@@ -199,7 +199,7 @@ DocumentNode
         TableCellNode [769,7]
           ContentNode
             TextNode [770,6] "Junior"
-    TableNode [779,18]
+    TableNode [779,110]
       TableRowNode [779,18]
         TableCellNode [780,16]
           ContentNode
@@ -223,7 +223,7 @@ DocumentNode
     ParagraphNode [892,21]
       ContentNode
         TextNode [892,21] "List block collapses:"
-    TableNode [915,38]
+    TableNode [915,155]
       TableRowNode [915,38]
         TableCellNode [916,11]
           ContentNode
@@ -240,18 +240,18 @@ DocumentNode
             TextNode " "
         TableCellNode [967,12]
           ContentNode
-            ListNode [968,6] ordered
-              ListItemNode [968,6]
+            ListNode [968,86] ordered
+              ListItemNode [968,6] bulletRange[968,2] bullet=1)
                 ContentNode
                   ParagraphNode [971,3]
                     ContentNode
                       TextNode [971,3] "one"
-              ListItemNode [1007,6]
+              ListItemNode [1007,6] bulletRange[1007,2] bullet=2)
                 ContentNode
                   ParagraphNode [1010,3]
                     ContentNode
                       TextNode [1010,3] "two"
-              ListItemNode [1046,8]
+              ListItemNode [1046,8] bulletRange[1046,2] bullet=3)
                 ContentNode
                   ParagraphNode [1049,5]
                     ContentNode
@@ -262,7 +262,7 @@ DocumentNode
     ParagraphNode [1072,56]
       ContentNode
         TextNode [1072,56] "List block correct, but extra table cell (bottom-right):"
-    TableNode [1130,38]
+    TableNode [1130,155]
       TableRowNode [1130,38]
         TableCellNode [1131,11]
           ContentNode
@@ -279,18 +279,18 @@ DocumentNode
             TextNode " "
         TableCellNode [1182,12]
           ContentNode
-            ListNode [1183,6] ordered
-              ListItemNode [1183,6]
+            ListNode [1183,86] ordered
+              ListItemNode [1183,6] bulletRange[1183,2] bullet=1)
                 ContentNode
                   ParagraphNode [1186,3]
                     ContentNode
                       TextNode [1186,3] "one"
-              ListItemNode [1222,6]
+              ListItemNode [1222,6] bulletRange[1222,2] bullet=2)
                 ContentNode
                   ParagraphNode [1225,3]
                     ContentNode
                       TextNode [1225,3] "two"
-              ListItemNode [1261,8]
+              ListItemNode [1261,8] bulletRange[1261,2] bullet=3)
                 ContentNode
                   ParagraphNode [1264,5]
                     ContentNode
@@ -306,11 +306,11 @@ DocumentNode
       TableRowNode [1288,25]
         TableCellNode [1289,10]
           ContentNode
-            LinkNode [1290,8] url=link
+            LinkNode [1290,8] textRange[1291,1] urlRange[1293,4] phrase/wikilink url=link
               ContentNode
                 TextNode [1291,1] "a"
         TableCellNode [1300,12]
           ContentNode
-            LinkNode [1301,10] url=link
+            LinkNode [1301,10] textRange[1302,1] urlRange[1306,4] phrase/wikilink url=link
               ContentNode
                 TextNode [1302,1] "b"

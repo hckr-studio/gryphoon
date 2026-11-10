@@ -1,6 +1,6 @@
 DocumentNode
   ContentNode
-    HeadingNode [0,29] level=1
+    HeadingNode [0,29] textRange[0,14] level=1 marker=*
       ContentNode
         TextNode [0,14] "Texy! is sexy!"
     ParagraphNode [31,266]
@@ -17,13 +17,13 @@ DocumentNode
           ContentNode
             TextNode [444,3] "CSS"
         TextNode [470,1] "."
-    HeadingNode [475,15] level=2
+    HeadingNode [475,15] textRange[475,7] level=2 marker==
       ContentNode
         TextNode [475,7] "Headers"
-    HeadingNode [492,25] level=1
+    HeadingNode [492,25] textRange[496,16] level=1 marker====
       ContentNode
         TextNode [496,16] "Low Level Header"
-    HeadingNode [522,21] level=2
+    HeadingNode [522,21] textRange[522,10] level=2 marker==
       ContentNode
         TextNode [522,10] "Paragraphs"
     ParagraphNode [545,245]
@@ -42,7 +42,7 @@ DocumentNode
     ParagraphNode [819,33] mod[840,12]
       ContentNode
         TextNode [819,19] "Colored by modifier"
-    HeadingNode [858,33] level=2
+    HeadingNode [858,33] textRange[858,16] level=2 marker==
       ContentNode
         TextNode [858,16] "Horizontal lines"
     ParagraphNode [893,44]
@@ -50,18 +50,20 @@ DocumentNode
         TextNode [893,44] "four horizontal lines, written in four ways:"
     HorizontalRuleNode [939,3]
     HorizontalRuleNode [944,3]
-    HeadingNode [953,9] level=2
+    HeadingNode [953,9] textRange[953,4] level=2 marker==
       ContentNode
         TextNode [953,4] "Code"
-    CodeBlockNode [964,131] lang=php
+    CodeBlockNode [964,131] codeMap@979 lang=php
     ParagraphNode [1097,47]
       ContentNode
         TextNode [1097,47] "Syntax can be highlighted by third party module"
-    HeadingNode [1149,25] level=2
+    HeadingNode [1149,25] textRange[1149,12] level=2 marker==
       ContentNode
         TextNode [1149,12] "Disable Texy"
-    CodeBlockNode [1177,47]
-    HeadingNode [1229,7] level=2
+    CodeBlockNode [1177,47] codeMap@1186
+      ContentNode
+        TextNode [1186,33] "  example: **this is not strong**"
+    HeadingNode [1229,7] textRange[1229,3] level=2 marker==
       ContentNode
         TextNode [1229,3] "Div"
     SectionNode [1238,41] mod[1247,8]
@@ -69,12 +71,12 @@ DocumentNode
         ParagraphNode [1259,14]
           ContentNode
             TextNode [1259,14] "content of div"
-    HeadingNode [1285,13] level=3
+    HeadingNode [1285,13] textRange[1285,6] level=3 marker=-
       ContentNode
         TextNode [1285,6] "nested"
     SectionNode [1300,98] mod[1309,8]
       ContentNode
-        HeadingNode [1321,20] level=2
+        HeadingNode [1321,20] textRange[1324,17] level=2 marker=##
           ContentNode
             TextNode [1324,17] "This is a header."
         SectionNode [1345,29]
@@ -85,7 +87,7 @@ DocumentNode
         ParagraphNode [1378,14]
           ContentNode
             TextNode [1378,14] "Texy! is sexy!"
-    HeadingNode [1406,21] level=2
+    HeadingNode [1406,21] textRange[1406,10] level=2 marker==
       ContentNode
         TextNode [1406,10] "BlockQuote"
     BlockQuoteNode [1429,280]
@@ -97,12 +99,12 @@ DocumentNode
           ContentNode
             TextNode [1647,38] "640 K should be enough for everyone "
             UrlNode [1685,24]
-    HeadingNode [1712,13] level=3
+    HeadingNode [1712,13] textRange[1712,6] level=3 marker=-
       ContentNode
         TextNode [1712,6] "nested"
     BlockQuoteNode [1727,84]
       ContentNode
-        HeadingNode [1729,20] level=2
+        HeadingNode [1729,20] textRange[1732,17] level=2 marker=##
           ContentNode
             TextNode [1732,17] "This is a header."
         BlockQuoteNode [1754,28]
@@ -113,792 +115,792 @@ DocumentNode
         ParagraphNode [1787,24]
           ContentNode
             TextNode [1787,24] "Back to the first level."
-    HeadingNode [1816,11] level=2
+    HeadingNode [1816,11] textRange[1816,5] level=2 marker==
       ContentNode
         TextNode [1816,5] "Links"
-    ListNode [1829,43] unordered
-      ListItemNode [1829,43]
+    ListNode [1829,158] unordered
+      ListItemNode [1829,44] bulletRange[1829,1] bullet=-
         ContentNode
-          ParagraphNode [1831,41]
+          ParagraphNode [1831,42]
             ContentNode
               TextNode [1831,8] "Look at "
-              LinkNode [1839,32] url=http://texy.nette.org
+              LinkNode [1839,33] textRange[1840,8] urlRange[1850,22] phrase/span url=http://texy.deegee.dev
                 ContentNode
                   TextNode [1840,8] "homepage"
-              TextNode [1871,1] "."
-      ListItemNode [1873,53]
+              TextNode [1872,1] "."
+      ListItemNode [1874,53] bulletRange[1874,1] bullet=-
         ContentNode
-          ParagraphNode [1875,51]
+          ParagraphNode [1876,51]
             ContentNode
-              TextNode [1875,12] "Do you know "
-              LinkNode [1887,38] url=http://phpfashion.com/
+              TextNode [1876,12] "Do you know "
+              LinkNode [1888,38] textRange[1889,11] urlRange[1902,24] phrase/span url=http://phpfashion.com/ ref=http://phpfashion.com/
                 ContentNode
-                  TextNode [1888,11] "php Fashion"
-              TextNode [1925,1] "?"
-      ListItemNode [1927,58]
+                  TextNode [1889,11] "php Fashion"
+              TextNode [1926,1] "?"
+      ListItemNode [1928,59] bulletRange[1928,1] bullet=-
         ContentNode
-          ParagraphNode [1929,56]
+          ParagraphNode [1930,57]
             ContentNode
-              TextNode [1929,13] "This picture "
-              LinkNode [1942,30] url=texy.nette.org
+              TextNode [1930,13] "This picture "
+              LinkNode [1943,31] urlRange[1959,15] image url=texy.deegee.dev
                 ContentNode
-                  ImageNode [1942,30] src=image.gif
-              TextNode [1972,13] " is clickable"
-    HeadingNode [1988,33] level=3
+                  ImageNode [1943,15] urlRange[1946,9] src=image.gif
+              TextNode [1974,13] " is clickable"
+    HeadingNode [1990,33] textRange[1990,16] level=3 marker=-
       ContentNode
-        TextNode [1988,16] "using references"
-    LinkDefinitionNode [2023,35]
-    LinkDefinitionNode [2059,27]
-    ListNode [2089,36] unordered
-      ListItemNode [2089,36]
+        TextNode [1990,16] "using references"
+    LinkDefinitionNode [2025,36]
+    LinkDefinitionNode [2062,27]
+    ListNode [2092,36] unordered
+      ListItemNode [2092,36] bulletRange[2092,1] bullet=-
         ContentNode
-          ParagraphNode [2091,34]
+          ParagraphNode [2094,34]
             ContentNode
-              TextNode [2091,11] "What about "
-              LinkNode [2102,17] url=http://texy.nette.org/
+              TextNode [2094,11] "What about "
+              LinkNode [2105,17] textRange[2106,4] urlRange[2112,10] phrase/span url=http://texy.deegee.dev/ ref=homepage
                 ContentNode
-                  TextNode [2103,4] "this"
-              TextNode [2119,6] " site?"
-    HeadingNode [2130,13] level=2
+                  TextNode [2106,4] "this"
+              TextNode [2122,6] " site?"
+    HeadingNode [2133,13] textRange[2133,6] level=2 marker==
       ContentNode
-        TextNode [2130,6] "Images"
-    FigureNode [2145,15]
-      ImageNode [2145,15] src=image.gif
-    HeadingNode [2162,25] level=3
+        TextNode [2133,6] "Images"
+    FigureNode [2148,15]
+      ImageNode [2148,15] urlRange[2151,9] src=image.gif
+    HeadingNode [2165,25] textRange[2165,12] level=3 marker=-
       ContentNode
-        TextNode [2162,12] "in paragraph"
-    ParagraphNode [2189,172]
+        TextNode [2165,12] "in paragraph"
+    ParagraphNode [2192,172]
       ContentNode
-        ImageNode [2189,15] src=image.gif
-        TextNode [2204,157] " Left-aligned image. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Curabitur turpis enim, placerat tincidunt, tincidunt ac, fringilla et, mauris."
-    ParagraphNode [2363,224]
+        ImageNode [2192,15] urlRange[2195,9] src=image.gif
+        TextNode [2207,157] " Left-aligned image. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Curabitur turpis enim, placerat tincidunt, tincidunt ac, fringilla et, mauris."
+    ParagraphNode [2366,224]
       ContentNode
-        ImageNode [2363,15] src=image.gif
-        TextNode [2378,209] " Right-aligned image. Curabitur quam justo, hendrerit a, mattis ut, ultrices at, dui. In mollis. Ut pellentesque erat vehicula nunc. Ut ultricies. Nulla nunc velit, consequat vel, laoreet in, blandit et, eros."
-    HeadingNode [2590,33] level=3
+        ImageNode [2366,15] urlRange[2369,9] src=image.gif
+        TextNode [2381,209] " Right-aligned image. Curabitur quam justo, hendrerit a, mattis ut, ultrices at, dui. In mollis. Ut pellentesque erat vehicula nunc. Ut ultricies. Nulla nunc velit, consequat vel, laoreet in, blandit et, eros."
+    HeadingNode [2593,33] textRange[2593,16] level=3 marker=-
       ContentNode
-        TextNode [2590,16] "with description"
-    FigureNode [2625,62]
-      ImageNode [2625,15] src=image.gif
+        TextNode [2593,16] "with description"
+    FigureNode [2628,62]
+      ImageNode [2628,15] urlRange[2631,9] src=image.gif
       ContentNode
-        TextNode [2645,42] "This is description under image (or photo)"
-    HeadingNode [2690,33] level=3
+        TextNode [2648,42] "This is description under image (or photo)"
+    HeadingNode [2693,33] textRange[2693,16] level=3 marker=-
       ContentNode
-        TextNode [2690,16] "using references"
-    ParagraphNode [2725,37]
+        TextNode [2693,16] "using references"
+    ParagraphNode [2728,37]
       ContentNode
-        TextNode [2725,22] "What a beautiful logo "
-        ImageNode [2747,11] src=image.gif
-        TextNode [2758,4] " :-)"
-    ImageDefinitionNode [2764,42] mod[2788,18]
-    HeadingNode [2809,29] level=3
+        TextNode [2728,22] "What a beautiful logo "
+        ImageNode [2750,11] urlRange[2752,7] src=image.gif
+        TextNode [2761,4] " :-)"
+    ImageDefinitionNode [2767,42] mod[2791,18]
+    HeadingNode [2812,29] textRange[2812,14] level=3 marker=-
       ContentNode
-        TextNode [2809,14] "with modifiers"
-    FigureNode [2840,30]
-      ImageNode [2840,30] src=image.gif
-    HeadingNode [2877,15] level=2
+        TextNode [2812,14] "with modifiers"
+    FigureNode [2843,30]
+      ImageNode [2843,30] urlRange[2846,9] src=image.gif
+    HeadingNode [2880,15] textRange[2880,7] level=2 marker==
       ContentNode
-        TextNode [2877,7] "Phrases"
-    ParagraphNode [2894,86]
+        TextNode [2880,7] "Phrases"
+    ParagraphNode [2897,86]
       ContentNode
-        TextNode [2894,12] "Formatting: "
-        PhraseNode [2906,10] phrase/em-alt
+        TextNode [2897,12] "Formatting: "
+        PhraseNode [2909,10] phrase/em-alt
           ContentNode
-            TextNode [2907,8] "emphasis"
-        TextNode [2916,2] ", "
-        PhraseNode [2918,19] phrase/strong
+            TextNode [2910,8] "emphasis"
+        TextNode [2919,2] ", "
+        PhraseNode [2921,19] phrase/strong
           ContentNode
-            TextNode [2920,15] "strong emphasis"
-        TextNode [2937,5] " and "
-        PhraseNode [2942,38] mod[2964,13] phrase/strong+em
+            TextNode [2923,15] "strong emphasis"
+        TextNode [2940,5] " and "
+        PhraseNode [2945,38] mod[2967,13] phrase/strong+em
           ContentNode
-            TextNode [2945,17] "stronger emphasis"
-    ParagraphNode [2982,46]
+            TextNode [2948,17] "stronger emphasis"
+    ParagraphNode [2985,46]
       ContentNode
-        TextNode [2982,8] "Quotes: "
-        LinkNode [2990,38] url=www.lipsum.com
+        TextNode [2985,8] "Quotes: "
+        LinkNode [2993,38] textRange[2995,19] urlRange[3017,14] phrase/quote url=www.lipsum.com
           ContentNode
-            PhraseNode [2990,38] phrase/quote
+            PhraseNode [2993,38] phrase/quote
               ContentNode
-                TextNode [2992,19] "Lorem Ipsum Dolores"
-    ParagraphNode [3030,36]
+                TextNode [2995,19] "Lorem Ipsum Dolores"
+    ParagraphNode [3033,36]
       ContentNode
-        TextNode [3030,36] "Cite: As ~~Frank Borland~~ said, ..."
-    ParagraphNode [3068,44]
+        TextNode [3033,36] "Cite: As ~~Frank Borland~~ said, ..."
+    ParagraphNode [3071,44]
       ContentNode
-        TextNode [3068,44] "And other: ^^superscript^^ vs. __subscript__"
-    ParagraphNode [3114,33]
+        TextNode [3071,44] "And other: ^^superscript^^ vs. __subscript__"
+    ParagraphNode [3117,33]
       ContentNode
-        TextNode [3114,13] "superscript m"
-        PhraseNode [3127,2] phrase/sup-alt
+        TextNode [3117,13] "superscript m"
+        PhraseNode [3130,2] phrase/sup-alt
           ContentNode
-            TextNode [3128,1] "2"
-        TextNode [3129,16] " vs. subscript O"
-        PhraseNode [3145,2] phrase/sub-alt
+            TextNode [3131,1] "2"
+        TextNode [3132,16] " vs. subscript O"
+        PhraseNode [3148,2] phrase/sub-alt
           ContentNode
-            TextNode [3146,1] "2"
-    ParagraphNode [3158,38]
+            TextNode [3149,1] "2"
+    ParagraphNode [3161,38]
       ContentNode
-        TextNode [3158,38] "++inserted text++ vs. --deleted text--"
-    ParagraphNode [3198,14]
+        TextNode [3161,38] "++inserted text++ vs. --deleted text--"
+    ParagraphNode [3201,14]
       ContentNode
-        TextNode [3198,6] "Code: "
-        PhraseNode [3204,8] phrase/code
+        TextNode [3201,6] "Code: "
+        PhraseNode [3207,8] phrase/code
           ContentNode
-            TextNode [3205,6] "<br />"
-    HeadingNode [3215,29] level=3
+            TextNode [3208,6] "<br />"
+    HeadingNode [3218,29] textRange[3218,14] level=3 marker=-
       ContentNode
-        TextNode [3215,14] "with modifiers"
-    ParagraphNode [3246,45]
+        TextNode [3218,14] "with modifiers"
+    ParagraphNode [3249,45]
       ContentNode
-        PhraseNode [3246,35] mod[3266,13] phrase/strong
+        PhraseNode [3249,35] mod[3269,13] phrase/strong
           ContentNode
-            TextNode [3248,16] "strong and green"
-        TextNode [3281,10] " like Hulk"
-    HeadingNode [3297,33] level=2
+            TextNode [3251,16] "strong and green"
+        TextNode [3284,10] " like Hulk"
+    HeadingNode [3300,33] textRange[3300,16] level=2 marker==
       ContentNode
-        TextNode [3297,16] "Direct HTML tags"
-    ParagraphNode [3332,37]
+        TextNode [3300,16] "Direct HTML tags"
+    ParagraphNode [3335,37]
       ContentNode
-        TextNode [3332,5] "This "
-        HtmlElementNode [3337,8]
+        TextNode [3335,5] "This "
+        HtmlElementNode [3340,8]
           ContentNode
-            TextNode [3345,9] "is strong"
-        TextNode [3363,6] " text."
-    HeadingNode [3375,9] level=2
+            TextNode [3348,9] "is strong"
+        TextNode [3366,6] " text."
+    HeadingNode [3378,9] textRange[3378,4] level=2 marker==
       ContentNode
-        TextNode [3375,4] "List"
-    ListNode [3387,7] unordered
-      ListItemNode [3387,7]
+        TextNode [3378,4] "List"
+    ListNode [3390,26] unordered
+      ListItemNode [3390,7] bulletRange[3390,1] bullet=*
         ContentNode
-          ParagraphNode [3391,3]
+          ParagraphNode [3394,3]
             ContentNode
-              TextNode [3391,3] "Red"
-      ListItemNode [3395,9]
+              TextNode [3394,3] "Red"
+      ListItemNode [3398,9] bulletRange[3398,1] bullet=*
         ContentNode
-          ParagraphNode [3399,5]
+          ParagraphNode [3402,5]
             ContentNode
-              TextNode [3399,5] "Green"
-      ListItemNode [3405,8]
+              TextNode [3402,5] "Green"
+      ListItemNode [3408,8] bulletRange[3408,1] bullet=*
         ContentNode
-          ParagraphNode [3409,4]
+          ParagraphNode [3412,4]
             ContentNode
-              TextNode [3409,4] "Blue"
-    ParagraphNode [3415,2]
+              TextNode [3412,4] "Blue"
+    ParagraphNode [3418,2]
       ContentNode
-        TextNode [3415,2] "or"
-    ListNode [3419,7] unordered
-      ListItemNode [3419,7]
+        TextNode [3418,2] "or"
+    ListNode [3422,26] unordered
+      ListItemNode [3422,7] bulletRange[3422,1] bullet=+
         ContentNode
-          ParagraphNode [3423,3]
+          ParagraphNode [3426,3]
             ContentNode
-              TextNode [3423,3] "Red"
-      ListItemNode [3427,9]
+              TextNode [3426,3] "Red"
+      ListItemNode [3430,9] bulletRange[3430,1] bullet=+
         ContentNode
-          ParagraphNode [3431,5]
+          ParagraphNode [3434,5]
             ContentNode
-              TextNode [3431,5] "Green"
-      ListItemNode [3437,8]
+              TextNode [3434,5] "Green"
+      ListItemNode [3440,8] bulletRange[3440,1] bullet=+
         ContentNode
-          ParagraphNode [3441,4]
+          ParagraphNode [3444,4]
             ContentNode
-              TextNode [3441,4] "Blue"
-    ParagraphNode [3447,2]
+              TextNode [3444,4] "Blue"
+    ParagraphNode [3450,2]
       ContentNode
-        TextNode [3447,2] "or"
-    ListNode [3451,7] unordered
-      ListItemNode [3451,7]
+        TextNode [3450,2] "or"
+    ListNode [3454,26] unordered
+      ListItemNode [3454,7] bulletRange[3454,1] bullet=-
         ContentNode
-          ParagraphNode [3455,3]
+          ParagraphNode [3458,3]
             ContentNode
-              TextNode [3455,3] "Red"
-      ListItemNode [3459,9]
+              TextNode [3458,3] "Red"
+      ListItemNode [3462,9] bulletRange[3462,1] bullet=-
         ContentNode
-          ParagraphNode [3463,5]
+          ParagraphNode [3466,5]
             ContentNode
-              TextNode [3463,5] "Green"
-      ListItemNode [3469,8]
+              TextNode [3466,5] "Green"
+      ListItemNode [3472,8] bulletRange[3472,1] bullet=-
         ContentNode
-          ParagraphNode [3473,4]
+          ParagraphNode [3476,4]
             ContentNode
-              TextNode [3473,4] "Blue"
-    HeadingNode [3481,15] level=3
+              TextNode [3476,4] "Blue"
+    HeadingNode [3484,15] textRange[3484,7] level=3 marker=-
       ContentNode
-        TextNode [3481,7] "ordered"
-    ListNode [3498,8] ordered
-      ListItemNode [3498,8]
+        TextNode [3484,7] "ordered"
+    ListNode [3501,30] ordered
+      ListItemNode [3501,8] bulletRange[3501,2] bullet=1.
         ContentNode
-          ParagraphNode [3502,4]
+          ParagraphNode [3505,4]
             ContentNode
-              TextNode [3502,4] "Bird"
-      ListItemNode [3507,10]
+              TextNode [3505,4] "Bird"
+      ListItemNode [3510,10] bulletRange[3510,2] bullet=2.
         ContentNode
-          ParagraphNode [3511,6]
+          ParagraphNode [3514,6]
             ContentNode
-              TextNode [3511,6] "McHale"
-      ListItemNode [3518,10]
+              TextNode [3514,6] "McHale"
+      ListItemNode [3521,10] bulletRange[3521,2] bullet=3.
         ContentNode
-          ParagraphNode [3522,6]
+          ParagraphNode [3525,6]
             ContentNode
-              TextNode [3522,6] "Parish"
-    ListNode [3530,8] ordered
-      ListItemNode [3530,8]
+              TextNode [3525,6] "Parish"
+    ListNode [3533,30] ordered
+      ListItemNode [3533,8] bulletRange[3533,2] bullet=1)
         ContentNode
-          ParagraphNode [3534,4]
+          ParagraphNode [3537,4]
             ContentNode
-              TextNode [3534,4] "Bird"
-      ListItemNode [3539,10]
+              TextNode [3537,4] "Bird"
+      ListItemNode [3542,10] bulletRange[3542,2] bullet=2)
         ContentNode
-          ParagraphNode [3543,6]
+          ParagraphNode [3546,6]
             ContentNode
-              TextNode [3543,6] "McHale"
-      ListItemNode [3550,10]
+              TextNode [3546,6] "McHale"
+      ListItemNode [3553,10] bulletRange[3553,2] bullet=3)
         ContentNode
-          ParagraphNode [3554,6]
+          ParagraphNode [3557,6]
             ContentNode
-              TextNode [3554,6] "Parish"
-    ListNode [3562,8] ordered
-      ListItemNode [3562,8]
+              TextNode [3557,6] "Parish"
+    ListNode [3565,30] ordered
+      ListItemNode [3565,8] bulletRange[3565,2] bullet=a)
         ContentNode
-          ParagraphNode [3566,4]
+          ParagraphNode [3569,4]
             ContentNode
-              TextNode [3566,4] "Bird"
-      ListItemNode [3571,10]
+              TextNode [3569,4] "Bird"
+      ListItemNode [3574,10] bulletRange[3574,2] bullet=b)
         ContentNode
-          ParagraphNode [3575,6]
+          ParagraphNode [3578,6]
             ContentNode
-              TextNode [3575,6] "McHale"
-      ListItemNode [3582,10]
+              TextNode [3578,6] "McHale"
+      ListItemNode [3585,10] bulletRange[3585,2] bullet=c)
         ContentNode
-          ParagraphNode [3586,6]
+          ParagraphNode [3589,6]
             ContentNode
-              TextNode [3586,6] "Parish"
-    ListNode [3594,8] ordered
-      ListItemNode [3594,8]
+              TextNode [3589,6] "Parish"
+    ListNode [3597,30] ordered
+      ListItemNode [3597,8] bulletRange[3597,2] bullet=A)
         ContentNode
-          ParagraphNode [3598,4]
+          ParagraphNode [3601,4]
             ContentNode
-              TextNode [3598,4] "Bird"
-      ListItemNode [3603,10]
+              TextNode [3601,4] "Bird"
+      ListItemNode [3606,10] bulletRange[3606,2] bullet=B)
         ContentNode
-          ParagraphNode [3607,6]
+          ParagraphNode [3610,6]
             ContentNode
-              TextNode [3607,6] "McHale"
-      ListItemNode [3614,10]
+              TextNode [3610,6] "McHale"
+      ListItemNode [3617,10] bulletRange[3617,2] bullet=C)
         ContentNode
-          ParagraphNode [3618,6]
+          ParagraphNode [3621,6]
             ContentNode
-              TextNode [3618,6] "Parish"
-    ListNode [3626,8] ordered
-      ListItemNode [3626,8]
+              TextNode [3621,6] "Parish"
+    ListNode [3629,33] ordered
+      ListItemNode [3629,8] bulletRange[3629,2] bullet=I.
         ContentNode
-          ParagraphNode [3630,4]
+          ParagraphNode [3633,4]
             ContentNode
-              TextNode [3630,4] "Bird"
-      ListItemNode [3635,11]
+              TextNode [3633,4] "Bird"
+      ListItemNode [3638,11] bulletRange[3638,3] bullet=II.
         ContentNode
-          ParagraphNode [3640,6]
+          ParagraphNode [3643,6]
             ContentNode
-              TextNode [3640,6] "McHale"
-      ListItemNode [3647,12]
+              TextNode [3643,6] "McHale"
+      ListItemNode [3650,12] bulletRange[3650,4] bullet=III.
         ContentNode
-          ParagraphNode [3653,6]
+          ParagraphNode [3656,6]
             ContentNode
-              TextNode [3653,6] "Parish"
-    HeadingNode [3663,13] level=3
+              TextNode [3656,6] "Parish"
+    HeadingNode [3666,13] textRange[3666,6] level=3 marker=-
       ContentNode
-        TextNode [3663,6] "nested"
-    ListNode [3679,8] ordered
-      ListItemNode [3679,87]
+        TextNode [3666,6] "nested"
+    ListNode [3682,158] ordered
+      ListItemNode [3682,87] bulletRange[3682,2] bullet=a)
         ContentNode
-          ParagraphNode [3683,4]
+          ParagraphNode [3686,4]
             ContentNode
-              TextNode [3683,4] "Bird"
-          ListNode [3690,8] ordered
-            ListItemNode [3690,47]
+              TextNode [3686,4] "Bird"
+          ListNode [3693,76] ordered
+            ListItemNode [3693,47] bulletRange[3693,2] bullet=I.
               ContentNode
-                ParagraphNode [3694,4]
+                ParagraphNode [3697,4]
                   ContentNode
-                    TextNode [3694,4] "Bird"
-                ListNode [3703,7] unordered
-                  ListItemNode [3703,7]
+                    TextNode [3697,4] "Bird"
+                ListNode [3706,34] unordered
+                  ListItemNode [3706,7] bulletRange[3706,1] bullet=-
                     ContentNode
-                      ParagraphNode [3707,3]
+                      ParagraphNode [3710,3]
                         ContentNode
-                          TextNode [3707,3] "Red"
-                  ListItemNode [3715,9]
+                          TextNode [3710,3] "Red"
+                  ListItemNode [3718,9] bulletRange[3718,1] bullet=-
                     ContentNode
-                      ParagraphNode [3719,5]
+                      ParagraphNode [3722,5]
                         ContentNode
-                          TextNode [3719,5] "Green"
-                  ListItemNode [3729,8]
+                          TextNode [3722,5] "Green"
+                  ListItemNode [3732,8] bulletRange[3732,1] bullet=-
                     ContentNode
-                      ParagraphNode [3733,4]
+                      ParagraphNode [3736,4]
                         ContentNode
-                          TextNode [3733,4] "Blue"
-            ListItemNode [3740,11]
+                          TextNode [3736,4] "Blue"
+            ListItemNode [3743,11] bulletRange[3743,3] bullet=II.
               ContentNode
-                ParagraphNode [3745,6]
+                ParagraphNode [3748,6]
                   ContentNode
-                    TextNode [3745,6] "McHale"
-            ListItemNode [3754,12]
+                    TextNode [3748,6] "McHale"
+            ListItemNode [3757,12] bulletRange[3757,4] bullet=III.
               ContentNode
-                ParagraphNode [3760,6]
+                ParagraphNode [3763,6]
                   ContentNode
-                    TextNode [3760,6] "Parish"
-      ListItemNode [3767,10]
+                    TextNode [3763,6] "Parish"
+      ListItemNode [3770,10] bulletRange[3770,2] bullet=b)
         ContentNode
-          ParagraphNode [3771,6]
+          ParagraphNode [3774,6]
             ContentNode
-              TextNode [3771,6] "McHale"
-      ListItemNode [3778,59]
+              TextNode [3774,6] "McHale"
+      ListItemNode [3781,59] bulletRange[3781,2] bullet=c)
         ContentNode
-          ParagraphNode [3782,6]
+          ParagraphNode [3785,6]
             ContentNode
-              TextNode [3782,6] "Parish"
-          ListNode [3795,8] ordered
-            ListItemNode [3795,8]
+              TextNode [3785,6] "Parish"
+          ListNode [3798,42] ordered
+            ListItemNode [3798,8] bulletRange[3798,2] bullet=1)
               ContentNode
-                ParagraphNode [3799,4]
+                ParagraphNode [3802,4]
                   ContentNode
-                    TextNode [3799,4] "Bird"
-            ListItemNode [3810,10]
+                    TextNode [3802,4] "Bird"
+            ListItemNode [3813,10] bulletRange[3813,2] bullet=2)
               ContentNode
-                ParagraphNode [3814,6]
+                ParagraphNode [3817,6]
                   ContentNode
-                    TextNode [3814,6] "McHale"
-            ListItemNode [3827,10]
+                    TextNode [3817,6] "McHale"
+            ListItemNode [3830,10] bulletRange[3830,2] bullet=3)
               ContentNode
-                ParagraphNode [3831,6]
+                ParagraphNode [3834,6]
                   ContentNode
-                    TextNode [3831,6] "Parish"
-    HeadingNode [3842,31] level=3
+                    TextNode [3834,6] "Parish"
+    HeadingNode [3845,31] textRange[3845,15] level=3 marker=-
       ContentNode
-        TextNode [3842,15] "definition list"
-    DefinitionListNode [3875,44]
-      ListItemNode [3875,20]
+        TextNode [3845,15] "definition list"
+    DefinitionListNode [3878,117]
+      ListItemNode [3878,20]
         ContentNode
-          TextNode [3875,19] "Concert Divoky Bill"
-      ListItemNode [3896,23]
+          TextNode [3878,19] "Concert Divoky Bill"
+      ListItemNode [3899,23] bulletRange[3903,1] bullet=-
         ContentNode
-          ParagraphNode [3902,17]
+          ParagraphNode [3905,17]
             ContentNode
-              TextNode [3902,17] "term: 9. 12. 2004"
-      ListItemNode [3920,30]
+              TextNode [3905,17] "term: 9. 12. 2004"
+      ListItemNode [3923,30] bulletRange[3927,1] bullet=-
         ContentNode
-          ParagraphNode [3926,24]
+          ParagraphNode [3929,24]
             ContentNode
-              TextNode [3926,24] "place: Hala Vodova, Brno"
-      ListItemNode [3951,20]
+              TextNode [3929,24] "place: Hala Vodova, Brno"
+      ListItemNode [3954,20] bulletRange[3958,1] bullet=-
         ContentNode
-          ParagraphNode [3957,14]
+          ParagraphNode [3960,14]
             ContentNode
-              TextNode [3957,14] "price: 260 CZK"
-      ListItemNode [3972,20]
+              TextNode [3960,14] "price: 260 CZK"
+      ListItemNode [3975,20]
         ContentNode
-          TextNode [3973,18] "and with modifiers"
-    DefinitionListNode [3995,79] mod[3996,11]
-      ListItemNode [4008,20] mod[4016,12]
+          TextNode [3976,18] "and with modifiers"
+    DefinitionListNode [3998,126] mod[3999,11]
+      ListItemNode [4011,20] mod[4019,12]
         ContentNode
-          TextNode [4008,3] "PHP"
-      ListItemNode [4029,45] mod[4061,13]
+          TextNode [4011,3] "PHP"
+      ListItemNode [4032,45] mod[4064,13] bulletRange[4033,1] bullet=-
         ContentNode
-          ParagraphNode [4032,27]
+          ParagraphNode [4035,27]
             ContentNode
-              TextNode [4032,27] "PHP: Hypertext Preprocessor"
-      ListItemNode [4075,23]
+              TextNode [4035,27] "PHP: Hypertext Preprocessor"
+      ListItemNode [4078,23] bulletRange[4079,1] bullet=-
         ContentNode
-          ParagraphNode [4078,20]
+          ParagraphNode [4081,20]
             ContentNode
-              TextNode [4078,20] "A scripting language"
-      ListItemNode [4099,22]
+              TextNode [4081,20] "A scripting language"
+      ListItemNode [4102,22] bulletRange[4103,1] bullet=-
         ContentNode
-          ParagraphNode [4102,19]
+          ParagraphNode [4105,19]
             ContentNode
-              TextNode [4102,19] "Personal Home Pages"
-    HeadingNode [4126,19] level=2
+              TextNode [4105,19] "Personal Home Pages"
+    HeadingNode [4129,19] textRange[4129,9] level=2 marker==
       ContentNode
-        TextNode [4126,9] "Modifiers"
-    ParagraphNode [4147,39]
+        TextNode [4129,9] "Modifiers"
+    ParagraphNode [4150,39]
       ContentNode
-        TextNode [4147,39] "These types of modifiers are available:"
-    ListNode [4188,66] unordered
-      ListItemNode [4188,66]
+        TextNode [4150,39] "These types of modifiers are available:"
+    ListNode [4191,293] unordered
+      ListItemNode [4191,66] bulletRange[4191,1] bullet=-
         ContentNode
-          ParagraphNode [4190,64]
+          ParagraphNode [4193,64]
             ContentNode
-              TextNode [4190,64] "(title) descriptive, used as attribute title or alt (for images)"
-      ListItemNode [4255,47]
+              TextNode [4193,64] "(title) descriptive, used as attribute title or alt (for images)"
+      ListItemNode [4258,47] bulletRange[4258,1] bullet=-
         ContentNode
-          ParagraphNode [4257,45]
+          ParagraphNode [4260,45]
             ContentNode
-              TextNode [4257,45] "[class1 class2 #id] determine class and/or ID"
-      ListItemNode [4303,31]
+              TextNode [4260,45] "[class1 class2 #id] determine class and/or ID"
+      ListItemNode [4306,31] bulletRange[4306,1] bullet=-
         ContentNode
-          ParagraphNode [4305,29]
+          ParagraphNode [4308,29]
             ContentNode
-              TextNode [4305,29] "{class:blue} direct CSS style"
-      ListItemNode [4335,74]
+              TextNode [4308,29] "{class:blue} direct CSS style"
+      ListItemNode [4338,74] bulletRange[4338,1] bullet=-
         ContentNode
-          ParagraphNode [4337,21]
+          ParagraphNode [4340,21]
             ContentNode
-              TextNode [4337,21] "horizontal alignment:"
-          ListNode [4361,8] unordered
-            ListItemNode [4361,8]
+              TextNode [4340,21] "horizontal alignment:"
+          ListNode [4364,48] unordered
+            ListItemNode [4364,8] bulletRange[4364,1] bullet=-
               ContentNode
-                ParagraphNode [4363,6]
+                ParagraphNode [4366,6]
                   ContentNode
-                    TextNode [4363,6] "left <"
-            ListItemNode [4372,9]
+                    TextNode [4366,6] "left <"
+            ListItemNode [4375,9] bulletRange[4375,1] bullet=-
               ContentNode
-                ParagraphNode [4374,7]
+                ParagraphNode [4377,7]
                   ContentNode
-                    TextNode [4374,7] "right >"
-            ListItemNode [4384,11]
+                    TextNode [4377,7] "right >"
+            ListItemNode [4387,11] bulletRange[4387,1] bullet=-
               ContentNode
-                ParagraphNode [4386,9]
+                ParagraphNode [4389,9]
                   ContentNode
-                    TextNode [4386,9] "center <>"
-            ListItemNode [4398,11]
+                    TextNode [4389,9] "center <>"
+            ListItemNode [4401,11] bulletRange[4401,1] bullet=-
               ContentNode
-                ParagraphNode [4400,9]
+                ParagraphNode [4403,9]
                   ContentNode
-                    TextNode [4400,9] "justify ="
-      ListItemNode [4410,71]
+                    TextNode [4403,9] "justify ="
+      ListItemNode [4413,71] bulletRange[4414,1] bullet=-
         ContentNode
-          ParagraphNode [4413,32]
+          ParagraphNode [4416,32]
             ContentNode
-              TextNode [4413,32] "vertical alignment: (for tables)"
-          ListNode [4448,7] unordered
-            ListItemNode [4448,7]
+              TextNode [4416,32] "vertical alignment: (for tables)"
+          ListNode [4451,33] unordered
+            ListItemNode [4451,7] bulletRange[4451,1] bullet=-
               ContentNode
-                ParagraphNode [4450,5]
+                ParagraphNode [4453,5]
                   ContentNode
-                    TextNode [4450,5] "top ^"
-            ListItemNode [4458,10]
+                    TextNode [4453,5] "top ^"
+            ListItemNode [4461,10] bulletRange[4461,1] bullet=-
               ContentNode
-                ParagraphNode [4460,8]
+                ParagraphNode [4463,8]
                   ContentNode
-                    TextNode [4460,8] "middle -"
-            ListItemNode [4471,10]
+                    TextNode [4463,8] "middle -"
+            ListItemNode [4474,10] bulletRange[4474,1] bullet=-
               ContentNode
-                ParagraphNode [4473,8]
+                ParagraphNode [4476,8]
                   ContentNode
-                    TextNode [4473,8] "bottom _"
-    HeadingNode [4487,25] level=2
+                    TextNode [4476,8] "bottom _"
+    HeadingNode [4490,25] textRange[4490,10] level=2 marker==
       ContentNode
-        TextNode [4487,10] "Typography"
-    ListNode [4514,99] unordered
-      ListItemNode [4514,99]
+        TextNode [4490,10] "Typography"
+    ListNode [4517,624] unordered
+      ListItemNode [4517,99] bulletRange[4517,1] bullet=-
         ContentNode
-          ParagraphNode [4516,97]
+          ParagraphNode [4519,97]
             ContentNode
-              TextNode [4516,97] "very long words division (with respect for language rules). Example: antidisestablishmentarianism"
-      ListItemNode [4614,115]
+              TextNode [4519,97] "very long words division (with respect for language rules). Example: antidisestablishmentarianism"
+      ListItemNode [4617,115] bulletRange[4617,1] bullet=-
         ContentNode
-          ParagraphNode [4616,113]
+          ParagraphNode [4619,113]
             ContentNode
-              TextNode [4616,25] "clickable emails and URL "
-              UrlNode [4641,18]
-              TextNode [4659,2] ", "
-              EmailNode [4661,27]
-              TextNode [4688,41] " (emails are obfuscated against spambots)"
-      ListItemNode [4730,33]
+              TextNode [4619,25] "clickable emails and URL "
+              UrlNode [4644,18]
+              TextNode [4662,2] ", "
+              EmailNode [4664,27]
+              TextNode [4691,41] " (emails are obfuscated against spambots)"
+      ListItemNode [4733,33] bulletRange[4733,1] bullet=-
         ContentNode
-          ParagraphNode [4732,31]
+          ParagraphNode [4735,31]
             ContentNode
-              TextNode [4732,31] "\"national\" 'typographic' quotes"
-      ListItemNode [4764,40]
+              TextNode [4735,31] "\"national\" 'typographic' quotes"
+      ListItemNode [4767,40] bulletRange[4767,1] bullet=-
         ContentNode
-          ParagraphNode [4766,38]
+          ParagraphNode [4769,38]
             ContentNode
-              TextNode [4766,38] "divider vs. dash: 10-15 vs. north-west"
-      ListItemNode [4805,21]
+              TextNode [4769,38] "divider vs. dash: 10-15 vs. north-west"
+      ListItemNode [4808,21] bulletRange[4808,1] bullet=-
         ContentNode
-          ParagraphNode [4807,19]
+          ParagraphNode [4810,19]
             ContentNode
-              TextNode [4807,19] "en-dash: one -- two"
-      ListItemNode [4827,33]
+              TextNode [4810,19] "en-dash: one -- two"
+      ListItemNode [4830,33] bulletRange[4830,1] bullet=-
         ContentNode
-          ParagraphNode [4829,31]
+          ParagraphNode [4832,31]
             ContentNode
-              TextNode [4829,31] "dimension sign 10 x 20 or 10x20"
-      ListItemNode [4861,55]
+              TextNode [4832,31] "dimension sign 10 x 20 or 10x20"
+      ListItemNode [4864,55] bulletRange[4864,1] bullet=-
         ContentNode
-          ParagraphNode [4863,53]
+          ParagraphNode [4866,53]
             ContentNode
-              TextNode [4863,53] "nonbreakable spaces in phone numbers +420 776 552 046"
-      ListItemNode [4917,52]
+              TextNode [4866,53] "nonbreakable spaces in phone numbers +420 776 552 046"
+      ListItemNode [4920,52] bulletRange[4920,1] bullet=-
         ContentNode
-          ParagraphNode [4919,50]
+          ParagraphNode [4922,50]
             ContentNode
-              TextNode [4919,8] "acronym "
-              PhraseNode [4927,42] mod[4931,0] phrase/acronym-alt
+              TextNode [4922,8] "acronym "
+              PhraseNode [4930,42] mod[4934,0] phrase/acronym-alt
                 ContentNode
-                  TextNode [4927,4] "NATO"
-      ListItemNode [4970,29]
+                  TextNode [4930,4] "NATO"
+      ListItemNode [4973,29] bulletRange[4973,1] bullet=-
         ContentNode
-          ParagraphNode [4972,27]
+          ParagraphNode [4975,27]
             ContentNode
-              TextNode [4972,5] "abbr "
-              PhraseNode [4977,22] phrase/acronym
+              TextNode [4975,5] "abbr "
+              PhraseNode [4980,22] phrase/acronym
                 ContentNode
-                  TextNode [4978,6] "et al."
-      ListItemNode [5000,48]
+                  TextNode [4981,6] "et al."
+      ListItemNode [5003,48] bulletRange[5003,1] bullet=-
         ContentNode
-          ParagraphNode [5002,46]
+          ParagraphNode [5005,46]
             ContentNode
-              TextNode [5002,46] "quickCorrects like this(TM) this(R) or (C)this"
-      ListItemNode [5049,28]
+              TextNode [5005,46] "quickCorrects like this(TM) this(R) or (C)this"
+      ListItemNode [5052,28] bulletRange[5052,1] bullet=-
         ContentNode
-          ParagraphNode [5051,26]
+          ParagraphNode [5054,26]
             ContentNode
-              TextNode [5051,26] "arrows <- and -> and <-> ;"
-      ListItemNode [5078,13]
+              TextNode [5054,26] "arrows <- and -> and <-> ;"
+      ListItemNode [5081,13] bulletRange[5081,1] bullet=-
         ContentNode
-          ParagraphNode [5080,11]
+          ParagraphNode [5083,11]
             ContentNode
-              TextNode [5080,11] "ellipsis..."
-      ListItemNode [5092,24]
+              TextNode [5083,11] "ellipsis..."
+      ListItemNode [5095,24] bulletRange[5095,1] bullet=-
         ContentNode
-          ParagraphNode [5094,22]
+          ParagraphNode [5097,22]
             ContentNode
-              TextNode [5094,22] "preserve HTML entities"
-      ListItemNode [5117,21]
+              TextNode [5097,22] "preserve HTML entities"
+      ListItemNode [5120,21] bulletRange[5120,1] bullet=-
         ContentNode
-          ParagraphNode [5119,19]
+          ParagraphNode [5122,19]
             ContentNode
-              TextNode [5119,19] "and many others :-)"
-    HeadingNode [5144,13] level=2
+              TextNode [5122,19] "and many others :-)"
+    HeadingNode [5147,13] textRange[5147,6] level=2 marker==
       ContentNode
-        TextNode [5144,6] "Tables"
-    TableNode [5159,36]
-      TableRowNode [5159,36]
-        TableCellNode [5160,11]
+        TextNode [5147,6] "Tables"
+    TableNode [5162,70]
+      TableRowNode [5162,36]
+        TableCellNode [5163,11]
           ContentNode
-            TextNode [5161,9] "first col"
-        TableCellNode [5172,12]
+            TextNode [5164,9] "first col"
+        TableCellNode [5175,12]
           ContentNode
-            TextNode [5173,10] "second col"
-        TableCellNode [5185,10]
+            TextNode [5176,10] "second col"
+        TableCellNode [5188,10]
           ContentNode
-            TextNode [5186,9] "third col"
-      TableRowNode [5196,33]
-        TableCellNode [5197,11]
+            TextNode [5189,9] "third col"
+      TableRowNode [5199,33]
+        TableCellNode [5200,11]
           ContentNode
-            TextNode [5198,4] "Adam"
-        TableCellNode [5209,12]
+            TextNode [5201,4] "Adam"
+        TableCellNode [5212,12]
           ContentNode
-            TextNode [5210,3] "Eva"
-        TableCellNode [5222,7]
+            TextNode [5213,3] "Eva"
+        TableCellNode [5225,7]
           ContentNode
-            TextNode [5223,6] "Franta"
-    HeadingNode [5232,23] level=3
+            TextNode [5226,6] "Franta"
+    HeadingNode [5235,23] textRange[5235,11] level=3 marker=-
       ContentNode
-        TextNode [5232,11] "with header"
-    TableNode [5257,30]
-      TableRowNode [5288,30]
-        TableCellNode [5289,12]
+        TextNode [5235,11] "with header"
+    TableNode [5260,151]
+      TableRowNode [5291,30]
+        TableCellNode [5292,12]
           ContentNode
-            TextNode [5290,10] "First Name"
-        TableCellNode [5302,11]
+            TextNode [5293,10] "First Name"
+        TableCellNode [5305,11]
           ContentNode
-            TextNode [5303,9] "Last Name"
-        TableCellNode [5314,4]
+            TextNode [5306,9] "Last Name"
+        TableCellNode [5317,4]
           ContentNode
-            TextNode [5315,3] "Age"
-      TableRowNode [5349,29]
-        TableCellNode [5350,12]
+            TextNode [5318,3] "Age"
+      TableRowNode [5352,29]
+        TableCellNode [5353,12]
           ContentNode
-            TextNode [5351,5] "Jesus"
-        TableCellNode [5363,11]
+            TextNode [5354,5] "Jesus"
+        TableCellNode [5366,11]
           ContentNode
-            TextNode [5364,6] "Christ"
-        TableCellNode [5375,3]
+            TextNode [5367,6] "Christ"
+        TableCellNode [5378,3]
           ContentNode
-            TextNode [5376,2] "33"
-      TableRowNode [5379,29]
-        TableCellNode [5380,12]
+            TextNode [5379,2] "33"
+      TableRowNode [5382,29]
+        TableCellNode [5383,12]
           ContentNode
-            TextNode [5381,7] "Cecilie"
-        TableCellNode [5393,11]
+            TextNode [5384,7] "Cecilie"
+        TableCellNode [5396,11]
           ContentNode
-            TextNode [5394,9] "Svobodova"
-        TableCellNode [5405,3]
+            TextNode [5397,9] "Svobodova"
+        TableCellNode [5408,3]
           ContentNode
-            TextNode [5406,2] "74"
-    ParagraphNode [5411,10]
+            TextNode [5409,2] "74"
+    ParagraphNode [5414,10]
       ContentNode
-        TextNode [5411,10] "or using *"
-    TableNode [5424,34]
-      TableRowNode [5424,34]
-        TableCellNode [5425,13]
+        TextNode [5414,10] "or using *"
+    TableNode [5427,101]
+      TableRowNode [5427,34]
+        TableCellNode [5428,13]
           ContentNode
-            TextNode [5427,10] "First Name"
-        TableCellNode [5439,10]
+            TextNode [5430,10] "First Name"
+        TableCellNode [5442,10]
           ContentNode
-            TextNode [5440,5] "Jesus"
-        TableCellNode [5450,8]
+            TextNode [5443,5] "Jesus"
+        TableCellNode [5453,8]
           ContentNode
-            TextNode [5451,7] "Cecilie"
-      TableRowNode [5459,36]
-        TableCellNode [5460,13]
+            TextNode [5454,7] "Cecilie"
+      TableRowNode [5462,36]
+        TableCellNode [5463,13]
           ContentNode
-            TextNode [5462,9] "Last Name"
-        TableCellNode [5474,10]
+            TextNode [5465,9] "Last Name"
+        TableCellNode [5477,10]
           ContentNode
-            TextNode [5475,6] "Christ"
-        TableCellNode [5485,10]
+            TextNode [5478,6] "Christ"
+        TableCellNode [5488,10]
           ContentNode
-            TextNode [5486,9] "Svobodova"
-      TableRowNode [5496,29]
-        TableCellNode [5497,13]
+            TextNode [5489,9] "Svobodova"
+      TableRowNode [5499,29]
+        TableCellNode [5500,13]
           ContentNode
-            TextNode [5499,3] "Age"
-        TableCellNode [5511,10]
+            TextNode [5502,3] "Age"
+        TableCellNode [5514,10]
           ContentNode
-            TextNode [5512,2] "33"
-        TableCellNode [5522,3]
+            TextNode [5515,2] "33"
+        TableCellNode [5525,3]
           ContentNode
-            TextNode [5523,2] "74"
-    HeadingNode [5528,17] level=3
+            TextNode [5526,2] "74"
+    HeadingNode [5531,17] textRange[5531,8] level=3 marker=-
       ContentNode
-        TextNode [5528,8] "colspans"
-    ParagraphNode [5547,20]
+        TextNode [5531,8] "colspans"
+    ParagraphNode [5550,20]
       ContentNode
-        TextNode [5547,20] "notice the double ||"
-    TableNode [5569,30]
-      TableRowNode [5600,30]
-        TableCellNode [5601,23]
+        TextNode [5550,20] "notice the double ||"
+    TableNode [5572,151]
+      TableRowNode [5603,30]
+        TableCellNode [5604,23]
           ContentNode
-            TextNode [5602,4] "Name"
-        TableCellNode [5626,4]
+            TextNode [5605,4] "Name"
+        TableCellNode [5629,4]
           ContentNode
-            TextNode [5627,3] "Age"
-      TableRowNode [5661,29]
-        TableCellNode [5662,12]
+            TextNode [5630,3] "Age"
+      TableRowNode [5664,29]
+        TableCellNode [5665,12]
           ContentNode
-            TextNode [5663,5] "Jesus"
-        TableCellNode [5675,11]
+            TextNode [5666,5] "Jesus"
+        TableCellNode [5678,11]
           ContentNode
-            TextNode [5676,6] "Christ"
-        TableCellNode [5687,3]
+            TextNode [5679,6] "Christ"
+        TableCellNode [5690,3]
           ContentNode
-            TextNode [5688,2] "33"
-      TableRowNode [5691,29]
-        TableCellNode [5692,12]
+            TextNode [5691,2] "33"
+      TableRowNode [5694,29]
+        TableCellNode [5695,12]
           ContentNode
-            TextNode [5693,7] "Cecilie"
-        TableCellNode [5705,11]
+            TextNode [5696,7] "Cecilie"
+        TableCellNode [5708,11]
           ContentNode
-            TextNode [5706,9] "Svobodova"
-        TableCellNode [5717,3]
+            TextNode [5709,9] "Svobodova"
+        TableCellNode [5720,3]
           ContentNode
-            TextNode [5718,2] "74"
-    HeadingNode [5723,17] level=3
+            TextNode [5721,2] "74"
+    HeadingNode [5726,17] textRange[5726,8] level=3 marker=-
       ContentNode
-        TextNode [5723,8] "rowspans"
-    TableNode [5742,30]
-      TableRowNode [5773,30]
-        TableCellNode [5774,12]
+        TextNode [5726,8] "rowspans"
+    TableNode [5745,181]
+      TableRowNode [5776,30]
+        TableCellNode [5777,12]
           ContentNode
-            TextNode [5775,10] "First Name"
-        TableCellNode [5787,11]
+            TextNode [5778,10] "First Name"
+        TableCellNode [5790,11]
           ContentNode
-            TextNode [5788,9] "Last Name"
-        TableCellNode [5799,4]
+            TextNode [5791,9] "Last Name"
+        TableCellNode [5802,4]
           ContentNode
-            TextNode [5800,3] "Age"
-      TableRowNode [5834,29]
-        TableCellNode [5835,12]
+            TextNode [5803,3] "Age"
+      TableRowNode [5837,29]
+        TableCellNode [5838,12]
           ContentNode
-            TextNode [5836,4] "Bill"
-        TableCellNode [5848,11]
+            TextNode [5839,4] "Bill"
+        TableCellNode [5851,11]
           ContentNode
-            TextNode [5849,5] "Gates"
-        TableCellNode [5860,3]
+            TextNode [5852,5] "Gates"
+        TableCellNode [5863,3]
           ContentNode
-            TextNode [5861,2] "50"
-      TableRowNode [5864,29]
-        TableCellNode [5878,11]
+            TextNode [5864,2] "50"
+      TableRowNode [5867,29]
+        TableCellNode [5881,11]
           ContentNode
-            TextNode [5879,7] "Clinton"
-        TableCellNode [5890,3]
+            TextNode [5882,7] "Clinton"
+        TableCellNode [5893,3]
           ContentNode
-            TextNode [5891,2] "52"
-      TableRowNode [5894,29]
-        TableCellNode [5908,11]
+            TextNode [5894,2] "52"
+      TableRowNode [5897,29]
+        TableCellNode [5911,11]
           ContentNode
-            TextNode [5909,4] "Beam"
-        TableCellNode [5920,3]
+            TextNode [5912,4] "Beam"
+        TableCellNode [5923,3]
           ContentNode
-            TextNode [5921,2] "70"
-    HeadingNode [5926,37] level=3
+            TextNode [5924,2] "70"
+    HeadingNode [5929,37] textRange[5929,18] level=3 marker=-
       ContentNode
-        TextNode [5926,18] "colspan & rowspans"
-    TableNode [5965,30]
-      TableRowNode [5996,30]
-        TableCellNode [5997,12]
+        TextNode [5929,18] "colspan & rowspans"
+    TableNode [5968,181]
+      TableRowNode [5999,30]
+        TableCellNode [6000,12]
           ContentNode
-            TextNode [5998,10] "First Name"
-        TableCellNode [6010,11]
+            TextNode [6001,10] "First Name"
+        TableCellNode [6013,11]
           ContentNode
-            TextNode [6011,9] "Last Name"
-        TableCellNode [6022,4]
+            TextNode [6014,9] "Last Name"
+        TableCellNode [6025,4]
           ContentNode
-            TextNode [6023,3] "Age"
-      TableRowNode [6057,29]
-        TableCellNode [6058,23]
+            TextNode [6026,3] "Age"
+      TableRowNode [6060,29]
+        TableCellNode [6061,23]
           ContentNode
-            TextNode [6059,4] "Bill"
-        TableCellNode [6083,3]
+            TextNode [6062,4] "Bill"
+        TableCellNode [6086,3]
           ContentNode
-            TextNode [6084,2] "50"
-      TableRowNode [6087,29]
-        TableCellNode [6112,0]
+            TextNode [6087,2] "50"
+      TableRowNode [6090,29]
+        TableCellNode [6115,0]
           ContentNode
             TextNode " "
-        TableCellNode [6113,3]
+        TableCellNode [6116,3]
           ContentNode
-            TextNode [6114,2] "52"
-      TableRowNode [6117,29]
-        TableCellNode [6131,11]
+            TextNode [6117,2] "52"
+      TableRowNode [6120,29]
+        TableCellNode [6134,11]
           ContentNode
-            TextNode [6132,4] "Beam"
-        TableCellNode [6143,3]
+            TextNode [6135,4] "Beam"
+        TableCellNode [6146,3]
           ContentNode
-            TextNode [6144,2] "70"
-    HeadingNode [6149,19] level=3
+            TextNode [6147,2] "70"
+    HeadingNode [6152,19] textRange[6152,9] level=3 marker=-
       ContentNode
-        TextNode [6149,9] "modifiers"
-    TableNode [6170,79] mod[6171,11]
-      TableRowNode [6183,66] mod[6230,19]
-        TableCellNode [6184,11]
+        TextNode [6152,9] "modifiers"
+    TableNode [6173,125] mod[6174,11]
+      TableRowNode [6186,66] mod[6233,19]
+        TableCellNode [6187,11]
           ContentNode
-            TextNode [6185,9] "first col"
-        TableCellNode [6196,19]
+            TextNode [6188,9] "first col"
+        TableCellNode [6199,19] mod[6217,1]
           ContentNode
-            TextNode [6197,10] "second col"
-        TableCellNode [6216,11]
+            TextNode [6200,10] "second col"
+        TableCellNode [6219,11]
           ContentNode
-            TextNode [6217,9] "third col"
-      TableRowNode [6250,45]
-        TableCellNode [6251,11]
+            TextNode [6220,9] "third col"
+      TableRowNode [6253,45]
+        TableCellNode [6254,11]
           ContentNode
-            TextNode [6252,4] "Adam"
-        TableCellNode [6263,19]
+            TextNode [6255,4] "Adam"
+        TableCellNode [6266,19] mod[6272,13]
           ContentNode
-            TextNode [6264,3] "Eva"
-        TableCellNode [6283,11]
+            TextNode [6267,3] "Eva"
+        TableCellNode [6286,11]
           ContentNode
-            TextNode [6284,6] "Franta"
-    HeadingNode [6302,19] level=2
+            TextNode [6287,6] "Franta"
+    HeadingNode [6305,19] textRange[6305,9] level=2 marker==
       ContentNode
-        TextNode [6302,9] "Copyright"
-    ParagraphNode [6323,57]
+        TextNode [6305,9] "Copyright"
+    ParagraphNode [6326,57]
       ContentNode
-        TextNode [6323,10] "Texy! (C) "
-        LinkNode [6333,36] url=https://davidgrudl.com
+        TextNode [6326,10] "Texy! (C) "
+        LinkNode [6336,36] textRange[6337,11] urlRange[6350,22] phrase/span url=https://davidgrudl.com
           ContentNode
-            TextNode [6334,11] "David Grudl"
-        TextNode [6369,11] ", 2004-2009"
+            TextNode [6337,11] "David Grudl"
+        TextNode [6372,11] ", 2004-2009"

@@ -9,11 +9,11 @@
  * to UTF-16 code-unit indices (the port's offset model).
  */
 
-import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { describe, it } from "node:test";
+import { fileURLToPath } from "node:url";
 import * as Regexp from "../src/Regexp.js";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));

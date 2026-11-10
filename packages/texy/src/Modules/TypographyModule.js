@@ -12,9 +12,9 @@
  * and the locale configuration.
  */
 
-import { processTypo } from "../Typography.js";
 import { replace } from "../Regexp.js";
 import { Syntax } from "../Syntax.js";
+import { processTypo } from "../Typography.js";
 import { Module } from "./Module.js";
 
 export class TypographyModule extends Module {

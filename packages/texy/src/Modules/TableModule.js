@@ -2,13 +2,13 @@
  * Table module (port of Texy\Modules\TableModule).
  */
 
-import { Module } from "./Module.js";
-import { Syntax } from "../Syntax.js";
-import { ModifierHVAlign } from "../Patterns.js";
 import { Modifier } from "../Modifier.js";
 import { ContentNode, TableCellNode, TableNode, TableRowNode, TextNode } from "../nodes.js";
 import { OffsetMap } from "../Parsing/OffsetMap.js";
+import { ModifierHVAlign } from "../Patterns.js";
 import { match, replace } from "../Regexp.js";
+import { Syntax } from "../Syntax.js";
+import { Module } from "./Module.js";
 
 export class TableModule extends Module {
   constructor(texy) {
@@ -54,12 +54,16 @@ export class TableModule extends Module {
     /** @type {Map<TableCellNode, Array<{content: string, offset: number}>>} */
     const cellTexts = new Map();
 
+    let end = startOffset + matches[0].length;
+
     for (;;) {
       let lineMatches;
 
-      if (context.getBlockParser().next(String.raw`~^ \| ([=-]) [+|=-]{2,} $~Umx`) !== null) {
+      const separator = context.getBlockParser().next(String.raw`~^ \| ([=-]) [+|=-]{2,} $~Umx`);
+      if (separator !== null) {
         isHead = !isHead;
         prevRow = {};
+        end = separator.offsets[0] + separator.length;
         continue;
       }
 
@@ -156,8 +160,18 @@ export class TableModule extends Module {
                 cellMatches.offsets[2] >= 0 ? cellAbsoluteOffset + cellMatches.offsets[2] : null,
               );
             }
-            const cellMod = colModifier[col] ? colModifier[col].clone() : new Modifier();
+            const cellMod = colModifier[col] !== undefined ? colModifier[col].clone() : new Modifier();
             cellMod.setProperties(mCellMod);
+            if (mCellMod !== null && mCellMod !== "") {
+              // the range covers the modifier only when it is written as a single part
+              cellMod.range =
+                colModifier[col] !== undefined
+                  ? null
+                  : { offset: cellAbsoluteOffset + cellMatches.offsets[4], length: mCellMod.length };
+            } else if (mModCol == null || mModCol === "") {
+              // inherited from the column, not written here
+              cellMod.range = null;
+            }
 
             // Calculate absolute offset of cell content
             const contentAbsoluteOffset = cellAbsoluteOffset + mCellContentOffset;
@@ -187,12 +201,12 @@ export class TableModule extends Module {
         }
 
         colCounter = col;
+        end = lineMatches.offsets[0] + lineMatches.length;
 
         if (cells.length > 0) {
           const rowMod = Modifier.parse(mRowMod, lineMatches.offsets[3] ?? null);
-          rows.push(
-            new TableRowNode(cells, isHead, rowMod, { offset: lineMatches.offsets[0], length: lineMatches.length }),
-          );
+          const rowOffset = lineMatches.offsets[0];
+          rows.push(new TableRowNode(cells, isHead, rowMod, { offset: rowOffset, length: end - rowOffset }));
         } else {
           // redundant row - decrement rowspan
           for (const item of Object.values(prevRow)) {
@@ -264,7 +278,7 @@ export class TableModule extends Module {
     return new TableNode(
       rows,
       Modifier.parse(mMod, offsets[1]),
-      { offset: startOffset, length: matches[0].length },
+      { offset: startOffset, length: end - startOffset },
       caption,
     );
   }

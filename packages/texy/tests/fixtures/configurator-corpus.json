@@ -42,7 +42,7 @@
   {
     "mode": "disableLinks",
     "input": "See [link](https://example.com) and image [* obr.jpg *]",
-    "expected": "<p>See <a href=\"https://example.com\">link</a> and image <img\nsrc=\"images/obr.jpg\" alt=\"\"></p>\n"
+    "expected": "<p>See link and image <img src=\"images/obr.jpg\" alt=\"\"></p>\n"
   },
   {
     "mode": "disableLinks",
@@ -102,7 +102,7 @@
   {
     "mode": "all",
     "input": "See [link](https://example.com) and image [* obr.jpg *]",
-    "expected": "<p>See <a href=\"https://example.com\" rel=\"nofollow\">link</a> and image [*\nobr.jpg *]</p>\n"
+    "expected": "<p>See link and image [* obr.jpg *]</p>\n"
   },
   {
     "mode": "all",

@@ -3,10 +3,10 @@ DocumentNode
     ParagraphNode [0,29]
       ContentNode
         TextNode [0,19] "This is user image "
-        ImageNode [19,10] src=user
+        ImageNode [19,10] urlRange[22,4] src=user
     ParagraphNode [31,50]
       ContentNode
         TextNode [31,38] "And this is user image with user link "
-        LinkNode [69,12] url=user
+        LinkNode [69,12] urlRange[80,1] image url=user
           ContentNode
-            ImageNode [69,12] src=user
+            ImageNode [69,10] urlRange[72,4] src=user
