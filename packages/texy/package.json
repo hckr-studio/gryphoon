@@ -1,15 +1,15 @@
 {
   "name": "@gryphoon/texy",
   "description": "Node.js port of the Texy text-to-HTML converter",
-  "version": "3.1.1",
-  "license": "BSD-3-Clause",
+  "version": "3.1.2",
+  "license": "EUPL-1.2",
   "author": "",
   "type": "module",
   "engines": {
     "node": ">=24"
   },
   "files": [
-    "/license.md",
+    "/LICENSE",
     "/README.md",
     "/index.js",
     "/src"
