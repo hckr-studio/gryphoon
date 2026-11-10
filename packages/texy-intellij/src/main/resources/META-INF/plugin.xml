@@ -42,6 +42,9 @@
         <lang.elementManipulator forClass="work.gryphoon.texy.TexyCodeHost"
                                  implementationClass="work.gryphoon.texy.TexyCodeManipulator"/>
         <textmate.bundle name="EDN" path="/edn"/>
+        <projectConfigurable id="texy" displayName="Texy" parentId="language"
+                             instance="work.gryphoon.texy.settings.TexySettingsConfigurable"
+                             nonDefaultProject="true"/>
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij.platform.lsp">

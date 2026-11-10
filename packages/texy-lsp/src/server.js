@@ -15,6 +15,7 @@
  */
 
 import { Texy } from "@gryphoon/texy/Texy.js";
+import { Syntax } from "@gryphoon/texy/Syntax.js";
 import { normalizeWithMap } from "@gryphoon/texy/normalize.js";
 import { completeReferences } from "./completion.js";
 import { quickFixes, refactors } from "./codeActions.js";
@@ -40,10 +41,11 @@ export class TexyLanguageServer {
    * @param {Texy} [options.texy]
    * @param {number} [options.debounceMs] didChange analysis delay
    * @param {number} [options.lineWidth] formatting line width
+   * @param {?boolean} [options.legacyReferences] Texy 3 bare [ref] syntax
    * @param {(code: number) => void} [options.onExit] exit hook, process.exit by default
    * @param {?((direction: "in"|"out", message: Object) => void)} [options.onTrace] protocol trace hook
    */
-  constructor({ texy = null, debounceMs = 150, lineWidth = 80, onExit = code => process.exit(code), onTrace = null } = {}) {
+  constructor({ texy = null, debounceMs = 150, lineWidth = null, legacyReferences = null, onExit = code => process.exit(code), onTrace = null } = {}) {
     this.texy = texy ?? new Texy();
     // the built-in instance generates heading ids, so #toc- anchors exist
     // for the anchor completion (a consumer-provided instance keeps its
@@ -51,8 +53,19 @@ export class TexyLanguageServer {
     if (texy === null) {
       this.texy.headingModule.generateID = true;
     }
+    // Texy 3 bare [ref] use syntax: options override the TEXY_LSP_LEGACY_REFERENCES
+    // env var; absent both, a server-owned Texy enables it (the weblog needs
+    // bare uses), a consumer-provided Texy keeps its own setting
+    const env = process.env.TEXY_LSP_LEGACY_REFERENCES;
+    this.legacyReferences = legacyReferences ??
+      (env !== undefined ? env !== "0" && env !== "false" : texy === null || this.texy.linkModule.legacyReferences);
+    this.texy.linkModule.legacyReferences = this.legacyReferences;
+    // reformatting width: option > TEXY_LSP_LINE_WIDTH env var > 80;
+    // the IntelliJ extension passes the Texy-specific override or the
+    // IDE right margin through the env var at spawn time
+    const envWidth = Number.parseInt(process.env.TEXY_LSP_LINE_WIDTH ?? "", 10);
+    this.lineWidth = lineWidth ?? (Number.isNaN(envWidth) ? 80 : envWidth);
     this.debounceMs = debounceMs;
-    this.lineWidth = lineWidth;
     this.onExit = onExit;
     this.store = new DocumentStore();
     this.shutdownReceived = false;
@@ -220,6 +233,9 @@ export class TexyLanguageServer {
     if (options.lineWidth !== undefined) {
       this.lineWidth = options.lineWidth;
     }
+    if (options.legacyReferences !== undefined && options.legacyReferences !== null) {
+      this.setLegacyReferences(options.legacyReferences);
+    }
 
     return {
       capabilities: {
@@ -256,6 +272,33 @@ export class TexyLanguageServer {
     }
     if (texy.debounceMs !== undefined) {
       this.debounceMs = texy.debounceMs;
+    }
+    if (texy.legacyReferences !== undefined) {
+      this.setLegacyReferences(texy.legacyReferences, true);
+    }
+  }
+
+  /**
+   * Toggles the Texy 3 bare [ref] use syntax: `legacyReferences` drives the
+   * Texy 3 semantics and `allowed[link/reference]` is the parse gate (the
+   * module registers it as explicitly disabled; beforeParse only ever
+   * flips it false-to-true). Reparsing every open document when it flips
+   * produces fresh diagnostics (a bare use becomes a reference use, or
+   * plain text again).
+   * @param {boolean} enabled
+   * @param {boolean} [reanalyze]
+   */
+  setLegacyReferences(enabled, reanalyze = false) {
+    if (enabled === this.legacyReferences) {
+      return;
+    }
+    this.legacyReferences = enabled;
+    this.texy.linkModule.legacyReferences = enabled;
+    this.texy.allowed[Syntax.LinkReference] = enabled;
+    if (reanalyze) {
+      for (const uri of this.store.documents.keys()) {
+        this.analyze(uri);
+      }
     }
   }
 

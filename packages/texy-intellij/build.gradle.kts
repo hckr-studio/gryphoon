@@ -132,4 +132,9 @@ tasks {
     buildSearchableOptions {
         enabled = false
     }
+    // packaging of the (disabled) searchable options requires a headless
+    // IDE run anyway; without it the plugin has no Settings search index
+    withType<org.jetbrains.intellij.platform.gradle.tasks.PrepareJarSearchableOptionsTask>().configureEach {
+        enabled = false
+    }
 }

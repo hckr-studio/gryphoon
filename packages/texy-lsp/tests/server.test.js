@@ -18,8 +18,8 @@ function frame(message) {
 }
 
 /** A scriptable client over the spawned server. */
-function startServer() {
-  const child = spawn(process.execPath, [bin], { stdio: ["pipe", "pipe", "pipe"] });
+function startServer(env) {
+  const child = spawn(process.execPath, [bin], { stdio: ["pipe", "pipe", "pipe"], env });
   const notifications = [];
   const waiters = [];
 
@@ -167,7 +167,7 @@ describe("texy-lsp over stdio", { timeout: 15000 }, () => {
             uri: "file:///refs.texy",
             languageId: "texy",
             version: 1,
-            text: '[home]: https://example.org\n\nsee "click":[home] and [*pic*] and "b":[missing] now\n\n[*pic*]: ./img.png',
+            text: '[home]: https://example.org\n\nsee "click":[home] and [*pic*] and "b":[missing] now [home] again\n\n[*pic*]: ./img.png',
           },
         },
       });
@@ -184,6 +184,14 @@ describe("texy-lsp over stdio", { timeout: 15000 }, () => {
 
     it("goes from a link reference use to its definition", async () => {
       const response = await definitionAt(101, 13); // on [home] inside "click":[home]
+      assert.deepEqual(response.result, {
+        uri: "file:///refs.texy",
+        range: { start: { line: 0, character: 0 }, end: { line: 0, character: 27 } },
+      });
+    });
+
+    it("goes from a bare (standalone) reference use to its definition", async () => {
+      const response = await definitionAt(104, 56); // on [home] standing alone in the sentence
       assert.deepEqual(response.result, {
         uri: "file:///refs.texy",
         range: { start: { line: 0, character: 0 }, end: { line: 0, character: 27 } },
@@ -1079,5 +1087,102 @@ describe("texy-lsp over stdio", { timeout: 15000 }, () => {
       });
       assert.deepEqual(restored.result, []);
     });
+
+    it("legacyReferences toggles bare [ref] uses live, with fresh diagnostics", async () => {
+      const uri = "file:///work/legacy.texy";
+      await server.send({
+        jsonrpc: "2.0",
+        method: "textDocument/didOpen",
+        params: {
+          textDocument: {
+            uri,
+            languageId: "texy",
+            version: 1,
+            text: "bare [home] use\n\n[home]: https://example.org\n",
+          },
+        },
+      });
+      await server.next("textDocument/publishDiagnostics");
+
+      const definitionOn = character =>
+        server.send({
+          jsonrpc: "2.0",
+          id: 800 + character,
+          method: "textDocument/definition",
+          params: { textDocument: { uri }, position: { line: 0, character } },
+        });
+
+      // the toggle re-analyzes every open document - drain the other
+      // documents' diagnostics until ours arrives (analyzed last)
+      const diagnosticsFor = async () => {
+        for (;;) {
+          const notification = await server.next("textDocument/publishDiagnostics");
+          if (notification.params.uri === uri) {
+            return notification;
+          }
+        }
+      };
+
+      const defined = await definitionOn(6); // on [home]
+      assert.equal(defined.result.range.start.line, 2);
+
+      await server.send({
+        jsonrpc: "2.0",
+        method: "workspace/didChangeConfiguration",
+        params: { settings: { texy: { legacyReferences: false } } },
+      });
+      await diagnosticsFor(); // re-analysis of the open document
+
+      const plain = await definitionOn(8);
+      assert.equal(plain.result, null); // bare [home] is plain text again
+
+      // restore the default, so later documents see it again
+      await server.send({
+        jsonrpc: "2.0",
+        method: "workspace/didChangeConfiguration",
+        params: { settings: { texy: { legacyReferences: true } } },
+      });
+      await diagnosticsFor();
+    });
+  });
+});
+
+describe("texy-lsp TEXY_LSP_LINE_WIDTH env", { timeout: 15000 }, () => {
+  const server = startServer({ ...process.env, TEXY_LSP_LINE_WIDTH: "40" });
+  after(() => server.close());
+
+  it("wraps reformatting at the env-provided width", async () => {
+    await server.send({
+      jsonrpc: "2.0",
+      id: 900,
+      method: "initialize",
+      params: { capabilities: {}, initializationOptions: { debounceMs: 0 } },
+    });
+    const uri = "file:///work/width.texy";
+    await server.send({
+      jsonrpc: "2.0",
+      method: "textDocument/didOpen",
+      params: {
+        textDocument: {
+          uri,
+          languageId: "texy",
+          version: 1,
+          text: "aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss",
+        },
+      },
+    });
+    await server.next("textDocument/publishDiagnostics");
+
+    const response = await server.send({
+      jsonrpc: "2.0",
+      id: 901,
+      method: "textDocument/formatting",
+      params: { textDocument: { uri }, options: { tabSize: 4, insertSpaces: true } },
+    });
+    assert.equal(response.result.length, 1);
+    assert.ok(
+      response.result[0].newText.split("\n").every(line => line.length <= 40),
+      "every wrapped line stays within 40 columns"
+    );
   });
 });

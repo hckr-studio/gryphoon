@@ -6,6 +6,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.lsp.api.LspServerDescriptor
 import work.gryphoon.texy.TexyFileType
+import work.gryphoon.texy.TexyLanguage
+import work.gryphoon.texy.settings.TexySettings
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
@@ -78,6 +80,17 @@ class TexyLspServerDescriptor(project: Project) : LspServerDescriptor(project, "
             "TEXY_LSP_TRACE",
             Paths.get(System.getProperty("java.io.tmpdir"), "texy-lsp-trace.log").toString(),
         )
+        // Texy 3 bare [ref] use syntax, from Settings | Texy (.idea/texy.xml)
+        command.withEnvironment(
+            "TEXY_LSP_LEGACY_REFERENCES",
+            if (TexySettings.getInstance(project).legacyReferences) "1" else "0",
+        )
+        // reformatting width: the Texy-specific override, else the IDE
+        // right margin for the Texy language (Code Style | General)
+        val texySettings = TexySettings.getInstance(project)
+        val lineWidth = texySettings.lineWidth
+            ?: com.intellij.application.options.CodeStyle.getSettings(project).getRightMargin(TexyLanguage)
+        command.withEnvironment("TEXY_LSP_LINE_WIDTH", lineWidth.toString())
         return command
     }
 
