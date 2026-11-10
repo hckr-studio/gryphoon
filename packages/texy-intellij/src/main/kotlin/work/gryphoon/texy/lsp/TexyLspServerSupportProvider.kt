@@ -1,5 +1,6 @@
 package work.gryphoon.texy.lsp
 
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.lsp.api.LspServerSupportProvider
@@ -16,8 +17,17 @@ class TexyLspServerSupportProvider : LspServerSupportProvider {
         file: VirtualFile,
         starter: LspServerSupportProvider.LspServerStarter,
     ) {
-        if (file.fileType === TexyFileType) {
+        val isTexyFile = file.fileType === TexyFileType || file.name.endsWith(".texy", ignoreCase = true)
+        if (isTexyFile) {
+            // Attach even when a stale file-type veto maps .texy to plain text:
+            // refactorings, folding and formatting must not depend on the
+            // file-type association surviving IDE restarts.
+            LOG.info("texy-lsp: fileOpened for ${file.name}, starting server")
             starter.ensureServerStarted(TexyLspServerDescriptor(project))
         }
+    }
+
+    companion object {
+        private val LOG = Logger.getInstance(TexyLspServerSupportProvider::class.java)
     }
 }

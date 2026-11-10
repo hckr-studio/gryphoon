@@ -24,7 +24,15 @@ import java.nio.file.Paths
  */
 class TexyLspServerDescriptor(project: Project) : LspServerDescriptor(project, "Texy") {
 
-    override fun isSupportedFile(file: VirtualFile): Boolean = file.fileType === TexyFileType
+    override fun isSupportedFile(file: VirtualFile): Boolean = isTexyFile(file)
+
+    /**
+     * Matches on the file extension, not the file type: a stale
+     * `removed_mapping` veto in the IDE config can map `.texy` to plain text
+     * while the file is open, which must not disconnect it from the server.
+     */
+    private fun isTexyFile(file: VirtualFile): Boolean =
+        file.fileType === TexyFileType || file.name.endsWith(".texy", ignoreCase = true)
 
     /**
      * Texy has no IntelliJ-side formatter; reformatting (whole file and
@@ -47,7 +55,8 @@ class TexyLspServerDescriptor(project: Project) : LspServerDescriptor(project, "
             override val renameCustomizer: com.intellij.platform.lsp.api.customization.LspRenameCustomizer
                 get() = object : com.intellij.platform.lsp.api.customization.LspRenameSupport() {
                     override fun shouldRunRename(psiFile: com.intellij.psi.PsiFile): Boolean =
-                        psiFile.fileType === TexyFileType
+                        psiFile.fileType === TexyFileType ||
+                            psiFile.name.endsWith(".texy", ignoreCase = true)
                 }
         }
 
@@ -60,6 +69,7 @@ class TexyLspServerDescriptor(project: Project) : LspServerDescriptor(project, "
             ?: throw ExecutionException(
                 "node not found: install it via Homebrew or nvm, or put it on the IDE's PATH"
             )
+        LOG.info("texy-lsp: spawning node with $script")
         val command = GeneralCommandLine(node.toString(), script.toString())
         project.basePath?.let { command.withWorkDirectory(it) }
         command.charset = Charsets.UTF_8
@@ -110,4 +120,8 @@ class TexyLspServerDescriptor(project: Project) : LspServerDescriptor(project, "
 
     private fun Path.listChildren(): List<Path> =
         Files.list(this).use { it.toList() }
+
+    companion object {
+        private val LOG = com.intellij.openapi.diagnostic.Logger.getInstance(TexyLspServerDescriptor::class.java)
+    }
 }
