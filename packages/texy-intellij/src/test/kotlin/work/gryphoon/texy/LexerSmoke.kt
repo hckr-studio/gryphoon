@@ -44,16 +44,7 @@ object LexerSmoke {
         println(toks.joinToString("\n") { "[${it.second.length}] ${it.first}: ${it.second}" })
 
         // 1) exact tiling
-        var expected = 0
-        val lexer = TexyLexer()
-        lexer.start(doc, 0, doc.length, 0)
-        while (lexer.tokenType != null) {
-            check(lexer.tokenStart == expected) { "tile gap: expected start $expected, got ${lexer.tokenStart}" }
-            check(lexer.tokenEnd > lexer.tokenStart) { "zero-length token at ${lexer.tokenStart} (${lexer.tokenType})" }
-            expected = lexer.tokenEnd
-            lexer.advance()
-        }
-        check(expected == doc.length) { "coverage: $expected != ${doc.length}" }
+        checkTile(doc)
 
         val names = toks.map { it.first }
         val texts = toks.map { it.second }
@@ -86,7 +77,26 @@ object LexerSmoke {
         val ednToks = tokens(ednDoc)
         check(ednToks.any { it.first == "TEXY_FM" && it.second.trim('\n').startsWith("{:") }) { "edn front matter" }
 
+        // 4) empty lines lex without crashing and tile exactly
+        val blankDoc = "first\n\n\nmid\n\nlast\n\n"
+        val blankToks = tokens(blankDoc)
+        checkTile(blankDoc)
+        check(blankToks.count { it.first == "TEXY_PLAIN" && it.second == "\n" } == 4) { "empty lines as plain newlines" }
+
         println("ALL CHECKS PASSED")
+    }
+
+    private fun checkTile(text: String) {
+        var expected = 0
+        val lexer = TexyLexer()
+        lexer.start(text, 0, text.length, 0)
+        while (lexer.tokenType != null) {
+            check(lexer.tokenStart == expected) { "tile gap: expected start $expected, got ${lexer.tokenStart}" }
+            check(lexer.tokenEnd > lexer.tokenStart) { "zero-length token at ${lexer.tokenStart} (${lexer.tokenType})" }
+            expected = lexer.tokenEnd
+            lexer.advance()
+        }
+        check(expected == text.length) { "coverage: $expected != ${text.length}" }
     }
 
     private fun check(condition: Boolean, message: () -> String) {

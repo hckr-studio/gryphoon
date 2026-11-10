@@ -165,6 +165,12 @@ class TexyLexer : Lexer() {
             return
         }
 
+        // an empty line is a plain token spanning its own newline
+        if (text.isEmpty()) {
+            queue.add(Queued(TexyTokenTypes.PLAIN, pos, lineEnd + 1))
+            return
+        }
+
         if (isTexyOpen(text)) {
             inCode = true
             inGfm = false

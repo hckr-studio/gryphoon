@@ -1,16 +1,27 @@
 plugins {
     id("org.jetbrains.kotlin.jvm") version "2.4.0"
-    id("org.jetbrains.intellij") version "1.17.4"
+    id("org.jetbrains.intellij.platform") version "2.20.1"
 }
 
 repositories {
     mavenCentral()
+    intellijPlatform { defaultRepositories() }
 }
 
-intellij {
-    // Compile and run the sandbox against the locally installed WebStorm.
-    // The IDE home on macOS is the .app bundle's Contents directory.
-    localPath.set("/Users/rarous/Applications/WebStorm.app/Contents")
+dependencies {
+    intellijPlatform {
+        // compile and run the sandbox against the locally installed WebStorm 2026.3;
+        // the IDE home on macOS is the .app bundle's Contents directory
+        local("/Users/rarous/Applications/WebStorm.app/Contents")
+    }
+}
+
+java {
+    // the build runs on the JBR bundled with the local WebStorm 2026.3
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(25))
+        vendor.set(org.gradle.jvm.toolchain.JvmVendorSpec.JETBRAINS)
+    }
 }
 
 kotlin {
@@ -19,26 +30,39 @@ kotlin {
     }
 }
 
+// texy-lsp ships as plain ES modules; bundle it next to the plugin jar so the
+// LSP descriptor can spawn `node texy-lsp/bin/texy-lsp.js` from the plugin dir
+val texyLspDir = layout.projectDirectory.dir("../texy-lsp")
+
+intellijPlatform {
+    pluginVerification {
+        ides {
+            create("WS", "2026.3")
+            create("WS", "2025.2")
+        }
+    }
+}
+
 tasks.register<JavaExec>("lexSmoke") {
     group = "verification"
-    classpath = sourceSets["test"].runtimeClasspath
+    // 2.x attaches the platform to the test *compile* classpath only;
+    // a plain run needs the platform class added explicitly
+    classpath(
+        sourceSets["test"].runtimeClasspath,
+        configurations["intellijPlatformTestClasspath"],
+    )
     mainClass.set("work.gryphoon.texy.LexerSmokeKt")
 }
 
-// gradle-intellij 1.x cannot parse the 2026.3 product-info.json launch layout,
-// so runIde crashes; launch the locally installed WebStorm against the sandbox instead.
-tasks.register<Exec>("runWebStormSandbox") {
-    group = "intellij"
-    description = "Launches the locally installed WebStorm against the Gradle sandbox with the plugin installed."
-    dependsOn("prepareSandbox")
-    val sandbox = layout.projectDirectory.dir("build/idea-sandbox")
-    commandLine(
-        "/Users/rarous/Applications/WebStorm.app/Contents/MacOS/webstorm",
-        "-Didea.config.path=${sandbox}/config",
-        "-Didea.system.path=${sandbox}/system",
-        "-Didea.plugins.path=${sandbox}/plugins",
-        "-Didea.log.path=${sandbox}/log",
-    )
+tasks.withType<org.jetbrains.intellij.platform.gradle.tasks.PrepareSandboxTask>().configureEach {
+    from(texyLspDir) {
+        into("texy-intellij/texy-lsp")
+        include("bin/**", "src/**", "package.json")
+    }
+    from(texyLspDir.dir("node_modules/@gryphoon/texy")) {
+        into("texy-intellij/texy-lsp/node_modules/@gryphoon/texy")
+        include("package.json", "index.js", "src/**", "LICENSE")
+    }
 }
 
 tasks {
@@ -48,9 +72,5 @@ tasks {
     }
     buildSearchableOptions {
         enabled = false
-    }
-    runPluginVerifier {
-        ideVersions.set(listOf("WS-2026.3", "WS-2025.2"))
-        failureLevel.set(listOf(org.jetbrains.intellij.tasks.RunPluginVerifierTask.FailureLevel.INVALID_PLUGIN))
     }
 }

@@ -1,4 +1,5 @@
-
 # JetBrains plugin build artifacts
 .gradle/
 build/
+.intellijPlatform/
+.kotlin/

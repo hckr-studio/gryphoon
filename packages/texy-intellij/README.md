@@ -25,6 +25,14 @@ into code blocks and the front matter. Part of the gryphoon monorepo
   colors in every IDE)
 - structural blocks (`div`, `text`, `comment`, `texysource`) are not
   injected; a block language unknown to the IDE stays plain texy
+- starts `@gryphoon/texy-lsp` (bundled in the plugin zip) through the
+  platform's LSP integration: diagnostics, go-to-definition/references,
+  document symbols, folding, completion, hover, inlay hints, quick
+  fixes, rename and formatting. The script resolves from a workspace
+  checkout (`packages/texy-lsp`) first, then from the bundled copy.
+  Requires `node` on PATH or in the standard nvm/Homebrew locations.
+  Syntax highlighting stays in the plugin's lexer; the server owns
+  semantic analysis
 
 ## Build
 
@@ -36,9 +44,15 @@ yarn workspace @gryphoon/texy-intellij build
 
 The artifact lands in `build/distributions/texy-intellij.zip`.
 
-Requires a JDK 17 on `JAVA_HOME` (the wrapper is pinned to Gradle 8.14; the
-plugin compiles to bytecode 17, `since-build 242`, no upper bound, verified
-compatible with WebStorm 2025.2 and 2026.3).
+Requires the JBR bundled with the locally installed WebStorm on `JAVA_HOME`
+(Gradle runs on it via the toolchain; the plugin compiles to bytecode 17,
+`since-build 242`, no upper bound, verified compatible with WebStorm 2025.2
+and 2026.3). The `org.jetbrains.intellij.platform` plugin (2.20.1) compiles
+against the local WebStorm installation.
+
+```bash
+export JAVA_HOME=/Users/rarous/Applications/WebStorm.app/Contents/jbr/Contents/Home
+```
 
 ## Install
 
@@ -56,10 +70,19 @@ open build/distributions/texy-intellij.zip
 Checks exact token tiling and the token classes of a representative
 document (front matter, markers, inline syntaxes, blocks, fences).
 
+## LSP handshake smoke
+
+```bash
+node lsp-handshake.mjs .intellijPlatform/sandbox/texy-intellij/WS-2026.3/plugins_runIde/texy-intellij/texy-lsp/bin/texy-lsp.js
+```
+
+Runs the full LSP lifecycle (initialize, didOpen, diagnostics push,
+requests, shutdown, exit) against the bundled server copy.
+
 ## Verify compatibility
 
 ```bash
-./gradlew runPluginVerifier
+./gradlew verifyPlugin
 ```
 
 (Checks WS-2026.3 and WS-2025.2; add versions in `build.gradle.kts`.)

@@ -42,4 +42,8 @@
                                  implementationClass="work.gryphoon.texy.TexyCodeManipulator"/>
         <textmate.bundle name="EDN" path="/edn"/>
     </extensions>
+
+    <extensions defaultExtensionNs="com.intellij.platform.lsp">
+        <serverSupportProvider implementation="work.gryphoon.texy.lsp.TexyLspServerSupportProvider"/>
+    </extensions>
 </idea-plugin>
