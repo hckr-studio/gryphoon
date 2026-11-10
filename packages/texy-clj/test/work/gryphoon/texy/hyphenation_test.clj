@@ -12,7 +12,7 @@
             [work.gryphoon.texy.hyphenation :as hyphenation]))
 
 (def ^:private corpus
-  (json/read-str (slurp "fixtures/hyphenation-corpus.json")))
+  (json/read-str (slurp "../texy-fixtures/hyphenation-corpus.json")))
 
 (deftest corpus-coverage
   (is (= 42 (count corpus)) "the whole corpus must be replayed"))

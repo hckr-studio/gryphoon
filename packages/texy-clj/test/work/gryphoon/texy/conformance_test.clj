@@ -1,15 +1,15 @@
 (ns work.gryphoon.texy.conformance-test
   "Conformance against the reference implementation's test material: the
-  original sources (fixtures/sources/*.texy) rendered by this port and
+  original sources (../texy-fixtures/sources/*.texy) rendered by this port and
   compared with the reference HTML.
 
   Three oracle fixture sets, all produced by
   implementations/node.js/tools/transform-oracle.php:
 
-  - fixtures/render-flat (the two reference-sources suites):
+  - ../texy-fixtures/render-flat (the two reference-sources suites):
     typography, hyphenation AND the well-former formatting disabled;
     this port runs with {:indent false :line-wrap 0} to match
-  - fixtures/render-full (the formatted suite): the FULL default
+  - ../texy-fixtures/render-full (the formatted suite): the FULL default
     configuration - typography, hyphenation, block indentation and
     line wrapping at 80 all on - so the WellFormer formatting port
     (work.gryphoon.texy.wellformer) is verified byte-for-byte including newlines
@@ -26,8 +26,8 @@
             [clojure.string :as str]
             [work.gryphoon.texy.core :as core]))
 
-(def sources-dir "fixtures/sources")
-(def fixtures-dir "fixtures/render-flat")
+(def sources-dir "../texy-fixtures/sources")
+(def fixtures-dir "../texy-fixtures/render-flat")
 
 (def known-gaps
   "Sources whose syntaxes are outside the ported subset."
@@ -93,7 +93,7 @@
            (str "conformance: " name ".texy")))))
 
 (deftest reference-sources-typography
-  (let [fx (fixtures "fixtures/render-typo")]
+  (let [fx (fixtures "../texy-fixtures/render-typo-flat")]
     (is (pos? (count fx)) "no render-typo fixtures found - broken path?")
     (doseq [[name source expected] fx
             :when (not (contains? known-gaps name))]
@@ -122,16 +122,16 @@
            ">"))))
 
 (deftest reference-sources-formatted
-  (let [dir (java.io.File. "fixtures/render-full")
+  (let [dir (java.io.File. "../texy-fixtures/render-full")
         files (or (.listFiles dir)
-                  (throw (ex-info "no render-full fixtures found - copy them from the node.js suite" {})))]
+                  (throw (ex-info "no render-full fixtures found - regenerate from the reference repo" {})))]
     (is (pos? (count files)))
     (doseq [^java.io.File f files
             :let [name (str/replace (.getName f) #"\.html$" "")]
             :when (not (contains? known-gaps name))]
       (let [emoticon? (= name "emoticon-on") ; the emoticon source with :emoticons true
             source (slurp (str sources-dir "/" (if emoticon? "emoticon" name) ".texy"))
-            expected (slurp (str "fixtures/render-full/" (.getName f)))]
+            expected (slurp (str "../texy-fixtures/render-full/" (.getName f)))]
         (is (= (canonicalize-wrapped-tags expected)
                ;; the full default configuration: typography,
                ;; hyphenation, indentation and wrapping all ON

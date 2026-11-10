@@ -253,18 +253,18 @@ the reference repository git tags) - see `test/work/gryphoon/texy/references_tes
 ## Conformance
 
 The conformance suite renders each original source
-(`tests/Texy/sources/*.texy`) and compares with reference HTML generated
+(`../texy-fixtures/sources/*.texy`) and compares with reference HTML generated
 by the PHP oracle. Three fixture sets (all from
-`php implementations/node.js/tools/transform-oracle.php in the reference repository`):
+`tools/transform-oracle.php in the reference repository`):
 
-- `--render-flat` writes `fixtures/render-flat/` (typography,
+- `--render-flat` writes `../texy-fixtures/render-flat/` (typography,
   hyphenation AND formatting disabled; this port runs with
   `{:indent false :line-wrap 0}` to match)
-- `--render-typo-flat` writes `fixtures/render-typo/` (typography on,
+- `--render-typo-flat` writes `../texy-fixtures/render-typo-flat/` (typography on,
   formatting still flat)
 - the full default configuration (typography + hyphenation + the
   WellFormer indentation and 80-column wrapping) writes
-  `fixtures/render-full/` - this suite compares BYTE-FOR-BYTE
+  `../texy-fixtures/render-full/` - this suite compares BYTE-FOR-BYTE
   including newlines and tabs, so the formatting port itself is
   oracle-verified (attributes are canonicalized: the two renderers
   emit them in different orders and wrap start tags at different

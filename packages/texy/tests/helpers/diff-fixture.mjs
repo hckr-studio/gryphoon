@@ -12,8 +12,8 @@ const root = dirname(dirname(dirname(fileURLToPath(import.meta.url))));
 const name = process.argv[2];
 
 
-const source = normalize(readFileSync(join(root, '..', '..', 'tests', 'Texy', 'sources', name + '.texy'), 'utf8'));
-const expected = readFileSync(join(root, 'tests', 'fixtures', 'parse', name + '.txt'), 'utf8');
+const source = normalize(readFileSync(join(root, '..', 'texy-fixtures', 'sources', name + '.texy'), 'utf8'));
+const expected = readFileSync(join(root, '..', 'texy-fixtures', 'parse', name + '.txt'), 'utf8');
 
 const texy = new Texy();
 if (process.argv.includes('--emoticon')) texy.allowed.emoticon = true;

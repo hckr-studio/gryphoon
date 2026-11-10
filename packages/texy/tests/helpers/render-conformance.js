@@ -16,15 +16,15 @@ const root = dirname(dirname(dirname(fileURLToPath(import.meta.url)))); // tests
 /**
  * @param {Object} options
  * @param {string} options.suite describe() title
- * @param {string} options.fixturesDir directory under tests/fixtures/
+ * @param {string} options.fixturesDir directory under ../texy-fixtures/
  * @param {string} options.extension fixture file extension, incl. dot
  * @param {Function} options.convert fn(Texy, source): string
  * @param {Function} options.configure fn(Texy, fixtureName): void - set up allowed flags to match the oracle config
  * @param {Set<string>} [options.knownDivergences] fixture names to skip, with documented reasons
  */
 export function renderConformance({ suite, fixturesDir, extension, convert, configure, knownDivergences = new Set() }) {
-  const dir = join(root, "tests", "fixtures", fixturesDir);
-  const sourcesDir = join(root, "tests", "fixtures", "sources");
+  const dir = join(root, "..", "texy-fixtures", fixturesDir);
+  const sourcesDir = join(root, "..", "texy-fixtures", "sources");
   const fixtures = readdirSync(dir).filter(f => f.endsWith(extension));
 
   describe(suite, () => {

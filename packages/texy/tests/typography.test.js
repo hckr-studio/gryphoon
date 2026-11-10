@@ -19,7 +19,7 @@ import { Texy } from "../src/Texy.js";
 import { processTypo } from "../src/Typography.js";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
-const probe = JSON.parse(readFileSync(join(root, "tests", "fixtures", "typo-probe.json"), "utf8"));
+const probe = JSON.parse(readFileSync(join(root, "..", "texy-fixtures", "typo-probe.json"), "utf8"));
 
 /**
  * @param {string} text

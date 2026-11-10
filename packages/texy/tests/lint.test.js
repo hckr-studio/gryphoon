@@ -141,7 +141,7 @@ describe("lint: passivity", () => {
 
   it("issue ranges stay within the normalized source over the source corpus", () => {
     // the same corpus the conformance tests parse, vendored from dg/texy
-    const dir = join(dirname(fileURLToPath(import.meta.url)), "fixtures", "sources");
+    const dir = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "texy-fixtures", "sources");
     for (const name of readdirSync(dir)) {
       const text = normalize(readFileSync(join(dir, name), "utf8"));
       const { issues } = new Texy().lint(text);

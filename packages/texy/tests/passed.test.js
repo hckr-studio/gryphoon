@@ -18,8 +18,8 @@ import { Texy } from "../src/Texy.js";
 import { dump } from "./helpers/ast-dumper.js";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
-const fixturesDir = join(root, "tests", "fixtures", "passed");
-const sourcesDir = join(root, "tests", "fixtures", "sources");
+const fixturesDir = join(root, "..", "texy-fixtures", "passed");
+const sourcesDir = join(root, "..", "texy-fixtures", "sources");
 
 const fixtures = readdirSync(fixturesDir).filter(f => f.endsWith(".txt"));
 

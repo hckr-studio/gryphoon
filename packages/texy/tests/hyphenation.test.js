@@ -14,7 +14,7 @@ import { Syntax } from "../src/Syntax.js";
 import { Texy } from "../src/Texy.js";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
-const corpus = JSON.parse(readFileSync(join(root, "tests", "fixtures", "hyphenation-corpus.json"), "utf8"));
+const corpus = JSON.parse(readFileSync(join(root, "..", "texy-fixtures", "hyphenation-corpus.json"), "utf8"));
 
 describe("HyphenationModule.postLine matches the reference", () => {
   it(`replays the ${corpus.length}-case corpus (incl. marker bytes, wordLimit variants)`, () => {

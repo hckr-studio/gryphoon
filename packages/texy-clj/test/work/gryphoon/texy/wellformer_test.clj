@@ -15,7 +15,7 @@
             [work.gryphoon.texy.wellformer :as wf]))
 
 (def ^:private corpus
-  (json/read-str (slurp "fixtures/wordwrap-corpus.json")))
+  (json/read-str (slurp "../texy-fixtures/wordwrap-corpus.json")))
 
 (deftest wordwrap-corpus-replay
   (is (= 4374 (count corpus)) "the whole corpus must be replayed")

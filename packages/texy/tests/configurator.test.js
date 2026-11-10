@@ -14,7 +14,7 @@ import { None } from "../src/HtmlPolicy.js";
 import { Texy } from "../src/Texy.js";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
-const corpus = JSON.parse(readFileSync(join(root, "tests", "fixtures", "configurator-corpus.json"), "utf8"));
+const corpus = JSON.parse(readFileSync(join(root, "..", "texy-fixtures", "configurator-corpus.json"), "utf8"));
 
 /** @param {string} mode @returns {import('../src/Texy.js').Texy} */
 function makeTexy(mode) {

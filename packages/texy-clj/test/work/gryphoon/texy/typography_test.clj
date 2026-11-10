@@ -71,7 +71,7 @@
 ;; the same oracle the Node port replays, so both typography catalogs are
 ;; pinned against the reference.
 (def ^:private probe
-  (json/read-str (slurp "fixtures/typo-probe.json")))
+  (json/read-str (slurp "../texy-fixtures/typo-probe.json")))
 
 (deftest probe-corpus-coverage
   (is (= 49 (count probe)) "the whole corpus must be replayed"))

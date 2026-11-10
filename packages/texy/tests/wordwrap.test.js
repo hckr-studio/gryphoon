@@ -11,7 +11,7 @@ import { fileURLToPath } from "node:url";
 import { wordwrap } from "../src/wordwrap.js";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
-const corpus = JSON.parse(readFileSync(join(root, "tests", "fixtures", "wordwrap-corpus.json"), "utf8"));
+const corpus = JSON.parse(readFileSync(join(root, "..", "texy-fixtures", "wordwrap-corpus.json"), "utf8"));
 
 describe("wordwrap matches the PHP reference", () => {
   it(`replays the ${corpus.length}-case differential corpus`, () => {
