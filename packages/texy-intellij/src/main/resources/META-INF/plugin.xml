@@ -37,6 +37,7 @@
                           order="first"/>
         <lang.syntaxHighlighterFactory key="Texy"
                                        implementationClass="work.gryphoon.texy.TexySyntaxHighlighterFactory"/>
+        <annotator language="Texy" implementationClass="work.gryphoon.texy.TexyAnnotator"/>
         <multiHostInjector implementation="work.gryphoon.texy.inject.TexyBlockInjector"/>
         <lang.elementManipulator forClass="work.gryphoon.texy.TexyCodeHost"
                                  implementationClass="work.gryphoon.texy.TexyCodeManipulator"/>

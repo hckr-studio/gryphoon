@@ -26,6 +26,23 @@ class TexyLspServerDescriptor(project: Project) : LspServerDescriptor(project, "
 
     override fun isSupportedFile(file: VirtualFile): Boolean = file.fileType === TexyFileType
 
+    /**
+     * Texy has no IntelliJ-side formatter; reformatting (whole file and
+     * selection) goes exclusively to the language server, which advertises
+     * textDocument/formatting and textDocument/rangeFormatting.
+     */
+    override val lspCustomization: com.intellij.platform.lsp.api.customization.LspCustomization
+        get() = object : com.intellij.platform.lsp.api.customization.LspCustomization() {
+            override val formattingCustomizer: com.intellij.platform.lsp.api.customization.LspFormattingCustomizer
+                get() = object : com.intellij.platform.lsp.api.customization.LspFormattingSupport() {
+                    override fun shouldFormatThisFileExclusivelyByServer(
+                        file: VirtualFile,
+                        isWholeFile: Boolean,
+                        isRange: Boolean,
+                    ): Boolean = true
+                }
+        }
+
     override fun createCommandLine(): GeneralCommandLine {
         val script = findServerScript()
             ?: throw ExecutionException(

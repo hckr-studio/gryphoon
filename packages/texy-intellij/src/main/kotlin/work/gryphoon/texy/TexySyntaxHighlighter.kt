@@ -51,11 +51,15 @@ class TexySyntaxHighlighter : SyntaxHighlighter {
         )
         val PHRASE: TextAttributesKey = TextAttributesKey.createTextAttributesKey(
             "TEXY_PHRASE",
-            DefaultLanguageHighlighterColors.OPERATION_SIGN,
+            DefaultLanguageHighlighterColors.KEYWORD,
         )
         val LINK: TextAttributesKey = TextAttributesKey.createTextAttributesKey(
             "TEXY_LINK",
-            DefaultLanguageHighlighterColors.LABEL,
+            com.intellij.openapi.editor.colors.CodeInsightColors.HYPERLINK_ATTRIBUTES,
+        )
+        val LINK_TARGET: TextAttributesKey = TextAttributesKey.createTextAttributesKey(
+            "TEXY_LINK_TARGET",
+            DefaultLanguageHighlighterColors.STRING,
         )
         val DIRECTIVE: TextAttributesKey = TextAttributesKey.createTextAttributesKey(
             "TEXY_DIRECTIVE",
@@ -64,6 +68,10 @@ class TexySyntaxHighlighter : SyntaxHighlighter {
         val MODIFIER: TextAttributesKey = TextAttributesKey.createTextAttributesKey(
             "TEXY_MODIFIER",
             DefaultLanguageHighlighterColors.LABEL,
+        )
+        val CODE_SPAN: TextAttributesKey = TextAttributesKey.createTextAttributesKey(
+            "TEXY_CODE_SPAN",
+            DefaultLanguageHighlighterColors.STRING,
         )
         private val EMPTY = arrayOf<TextAttributesKey>()
     }

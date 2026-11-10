@@ -83,6 +83,17 @@ try {
   });
   assert(Array.isArray(symbols) && symbols.length >= 1, `documentSymbol -> ${symbols.length} symbols`);
 
+  send("textDocument/didChange", {
+    textDocument: { uri: "file:///tmp/sample.texy", version: 2 },
+    contentChanges: [{ text: "#  Heading\n\n\nFoo bar baz,     lorem   ipsum dolor sit  amet set aside consetetur.\n" }],
+  });
+  await new Promise(r => setTimeout(r, 400));
+  const edits = await request("textDocument/formatting", {
+    textDocument: { uri: "file:///tmp/sample.texy" },
+    options: { tabSize: 2, insertSpaces: true },
+  });
+  assert(Array.isArray(edits), `formatting -> ${JSON.stringify(edits).slice(0, 120)}`);
+
   await request("shutdown", null);
   send("exit", null);
   const code = await new Promise(resolve => child.on("exit", resolve));

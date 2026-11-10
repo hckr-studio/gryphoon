@@ -8,7 +8,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.FileViewProvider
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import com.intellij.psi.impl.source.tree.CompositePsiElement
 import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.TokenSet
 
@@ -31,14 +30,12 @@ class TexyParserDefinition : ParserDefinition {
 
     override fun getStringLiteralElements(): TokenSet = TokenSet.create(TexyTokenTypes.CODE)
 
+    /**
+     * Never reached in practice: the language's composites (BLOCK,
+     * FRONT_MATTER_BLOCK) are created as PsiElements by [TexyASTFactory],
+     * so the platform never needs a wrapper from here. Returning a fresh
+     * CompositePsiElement would produce a detached, parentless element.
+     */
     override fun createElement(node: ASTNode): PsiElement =
-        when (node.elementType) {
-            TexyElementTypes.BLOCK -> TexyBlockNode()
-            else -> object : CompositePsiElement(node.elementType) {}
-        }
-}
-
-/** The BLOCK composite: OPEN, CODE?, CLOSE. */
-class TexyBlockNode : CompositePsiElement(TexyElementTypes.BLOCK) {
-    override fun toString() = "TexyBlock"
+        throw IllegalStateException("Unexpected composite node: ${node.elementType}")
 }

@@ -106,6 +106,15 @@ object LexerSmoke {
     }
 }
 
-fun main() {
+fun main(args: Array<String>) {
+    // `lexSmoke -Pdump=<file>` prints the token stream of any texy document
+    if (args.isNotEmpty()) {
+        val text = java.nio.file.Files.readString(java.nio.file.Path.of(args[0]))
+        for ((type, content) in LexerSmoke.tokens(text)) {
+            val printable = content.replace("\n", "\\n").take(48)
+            println("[$type] $printable")
+        }
+        return
+    }
     LexerSmoke.check()
 }

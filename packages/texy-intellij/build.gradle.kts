@@ -52,6 +52,9 @@ tasks.register<JavaExec>("lexSmoke") {
         configurations["intellijPlatformTestClasspath"],
     )
     mainClass.set("work.gryphoon.texy.LexerSmokeKt")
+    providers.gradleProperty("dump").orNull?.let { path ->
+        args(path)
+    }
 }
 
 tasks.withType<org.jetbrains.intellij.platform.gradle.tasks.PrepareSandboxTask>().configureEach {
@@ -62,6 +65,17 @@ tasks.withType<org.jetbrains.intellij.platform.gradle.tasks.PrepareSandboxTask>(
     from(texyLspDir.dir("node_modules/@gryphoon/texy")) {
         into("texy-intellij/texy-lsp/node_modules/@gryphoon/texy")
         include("package.json", "index.js", "src/**", "LICENSE")
+    }
+
+    // PrepareSandbox is a Sync: anything not copied here is wiped from the
+    // sandbox plugin dir. Keep the locally installed language plugins the
+    // EDN front-matter injection resolves to (clojure-lsp + lsp4ij) alive
+    // across re-runs, so the sandbox matches the real IDE.
+    for (extra in listOf("clojure-lsp", "lsp4ij")) {
+        val dir = file("${System.getProperty("user.home")}/Library/Application Support/JetBrains/WebStorm2026.2/plugins/$extra")
+        if (dir.isDirectory) {
+            from(dir) { into(extra) }
+        }
     }
 }
 
