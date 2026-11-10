@@ -682,8 +682,9 @@ describe("texy-lsp over stdio", { timeout: 15000 }, () => {
 
     it("prepareRename + rename: every use and definition, written form kept", async () => {
       const prepare = await request(750, "textDocument/prepareRename", { position: { line: 6, character: 13 } });
+      // the range covers the bare name; the [ ] decoration is the client's to keep
       assert.deepEqual(prepare.result, {
-        range: { start: { line: 6, character: 12 }, end: { line: 6, character: 17 } },
+        range: { start: { line: 6, character: 13 }, end: { line: 6, character: 16 } },
         placeholder: "one",
       });
 

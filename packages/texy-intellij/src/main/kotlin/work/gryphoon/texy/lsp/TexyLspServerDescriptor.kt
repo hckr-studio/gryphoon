@@ -29,7 +29,9 @@ class TexyLspServerDescriptor(project: Project) : LspServerDescriptor(project, "
     /**
      * Texy has no IntelliJ-side formatter; reformatting (whole file and
      * selection) goes exclusively to the language server, which advertises
-     * textDocument/formatting and textDocument/rangeFormatting.
+     * textDocument/formatting and textDocument/rangeFormatting. Rename
+     * (prepareRename/rename) dispatches too - the default only allows
+     * TEXT/textmate files.
      */
     override val lspCustomization: com.intellij.platform.lsp.api.customization.LspCustomization
         get() = object : com.intellij.platform.lsp.api.customization.LspCustomization() {
@@ -40,6 +42,12 @@ class TexyLspServerDescriptor(project: Project) : LspServerDescriptor(project, "
                         isWholeFile: Boolean,
                         isRange: Boolean,
                     ): Boolean = true
+                }
+
+            override val renameCustomizer: com.intellij.platform.lsp.api.customization.LspRenameCustomizer
+                get() = object : com.intellij.platform.lsp.api.customization.LspRenameSupport() {
+                    override fun shouldRunRename(psiFile: com.intellij.psi.PsiFile): Boolean =
+                        psiFile.fileType === TexyFileType
                 }
         }
 
@@ -55,6 +63,11 @@ class TexyLspServerDescriptor(project: Project) : LspServerDescriptor(project, "
         val command = GeneralCommandLine(node.toString(), script.toString())
         project.basePath?.let { command.withWorkDirectory(it) }
         command.charset = Charsets.UTF_8
+        // protocol trace: one file per session, fresh on every server start
+        command.withEnvironment(
+            "TEXY_LSP_TRACE",
+            Paths.get(System.getProperty("java.io.tmpdir"), "texy-lsp-trace.log").toString(),
+        )
         return command
     }
 

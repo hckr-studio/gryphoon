@@ -17,7 +17,7 @@
 import { Texy } from "@gryphoon/texy/Texy.js";
 import { normalizeWithMap } from "@gryphoon/texy/normalize.js";
 import { completeReferences } from "./completion.js";
-import { quickFixes } from "./codeActions.js";
+import { quickFixes, refactors } from "./codeActions.js";
 import { createMessageReader, writeMessage } from "./framing.js";
 import { DocumentStore } from "./documents.js";
 import { collectDocumentLinks } from "./documentLinks.js";
@@ -41,8 +41,9 @@ export class TexyLanguageServer {
    * @param {number} [options.debounceMs] didChange analysis delay
    * @param {number} [options.lineWidth] formatting line width
    * @param {(code: number) => void} [options.onExit] exit hook, process.exit by default
+   * @param {?((direction: "in"|"out", message: Object) => void)} [options.onTrace] protocol trace hook
    */
-  constructor({ texy = null, debounceMs = 150, lineWidth = 80, onExit = code => process.exit(code) } = {}) {
+  constructor({ texy = null, debounceMs = 150, lineWidth = 80, onExit = code => process.exit(code), onTrace = null } = {}) {
     this.texy = texy ?? new Texy();
     // the built-in instance generates heading ids, so #toc- anchors exist
     // for the anchor completion (a consumer-provided instance keeps its
@@ -64,10 +65,14 @@ export class TexyLanguageServer {
      */
     this.analysis = new Map();
 
-    /** @type {?import("node:stream").Writable} */
-    this.writer = null;
     /** @type {Map<string, import("node:timers").Timeout>} pending analysis per uri */
     this.pending = new Map();
+
+    /**
+     * Optional protocol trace: ("in"|"out", message) per message.
+     * @type {?((direction: "in"|"out", message: Object) => void)}
+     */
+    this.onTrace = onTrace;
   }
 
   /**
@@ -77,7 +82,13 @@ export class TexyLanguageServer {
    */
   attach(input, output) {
     this.writer = output;
-    createMessageReader(input, message => this.receive(message));
+    const receive = message => {
+      if (this.onTrace !== null) {
+        this.onTrace("in", message);
+      }
+      this.receive(message);
+    };
+    createMessageReader(input, receive);
   }
 
   /** @param {Object} message a JSON-RPC request, response or notification */
@@ -117,6 +128,9 @@ export class TexyLanguageServer {
   /** @param {Object} message */
   send(message) {
     if (this.writer !== null) {
+      if (this.onTrace !== null) {
+        this.onTrace("out", message);
+      }
       writeMessage(this.writer, message);
     }
   }
@@ -223,7 +237,7 @@ export class TexyLanguageServer {
         hoverProvider: true,
         inlayHintProvider: true,
         documentLinkProvider: {},
-        codeActionProvider: { codeActionKinds: ["quickfix"] },
+        codeActionProvider: { codeActionKinds: ["quickfix", "refactor.extract"] },
         selectionRangeProvider: true,
         renameProvider: { prepareProvider: true },
         documentFormattingProvider: true,
@@ -357,6 +371,13 @@ export class TexyLanguageServer {
    */
   contextOf(params) {
     const uri = params.textDocument?.uri;
+    // a stateful request must never see a stale debounced analysis: the
+    // bridged ranges mismatch the changed document and corrupt edits
+    if (this.pending.has(uri)) {
+      clearTimeout(this.pending.get(uri));
+      this.pending.delete(uri);
+      this.analyze(uri);
+    }
     const document = this.store.get(uri);
     const analysis = this.analysis.get(uri);
     return document === null || analysis === undefined ? null : [document, analysis, uri];
@@ -621,19 +642,24 @@ export class TexyLanguageServer {
     const from = this.offsetAtPosition(analysis, document, params.range?.start);
     const to = this.offsetAtPosition(analysis, document, params.range?.end);
 
-    return quickFixes(analysis, from, to).map(fix => ({
+    const toEdit = edit => ({
+      range: toLspRange(edit.range, analysis.map, document.lineStarts),
+      newText: edit.text,
+    });
+
+    const fixes = quickFixes(analysis, from, to).map(fix => ({
       title: fix.title,
       kind: "quickfix",
       diagnostics: [this.toDiagnostic(fix.issue, analysis, document)],
-      edit: {
-        changes: {
-          [uri]: fix.edits.map(edit => ({
-            range: toLspRange(edit.range, analysis.map, document.lineStarts),
-            newText: edit.text,
-          })),
-        },
-      },
+      edit: { changes: { [uri]: fix.edits.map(toEdit) } },
     }));
+    const extractions = refactors(analysis, from, to).map(action => ({
+      title: action.title,
+      kind: "refactor.extract",
+      edit: { changes: { [uri]: action.edits.map(toEdit) } },
+    }));
+
+    return [...fixes, ...extractions];
   }
 
   /**
@@ -691,7 +717,17 @@ export class TexyLanguageServer {
       return null;
     }
 
-    return { range: toLspRange(token, analysis.map, document.lineStarts), placeholder: name };
+    // the range covers the bare name: the client applies the rename over
+    // it directly, so the surrounding [ ] / [* *] decoration must stay
+    const written = analysis.normalized.slice(token.offset, token.offset + token.length);
+    let inner = token;
+    if (written.startsWith("[*") && written.endsWith("*]")) {
+      inner = { offset: token.offset + 2, length: token.length - 4 };
+    } else if (written.startsWith("[") && written.endsWith("]")) {
+      inner = { offset: token.offset + 1, length: token.length - 2 };
+    }
+
+    return { range: toLspRange(inner, analysis.map, document.lineStarts), placeholder: name };
   }
 
   /**

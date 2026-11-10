@@ -1,12 +1,8 @@
 /**
- * Quick fixes over the lint issues: close an unclosed HTML tag at the
- * end of its block, delete a stray closing tag, escape a rejected tag
- * to the text it would render as anyway, and insert a definition stub
- * for an undefined reference.
- *
- * All facts (tag and reference names) are read from the AST node the
- * issue points at; the issue message is only a last-resort fallback.
- * Edits are in normalized coordinates; the server bridges them out.
+ * Code actions: quick fixes over the lint issues, and the extract
+ * refactorings (an inline link/image target becomes a reference use
+ * with the definition appended at the document end). Edits are in
+ * normalized coordinates; the server bridges them out.
  */
 
 import { NodeTraverser } from "@gryphoon/texy/NodeTraverser.js";
@@ -72,12 +68,137 @@ function blockEndAt(document, offset) {
  * @param {string} name
  * @param {boolean} image
  */
-function appendDefinition(text, name, image) {
-  const lead = text === "" ? "" : text.endsWith("\n\n") ? "" : text.endsWith("\n") ? "\n" : "\n\n";
+function appendDefinition(analysis, name, image) {
+  return appendReference(analysis, name, "https://", image);
+}
+
+/**
+ * The definition edit appending `[name]: target` (images: `[*name*]`)
+ * at the document end: a blank line away from the prose, but tight
+ * under the existing definition list when the document already ends
+ * in one (`[a]: …` then `[b]: …` on the next line).
+ * @param {{ normalized: string, definitionNodes: Array }} analysis
+ * @param {string} name
+ * @param {string} target the definition URL
+ * @param {boolean} image
+ */
+function appendReference(analysis, name, target, image) {
+  const text = analysis.normalized;
+  const trimmedLength = text.replace(/\s+$/, "").length;
+  const endsWithDefinition = analysis.definitionNodes.some(
+    node => node.range !== null && node.range.offset <= trimmedLength && trimmedLength <= node.range.offset + node.range.length,
+  );
+  const lead = text === ""
+    ? ""
+    : endsWithDefinition
+      ? "\n"
+      : text.endsWith("\n")
+        ? "\n"
+        : "\n\n";
   return {
     range: { offset: text.length, length: 0 },
-    text: `${lead}[${image ? `*${name}*` : name}]: https://`,
+    text: `${lead}[${image ? `*${name}*` : name}]: ${target}`,
   };
+}
+
+/**
+ * The reference name for an extracted target: the URL host's first
+ * label (www stripped), a slug of the mailto local part, or a slug of
+ * the leading path segment for relative targets.
+ * @param {string} url
+ * @returns {string}
+ */
+function referenceNameFrom(url) {
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol === "mailto:") {
+      return slug(parsed.pathname.split("@")[0] || "mail");
+    }
+    const host = parsed.hostname.replace(/^www\./, "");
+    return slug(host.split(".")[0] || "link");
+  } catch {
+    return slug(url.split(/[/?:#]/)[0] || "link");
+  }
+}
+
+/** @param {string} text a lowercase-safe slug of a reference name */
+function slug(text) {
+  const s = text.toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/^-+|-+$/g, "");
+  return s === "" ? "ref" : s;
+}
+
+/**
+ * The extract refactorings for the range: an inline link/image target
+ * becomes a reference use plus a `[name]: url` definition appended at
+ * the end of the document (`"Google":https://google.com` turns into
+ * `"Google":[google]` + `[google]: https://google.com`, an image's
+ * URL inside `[*...*]` becomes the reference name).
+ * @param {{ ast: Object, issues: Array, normalized: string, uses: Array<{ name: string }>, definitions: Map<string, Object> }} analysis
+ * @param {number} from normalized range start
+ * @param {number} to normalized range end
+ * @returns {Array<{ title: string, edits: Array<{ range: { offset: number, length: number }, text: string }> }>}
+ */
+/**
+ * Does the written link/image target resolve directly (a URL) rather
+ * than name a reference? A reference use (`"x":[ref]`, `[*ref*]`) has
+ * nothing to extract; a URL-shaped target has.
+ * @param {string} target the written target
+ * @returns {boolean}
+ */
+function looksLikeDirectTarget(target) {
+  return (
+    /^[a-z][a-z0-9+.-]*:/i.test(target) || // scheme (https:, mailto:, ...)
+    /^(www\.|\/\/|\/|#|\?)/i.test(target) || // site-relative, anchor, query
+    target.includes("@") // e-mail target
+  );
+}
+
+export function refactors(analysis, from, to) {
+  const actions = [];
+  const taken = new Set([
+    ...analysis.definitions.keys(),
+    ...analysis.uses.map(use => use.name.toLowerCase()),
+  ]);
+
+  new NodeTraverser().traverse(analysis.ast, node => {
+    const extractableLink =
+      (node instanceof LinkNode && !node.isImageLink) ||
+      node instanceof ImageNode;
+    if (!extractableLink || node.urlRange === null) {
+      return null;
+    }
+    // for the bracketed form urlRange covers the brackets too
+    const written = analysis.normalized.slice(node.urlRange.offset, node.urlRange.offset + node.urlRange.length);
+    const target = written.startsWith("[") && written.endsWith("]") ? written.slice(1, -1) : written;
+    if (!looksLikeDirectTarget(target)) {
+      // reference use or a name-like target: nothing to extract
+      return null;
+    }
+    const extent = extentOf(node);
+    if (extent === null || !(extent.offset < to && from < extent.offset + extent.length)) {
+      return null;
+    }
+
+    const image = node instanceof ImageNode;
+    const base = referenceNameFrom(target);
+    let name = base;
+    let counter = 2;
+    while (taken.has(name)) {
+      name = `${base}${counter++}`;
+    }
+    taken.add(name);
+
+    actions.push({
+      title: `Extract ${image ? "image" : "link"} target to reference "${name}"`,
+      edits: [
+        { range: { offset: node.urlRange.offset, length: node.urlRange.length }, text: image ? name : `[${name}]` },
+        appendReference(analysis, name, target, image),
+      ],
+    });
+    return null;
+  });
+
+  return actions;
 }
 
 /**
@@ -136,7 +257,7 @@ export function quickFixes(analysis, from, to) {
         if (name !== null) {
           fix = {
             title: image ? `Define image reference "${name}"` : `Define reference "${name}"`,
-            edits: [appendDefinition(analysis.normalized, name, image)],
+            edits: [appendDefinition(analysis, name, image)],
           };
         }
         break;
