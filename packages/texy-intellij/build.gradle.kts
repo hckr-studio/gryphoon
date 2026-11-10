@@ -33,6 +33,44 @@ kotlin {
 // texy-lsp ships as plain ES modules; bundle it next to the plugin jar so the
 // LSP descriptor can spawn `node texy-lsp/bin/texy-lsp.js` from the plugin dir
 val texyLspDir = layout.projectDirectory.dir("../texy-lsp")
+val texyDir = layout.projectDirectory.dir("../texy")
+
+// The bundled @gryphoon/texy copy must carry its own dependency graph
+// (linkedom and its transitive deps): outside the monorepo, Node cannot
+// resolve them from the plugin dir and the server dies on startup.
+// npm resolves the graph into an isolated staging dir - deterministic
+// because texy pins its dependencies.
+val texyLspDepsStage = layout.buildDirectory.dir("texy-lsp-deps")
+
+val stageTexyLspDeps = tasks.register<Exec>("stageTexyLspDeps") {
+    group = "build"
+    inputs.dir(texyDir)
+    outputs.dir(texyLspDepsStage.map { it.dir("node_modules") })
+    doFirst {
+        val stage = texyLspDepsStage.get().asFile
+        stage.deleteRecursively()
+        stage.mkdirs()
+        stage.resolve("package.json").writeText(
+            """
+            {
+              "name": "texy-lsp-deps",
+              "private": true,
+              "type": "module",
+              "dependencies": {
+                "@gryphoon/texy": "file:${texyDir.asFile.absolutePath}"
+              }
+            }
+            """.trimIndent(),
+        )
+    }
+    workingDir = texyLspDepsStage.get().asFile
+    commandLine(
+        "npm", "install",
+        "--install-links", // file: deps are copied AND their transitive graph installed
+        "--omit=dev", "--no-audit", "--no-fund", "--no-package-lock",
+        "--loglevel=error",
+    )
+}
 
 intellijPlatform {
     pluginVerification {
@@ -58,6 +96,7 @@ tasks.register<JavaExec>("lexSmoke") {
 }
 
 tasks.withType<org.jetbrains.intellij.platform.gradle.tasks.PrepareSandboxTask>().configureEach {
+    dependsOn(stageTexyLspDeps)
     from(texyLspDir) {
         into("texy-intellij/texy-lsp")
         include("bin/**", "src/**", "package.json")
@@ -65,6 +104,12 @@ tasks.withType<org.jetbrains.intellij.platform.gradle.tasks.PrepareSandboxTask>(
     from(texyLspDir.dir("node_modules/@gryphoon/texy")) {
         into("texy-intellij/texy-lsp/node_modules/@gryphoon/texy")
         include("package.json", "index.js", "src/**", "LICENSE")
+    }
+    // @gryphoon/texy's own dependency graph as resolved by npm
+    from(texyLspDepsStage) {
+        into("texy-intellij/texy-lsp")
+        include("node_modules/**")
+        exclude("node_modules/@gryphoon/**")
     }
 
     // PrepareSandbox is a Sync: anything not copied here is wiped from the
