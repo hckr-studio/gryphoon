@@ -1,0 +1,33 @@
+{
+  "name": "EDN",
+  "scopeName": "source.edn",
+  "fileTypes": ["edn"],
+  "patterns": [
+    { "name": "comment.line.edn", "match": "^\\s*;.*$" },
+    { "name": "keyword.other.edn", "match": "(?<![\\w*+!_?-])(nil|true|false)(?![\\w*+!_?-])" },
+    {
+      "name": "string.quoted.double.edn",
+      "begin": "\"",
+      "end": "\"",
+      "patterns": [{ "name": "constant.character.escape.edn", "match": "\\\\." }]
+    },
+    {
+      "name": "constant.keyword.edn",
+      "match": ":[A-Za-z0-9*+!_?-][A-Za-z0-9*+!_?./-]*/:[A-Za-z0-9*+!_?-][A-Za-z0-9*+!_?./-]*"
+    },
+    { "name": "entity.other.attribute-name.edn", "match": ":[A-Za-z0-9*+!_?-][A-Za-z0-9*+!_?./-]*" },
+    { "name": "constant.numeric.edn", "match": "[-+]?[0-9]+(/[0-9]+)?(N|[rR][0-9]+)?" },
+    {
+      "name": "keyword.operator.symbol.edn",
+      "match": "'"
+    },
+    {
+      "name": "entity.name.tag.set.edn",
+      "match": "#\\{"
+    },
+    {
+      "name": "punctuation.definition.bracket.edn",
+      "match": "[\\[{()]|[\\]})]"
+    }
+  ]
+}

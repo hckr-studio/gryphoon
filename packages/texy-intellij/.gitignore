@@ -1,0 +1,4 @@
+
+# JetBrains plugin build artifacts
+.gradle/
+build/

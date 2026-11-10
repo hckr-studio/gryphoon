@@ -1,0 +1,45 @@
+<idea-plugin>
+    <id>work.gryphoon.texy</id>
+    <name>Texy</name>
+    <vendor>gryphoon</vendor>
+    <version>0.2.0</version>
+    <description><![CDATA[
+        Texy! support for IntelliJ-based IDEs.
+        <p>
+        Registers the <code>.texy</code> file type with syntax highlighting
+        (headings, lists, quotes, links, images, modifiers, directives, HTML),
+        and injects the matching IDE language into fenced regions, giving the
+        embedded code native highlighting, completion, inspections and navigation
+        inside the Texy document:
+        </p>
+        <ul>
+          <li>code blocks: <code>/-- code js</code>, <code>/--php</code>, GFM
+              <code>```js</code> fences, <code>/-- pre lang</code>, <code>/-- html</code></li>
+          <li>front matter (<code>---</code> at the document start): yaml by
+              default, EDN when the section starts with <code>{:</code>
+              (a Clojure plugin when installed, otherwise the bundled EDN
+              TextMate grammar)</li>
+        </ul>
+    ]]></description>
+
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <fileType name="Texy"
+                  implementationClass="work.gryphoon.texy.TexyFileType"
+                  fieldName="INSTANCE"
+                  language="Texy"
+                  extensions="texy"/>
+        <lang.parserDefinition language="Texy"
+                               implementationClass="work.gryphoon.texy.TexyParserDefinition"/>
+        <lang.ast.factory language="Texy"
+                          implementationClass="work.gryphoon.texy.TexyASTFactory"
+                          order="first"/>
+        <lang.syntaxHighlighterFactory key="Texy"
+                                       implementationClass="work.gryphoon.texy.TexySyntaxHighlighterFactory"/>
+        <multiHostInjector implementation="work.gryphoon.texy.inject.TexyBlockInjector"/>
+        <lang.elementManipulator forClass="work.gryphoon.texy.TexyCodeHost"
+                                 implementationClass="work.gryphoon.texy.TexyCodeManipulator"/>
+        <textmate.bundle name="EDN" path="/edn"/>
+    </extensions>
+</idea-plugin>
