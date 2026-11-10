@@ -139,3 +139,20 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
 public/
+
+# Clojure / JVM
+.cpcache/
+target/
+.clj-kondo/
+.lsp/
+.gradle/
+build/
+.kotlin/
+*.class
+*.jar
+!**/gradle/wrapper/gradle-wrapper.jar
+hs_err_pid*
+replay_pid*
+
+# macOS
+.DS_Store

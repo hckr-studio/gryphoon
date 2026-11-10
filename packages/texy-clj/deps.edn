@@ -1,0 +1,10 @@
+{:paths ["src"]
+ :deps {io.github.escherize/huff {:mvn/version "0.2.21"}
+        instaparse/instaparse {:mvn/version "1.5.0"}
+        org.jsoup/jsoup {:mvn/version "1.23.2"}}
+ :aliases
+ {:test {:extra-paths ["test"]
+         :extra-deps {org.clojure/data.json {:mvn/version "2.5.0"}}
+         :main-opts ["-m" "work.gryphoon.texy.test-runner"]}
+  :dev {:extra-paths ["test"]
+        :extra-deps {org.clojure/data.json {:mvn/version "2.5.0"}}}}}
