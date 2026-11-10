@@ -39,6 +39,41 @@ const unsafe = new Texy();
 Configurator.safeMode(unsafe);
 ```
 
+### Declarative configuration (defTexy)
+
+`defTexy(config)` builds a fully configured instance from one plain
+object (exported from the package root together with `Syntax`,
+`Configuration` and `Configurator`):
+
+```js
+import { Configuration, defTexy, Syntax } from '@gryphoon/texy';
+
+const texy = defTexy({
+  ...Configuration.safe,                // untrusted input (web comments etc.)
+  allowed: [Syntax.Inserted, Syntax.Deleted, Syntax.Subscript, Syntax.Superscript],
+  htmlPolicy: { allowedTags: false },   // key-level override on top of the preset
+  headingModule: { top: 4 },
+});
+```
+
+- `...Configuration.safe` - a spreadable preset that applies
+  `Configurator.safeMode` as the base configuration; the remaining keys
+  override it **by name** (the preset is carried by a symbol that
+  survives object spread). Spreading a preset and overriding sections
+  keeps everything the preset set elsewhere: in the example above,
+  `allowedClasses`/`allowedStyles` stay `None` and safe mode's syntax
+  disables survive - `allowed` only adds the four phrase syntaxes.
+- `allowed` - an array of `Syntax` names to enable, or a
+  `{ 'phrase/ins': true, typography: false, ... }` map (the same
+  switches as `texy.allowed`).
+- `htmlPolicy`, `urlPolicy`, `htmlOutput` - section objects assigning
+  the matching instance properties (allowedTags, linkPattern, indent, ...).
+- module sections keyed by the module handle - `headingModule`,
+  `paragraphModule`, `phraseModule`, `linkModule`, `listModule`,
+  `emoticonModule`, `imageModule`, `directiveModule`, `typographyModule`,
+  `hyphenationModule` - assign onto the module. Unknown section names
+  throw.
+
 ### DOM-based transform and serialization (linkedom)
 
 `renderDom()` projects the rendered tree onto a [linkedom](https://github.com/WebReflection/linkedom)
