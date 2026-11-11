@@ -51,6 +51,15 @@ export class ContentNode extends Node {
   getChildren() {
     return this.children;
   }
+
+  /**
+   * A content of one TextNode with no range (port of ContentNode::fromText).
+   * @param {string} text
+   * @returns {ContentNode}
+   */
+  static fromText(text) {
+    return new ContentNode([new TextNode(text)]);
+  }
 }
 
 /** Root document node. */
@@ -151,29 +160,23 @@ export class BlockQuoteNode extends BlockNode {
   }
 }
 
-export class CodeBlockNode extends BlockNode {
+/**
+ * Base of verbatim /-- blocks: $code is the source text outdented, $codeMap
+ * maps its offsets back to the source.
+ */
+export class VerbatimBlockNode extends BlockNode {
   /**
-   * @param {string} type 'default'|'pre'|'code'|'html'|'text'|'texysource'
    * @param {string} code
-   * @param {?string} language
    * @param {?import('./Modifier.js').Modifier} modifier
    * @param {?Range} range
-   * @param {?ContentNode} content parsed content (pre, html, texysource)
    * @param {?OffsetMap} codeMap maps offsets in code to the source, which differs from it by the stripped indentation
    */
-  constructor(type, code, language = null, modifier = null, range = null, content = null, codeMap = null) {
+  constructor(code, modifier = null, range = null, codeMap = null) {
     super();
-    this.type = type;
     this.code = code;
-    this.language = language;
     this.modifier = modifier;
     this.range = range;
-    this.content = content;
     this.codeMap = codeMap;
-  }
-
-  getChildren() {
-    return this.content !== null ? [this.content] : [];
   }
 
   getModifier() {
@@ -181,17 +184,104 @@ export class CodeBlockNode extends BlockNode {
   }
 }
 
-export class SectionNode extends BlockNode {
+/** Code block written /--code language or as a fenced ```language block. */
+export class CodeBlockNode extends VerbatimBlockNode {
+  /**
+   * @param {string} code
+   * @param {?string} language
+   * @param {?import('./Modifier.js').Modifier} modifier
+   * @param {?Range} range
+   * @param {?OffsetMap} codeMap
+   */
+  constructor(code, language = null, modifier = null, range = null, codeMap = null) {
+    super(code, modifier, range, codeMap);
+    this.language = language;
+  }
+
+  getChildren() {
+    return [];
+  }
+}
+
+/**
+ * Preformatted text. Written /--pre it holds the markup parsed for HTML tags
+ * and entities; a bare /-- shows it as written.
+ */
+export class PreformattedNode extends VerbatimBlockNode {
+  /**
+   * @param {string} code
+   * @param {ContentNode} content the code parsed for its HTML tags and entities, or the code itself for a bare /--
+   * @param {?import('./Modifier.js').Modifier} modifier
+   * @param {?Range} range
+   * @param {?OffsetMap} codeMap
+   * @param {?string} syntax name of the syntax it is written in, Syntax.BlockPre or Syntax.BlockDefault for a bare /--
+   */
+  constructor(code, content = new ContentNode(), modifier = null, range = null, codeMap = null, syntax = null) {
+    super(code, modifier, range, codeMap);
+    this.content = content;
+    this.syntax = syntax;
+  }
+
+  getChildren() {
+    return [this.content];
+  }
+}
+
+/** /--html block: source code that knows HTML tags, comments and entities. */
+export class HtmlBlockNode extends VerbatimBlockNode {
+  /**
+   * @param {string} code
+   * @param {ContentNode} content the code parsed for its HTML tags, comments and entities
+   * @param {?import('./Modifier.js').Modifier} modifier
+   * @param {?Range} range
+   * @param {?OffsetMap} codeMap
+   */
+  constructor(code, content = new ContentNode(), modifier = null, range = null, codeMap = null) {
+    super(code, modifier, range, codeMap);
+    this.content = content;
+  }
+
+  getChildren() {
+    return [this.content];
+  }
+}
+
+/** /--text block: source shown verbatim, no markup known. */
+export class TextBlockNode extends VerbatimBlockNode {
+  getChildren() {
+    return [];
+  }
+}
+
+/** /--texysource block: parsed as Texy, its HTML is displayed as source code. */
+export class TexySourceNode extends VerbatimBlockNode {
+  /**
+   * @param {string} code
+   * @param {ContentNode} content the code parsed as Texy
+   * @param {?import('./Modifier.js').Modifier} modifier
+   * @param {?Range} range
+   * @param {?OffsetMap} codeMap
+   */
+  constructor(code, content = new ContentNode(), modifier = null, range = null, codeMap = null) {
+    super(code, modifier, range, codeMap);
+    this.content = content;
+  }
+
+  getChildren() {
+    return [this.content];
+  }
+}
+
+/** Div written /--div; the content is parsed as blocks. */
+export class DivNode extends BlockNode {
   /**
    * @param {ContentNode} content
-   * @param {?string} type
    * @param {?import('./Modifier.js').Modifier} modifier
    * @param {?Range} range
    */
-  constructor(content = new ContentNode(), type = null, modifier = null, range = null) {
+  constructor(content = new ContentNode(), modifier = null, range = null) {
     super();
     this.content = content;
-    this.type = type;
     this.modifier = modifier;
     this.range = range;
   }
@@ -248,13 +338,15 @@ export class FigureNode extends BlockNode {
   /**
    * @param {ImageNode|LinkNode} image the image, or a LinkNode wrapping it
    * @param {?ContentNode} caption
+   * @param {?string} float left/right alignment from the image modifier; the figure floats, not the image
    * @param {?import('./Modifier.js').Modifier} modifier
    * @param {?Range} range
    */
-  constructor(image, caption = null, modifier = null, range = null) {
+  constructor(image, caption = null, float = null, modifier = null, range = null) {
     super();
     this.image = image;
     this.caption = caption;
+    this.float = float;
     this.modifier = modifier;
     this.range = range;
   }
@@ -442,6 +534,11 @@ export class TextNode extends InlineNode {
   getChildren() {
     return [];
   }
+
+  /** @returns {string} */
+  getPlainText() {
+    return this.text;
+  }
 }
 
 /** Literal source text (code-like content, ''notexy''); escaped on output. */
@@ -458,6 +555,11 @@ export class RawTextNode extends InlineNode {
 
   getChildren() {
     return [];
+  }
+
+  /** @returns {string} */
+  getPlainText() {
+    return this.text;
   }
 }
 
@@ -493,6 +595,35 @@ export class PhraseNode extends InlineNode {
 
   getChildren() {
     return [this.content];
+  }
+
+  getModifier() {
+    return this.modifier;
+  }
+}
+
+/** Inline `code`; its content is not parsed recursively. */
+export class InlineCodeNode extends InlineNode {
+  /**
+   * @param {string} code
+   * @param {?import('./Modifier.js').Modifier} modifier
+   * @param {?Range} range
+   * @param {?Range} codeRange span of the code in the source
+   */
+  constructor(code, modifier = null, range = null, codeRange = null) {
+    super();
+    this.code = code;
+    this.modifier = modifier;
+    this.range = range;
+    this.codeRange = codeRange;
+  }
+
+  getPlainText() {
+    return this.code;
+  }
+
+  getChildren() {
+    return [];
   }
 
   getModifier() {
@@ -565,18 +696,22 @@ export class LinkNode extends InlineNode {
 export class ImageNode extends InlineNode {
   /**
    * @param {?string} url
+   * @param {?string} alt alternative text taken out of the modifier
    * @param {?number} width
    * @param {?number} height
+   * @param {?string} float left/right alignment taken out of the modifier
    * @param {?import('./Modifier.js').Modifier} modifier
    * @param {?Range} range
    * @param {?string} ref original reference name for images written as [*ref*]
    * @param {?Range} urlRange
    */
-  constructor(url = null, width = null, height = null, modifier = null, range = null, ref = null, urlRange = null) {
+  constructor(url = null, alt = null, width = null, height = null, float = null, modifier = null, range = null, ref = null, urlRange = null) {
     super();
     this.url = url;
+    this.alt = alt;
     this.width = width;
     this.height = height;
+    this.float = float;
     this.modifier = modifier;
     this.range = range;
     this.ref = ref;
@@ -652,34 +787,22 @@ export class DirectiveNode extends InlineNode {
     super();
     this.text = text;
     this.range = range;
+    this.name = text.trim();
+
+    // name (arg, arg, ...) or name: arg, arg
+    const m = this.name.match(/^([a-z_][a-z0-9_-]*)\s*(?:\(([^()]*)\)|:(.*))$/i);
+    if (m) {
+      this.name = m[1];
+      this.value = (m[3] ?? m[2] ?? "").trim();
+      this.args = this.value === "" ? [] : this.value.split(/\s*,\s*/);
+    } else {
+      this.value = null;
+      this.args = [];
+    }
   }
 
   getChildren() {
     return [];
-  }
-
-  /**
-   * Parses directive content into name, value, and arguments.
-   * @param {string} separator
-   * @returns {{name: string, value: ?string, args: string[]}}
-   */
-  parseContent(separator = ",") {
-    let cmd = this.text.trim();
-    let raw = null;
-    let args = [];
-
-    // function (arg, arg, ...) or function: arg, arg
-    const m = cmd.match(/^([a-z_][a-z0-9_-]*)\s*(?:\(([^()]*)\)|:(.*))$/i);
-    if (m) {
-      cmd = m[1];
-      raw = (m[3] ?? m[2] ?? "").trim();
-      if (raw !== "") {
-        const quoted = separator.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-        args = raw.split(new RegExp("\\s*" + quoted + "\\s*"));
-      }
-    }
-
-    return { name: cmd, value: raw, args };
   }
 }
 
@@ -749,15 +872,17 @@ export class ImageDefinitionNode extends BlockNode {
   /**
    * @param {string} reference
    * @param {?string} url
+   * @param {?string} alt
    * @param {?number} width
    * @param {?number} height
    * @param {?import('./Modifier.js').Modifier} modifier
    * @param {?Range} range
    */
-  constructor(reference, url = null, width = null, height = null, modifier = null, range = null) {
+  constructor(reference, url = null, alt = null, width = null, height = null, modifier = null, range = null) {
     super();
     this.reference = reference;
     this.url = url;
+    this.alt = alt;
     this.width = width;
     this.height = height;
     this.modifier = modifier;

@@ -1,6 +1,6 @@
 DocumentNode
   ContentNode
-    CodeBlockNode [0,681] codeMap@10
+    HtmlBlockNode [0,681] codeMap@10
       ContentNode
         HtmlElementNode [10,7]
           ContentNode

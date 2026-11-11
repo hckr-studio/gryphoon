@@ -1,174 +1,174 @@
 [
-  {
-    "input": "nejneobhospodařovávatelnějšími",
-    "expected": "nejneobhospoda­řovávatelnější­mi"
-  },
-  {
-    "input": "nejkrásnější",
-    "expected": "nejkrásnější"
-  },
-  {
-    "input": "supercalifragilisticexpialidocious",
-    "expected": "supercalifragi­listicexpiali­docious"
-  },
-  {
-    "input": "Pneumonoultramicroscopicsilicovolcanoconiosis",
-    "expected": "Pneumonoultra­microscopicsi­licovolcanoco­niosis"
-  },
-  {
-    "input": "electronmicroscopically",
-    "expected": "electronmicros­copically"
-  },
-  {
-    "input": "abcdefghijklm",
-    "expected": "abcdefghijklm"
-  },
-  {
-    "input": "aeiouaeiouaeiouaeiou",
-    "expected": "aeiouaeiouaei­ouaeiou"
-  },
-  {
-    "input": "prstysoudruhujeme",
-    "expected": "prstysoudruhujeme"
-  },
-  {
-    "input": "sedmikráskamiluju",
-    "expected": "sedmikráskamiluju"
-  },
-  {
-    "input": "Praha",
-    "expected": "Praha"
-  },
-  {
-    "input": "krá-slovo-dlouhé",
-    "expected": "krá-slovo-dlouhé"
-  },
-  {
-    "input": "a-b-c-d-e-f-g-h-i-j-k-l",
-    "expected": "a-b-c-d-e-f-g-h-i-j-k-l"
-  },
-  {
-    "input": "chlebíček",
-    "expected": "chlebíček"
-  },
-  {
-    "input": "cholesterol",
-    "expected": "cholesterol"
-  },
-  {
-    "input": "soustruhařství",
-    "expected": "soustruhařství"
-  },
-  {
-    "input": "zdeny",
-    "expected": "zdeny"
-  },
-  {
-    "input": "AUTOmobilovými",
-    "expected": "AUTOmobilovými"
-  },
-  {
-    "input": "...dlouheslovo",
-    "expected": "...dlouheslovo"
-  },
-  {
-    "input": "slovo.slovo.slovo.slo",
-    "expected": "slovo.slovo.slo­vo.slo"
-  },
-  {
-    "input": "www.dlouhadomena.example.com",
-    "expected": "www.dlouhadome­na.example.com"
-  },
-  {
-    "input": "samohláskasamohláska",
-    "expected": "samohláskasamoh­láska"
-  },
-  {
-    "input": "nejnevykrystalizovávatelnějšími",
-    "expected": "nejnevykrysta­lizovávatelněj­šími"
-  },
-  {
-    "input": "vyšší",
-    "expected": "vyšší"
-  },
-  {
-    "input": "lidumilován",
-    "expected": "lidumilován"
-  },
-  {
-    "input": "umělecký",
-    "expected": "umělecký"
-  },
-  {
-    "input": "A0xxxxxxxxxxxxxxxxxxxxxxxxx",
-    "expected": "A0xxxxxxxxxxx­xxxxxxxxxxxxxx"
-  },
-  {
-    "input": "aaaaaaaaaaaaaaaaaaaaaaaaa",
-    "expected": "aaaaaaaaaaaaa­aaaaaaaaaaaa"
-  },
-  {
-    "input": "abababababababababababab",
-    "expected": "ababababababa­bababababab"
-  },
-  {
-    "input": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.cz",
-    "expected": "xxxxxxxxxxxxx­xxxxxxxxxxxxxxxxx­.cz"
-  },
-  {
-    "input": "nejneobhospodařovávatelnějšímiž",
-    "expected": "nejneobhospoda­řovávatelnější­miž"
-  },
-  {
-    "input": "visualbasicpowerprogramming",
-    "expected": "visualbasicpo­werprogramming"
-  },
-  {
-    "input": "paralelníprocesorizace",
-    "expected": "paralelníproce­sorizace"
-  },
-  {
-    "input": "staršíŽENSké",
-    "expected": "staršíŽENSké"
-  },
-  {
-    "input": "řadový",
-    "expected": "řadový"
-  },
-  {
-    "input": "chlup\u0015\u0016\u0017atý",
-    "expected": "chlup\u0015\u0016\u0017atý"
-  },
-  {
-    "input": "with\u0017markup\u0017inside",
-    "expected": "with\u0017markup\u0017inside"
-  },
-  {
-    "input": "konstantinoplskými",
-    "expected": "konstantinoplskými"
-  },
-  {
-    "input": "mezera a dlouhé slovo tady",
-    "expected": "mezera a dlouhé slovo tady"
-  },
-  {
-    "input": "nejneobhospodařovávatelnějšími",
-    "expected": "nejneob­hospoda­řovávatel­nějšími",
-    "wordLimit": 10
-  },
-  {
-    "input": "abcdefghij",
-    "expected": "abcdefghij",
-    "wordLimit": 10
-  },
-  {
-    "input": "abcdefghijk",
-    "expected": "abcdefghijk",
-    "wordLimit": 10
-  },
-  {
-    "input": "supercalifragilistic",
-    "expected": "superca­lifragi­listic",
-    "wordLimit": 10
-  }
+    {
+        "input": "nejneobhospodařovávatelnějšími",
+        "expected": "nejneobhospoda­řovávatelnější­mi"
+    },
+    {
+        "input": "nejkrásnější",
+        "expected": "nejkrásnější"
+    },
+    {
+        "input": "supercalifragilisticexpialidocious",
+        "expected": "supercalifragi­listicexpiali­docious"
+    },
+    {
+        "input": "Pneumonoultramicroscopicsilicovolcanoconiosis",
+        "expected": "Pneumonoultra­microscopicsi­licovolcanoco­niosis"
+    },
+    {
+        "input": "electronmicroscopically",
+        "expected": "electronmicros­copically"
+    },
+    {
+        "input": "abcdefghijklm",
+        "expected": "abcdefghijklm"
+    },
+    {
+        "input": "aeiouaeiouaeiouaeiou",
+        "expected": "aeiouaeiouaei­ouaeiou"
+    },
+    {
+        "input": "prstysoudruhujeme",
+        "expected": "prstysoudruhujeme"
+    },
+    {
+        "input": "sedmikráskamiluju",
+        "expected": "sedmikráskamiluju"
+    },
+    {
+        "input": "Praha",
+        "expected": "Praha"
+    },
+    {
+        "input": "krá-slovo-dlouhé",
+        "expected": "krá-slovo-dlouhé"
+    },
+    {
+        "input": "a-b-c-d-e-f-g-h-i-j-k-l",
+        "expected": "a-b-c-d-e-f-g-h-i-j-k-l"
+    },
+    {
+        "input": "chlebíček",
+        "expected": "chlebíček"
+    },
+    {
+        "input": "cholesterol",
+        "expected": "cholesterol"
+    },
+    {
+        "input": "soustruhařství",
+        "expected": "soustruhařství"
+    },
+    {
+        "input": "zdeny",
+        "expected": "zdeny"
+    },
+    {
+        "input": "AUTOmobilovými",
+        "expected": "AUTOmobilovými"
+    },
+    {
+        "input": "...dlouheslovo",
+        "expected": "...dlouheslovo"
+    },
+    {
+        "input": "slovo.slovo.slovo.slo",
+        "expected": "slovo.slovo.slo­vo.slo"
+    },
+    {
+        "input": "www.dlouhadomena.example.com",
+        "expected": "www.dlouhadome­na.example.com"
+    },
+    {
+        "input": "samohláskasamohláska",
+        "expected": "samohláskasamoh­láska"
+    },
+    {
+        "input": "nejnevykrystalizovávatelnějšími",
+        "expected": "nejnevykrysta­lizovávatelněj­šími"
+    },
+    {
+        "input": "vyšší",
+        "expected": "vyšší"
+    },
+    {
+        "input": "lidumilován",
+        "expected": "lidumilován"
+    },
+    {
+        "input": "umělecký",
+        "expected": "umělecký"
+    },
+    {
+        "input": "A0xxxxxxxxxxxxxxxxxxxxxxxxx",
+        "expected": "A0xxxxxxxxxxx­xxxxxxxxxxxxxx"
+    },
+    {
+        "input": "aaaaaaaaaaaaaaaaaaaaaaaaa",
+        "expected": "aaaaaaaaaaaaa­aaaaaaaaaaaa"
+    },
+    {
+        "input": "abababababababababababab",
+        "expected": "ababababababa­bababababab"
+    },
+    {
+        "input": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.cz",
+        "expected": "xxxxxxxxxxxxx­xxxxxxxxxxxxxxxxx­.cz"
+    },
+    {
+        "input": "nejneobhospodařovávatelnějšímiž",
+        "expected": "nejneobhospoda­řovávatelnější­miž"
+    },
+    {
+        "input": "visualbasicpowerprogramming",
+        "expected": "visualbasicpo­werprogramming"
+    },
+    {
+        "input": "paralelníprocesorizace",
+        "expected": "paralelníproce­sorizace"
+    },
+    {
+        "input": "staršíŽENSké",
+        "expected": "staršíŽENSké"
+    },
+    {
+        "input": "řadový",
+        "expected": "řadový"
+    },
+    {
+        "input": "chlup\u0015\u0016\u0017atý",
+        "expected": "chlup\u0015\u0016\u0017atý"
+    },
+    {
+        "input": "with\u0017markup\u0017inside",
+        "expected": "with\u0017markup\u0017inside"
+    },
+    {
+        "input": "konstantinoplskými",
+        "expected": "konstantinoplskými"
+    },
+    {
+        "input": "mezera a dlouhé slovo tady",
+        "expected": "mezera a dlouhé slovo tady"
+    },
+    {
+        "input": "nejneobhospodařovávatelnějšími",
+        "expected": "nejneob­hospoda­řovávatel­nějšími",
+        "wordLimit": 10
+    },
+    {
+        "input": "abcdefghij",
+        "expected": "abcdefghij",
+        "wordLimit": 10
+    },
+    {
+        "input": "abcdefghijk",
+        "expected": "abcdefghijk",
+        "wordLimit": 10
+    },
+    {
+        "input": "supercalifragilistic",
+        "expected": "superca­lifragi­listic",
+        "wordLimit": 10
+    }
 ]

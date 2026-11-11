@@ -21,7 +21,6 @@
 import { NodeTraverser } from "@gryphoon/texy/NodeTraverser.js";
 import {
   BlockQuoteNode,
-  CodeBlockNode,
   CommentNode,
   DefinitionListNode,
   FigureNode,
@@ -32,21 +31,23 @@ import {
   LinkDefinitionNode,
   ListNode,
   ParagraphNode,
-  SectionNode,
+  VerbatimBlockNode,
+  DivNode,
   TableNode,
 } from "@gryphoon/texy/nodes.js";
 
 /** Classes kept verbatim: their exact source lines carry the semantics. */
 const VERBATIM = new Set([
-  CodeBlockNode,
   CommentNode,
   DefinitionListNode,
   FigureNode,
   HorizontalRuleNode,
   ImageDefinitionNode,
   LinkDefinitionNode,
-  SectionNode,
   TableNode,
+  // the whole verbatim block family (/--code, /--pre, /--html, /--text, /--default)
+  VerbatimBlockNode,
+  DivNode,
 ]);
 
 /** Node classes whose own range covers only part of the construct. */

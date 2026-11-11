@@ -101,9 +101,10 @@
       (str/replace #"\p{M}" "")))
 
 (defn- webalize
-  "Converts to web-safe [a-z0-9-] text (the reference Helpers::webalize)."
+  "Converts to web-safe [a-z0-9-] text (the reference Helpers::webalize);
+  a soft hyphen does not survive into the slug."
   ^String [^String s]
-  (-> (norm/lower-case (to-ascii s))
+  (-> (norm/lower-case (to-ascii (str/replace s "\u00AD" "")))
       (str/replace #"[^a-z0-9]+" "-")
       (str/replace #"^-+|-+$" "")))
 

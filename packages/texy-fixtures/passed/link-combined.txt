@@ -189,9 +189,7 @@ DocumentNode
               TextNode [1075,10] "code link "
               LinkNode [1085,23] textRange[1086,4] urlRange[1092,16] phrase/code url=http://texy.info
                 ContentNode
-                  PhraseNode [1085,23] phrase/code
-                    ContentNode
-                      TextNode [1086,4] "Texy"
+                  InlineCodeNode [1085,23] codeRange[1086,4] "Texy"
       ListItemNode [1109,47] bulletRange[1109,1] bullet=-
         ContentNode
           ParagraphNode [1111,45]
@@ -199,9 +197,7 @@ DocumentNode
               TextNode [1111,10] "code link "
               LinkNode [1121,35] textRange[1122,4] urlRange[1142,14] phrase/code url=http://phpfashion.com/ ref=php Fashion1
                 ContentNode
-                  PhraseNode [1121,35] mod[1128,12] phrase/code
-                    ContentNode
-                      TextNode [1122,4] "Texy"
+                  InlineCodeNode [1121,35] mod[1128,12] codeRange[1122,4] "Texy"
     HeadingNode [1158,37] textRange[1158,19] level=1 marker=-
       ContentNode
         TextNode [1158,19] "Obrázkové odkazy:"

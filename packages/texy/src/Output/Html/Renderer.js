@@ -6,6 +6,15 @@
  * configuration snapshot reusable across documents.
  */
 
+/** phrase syntaxes rendered with the tag of their base syntax, unless phraseTags names one for them */
+const PhraseVariants = {
+  [Syntax.EmphasisSingleAsterisk]: Syntax.Emphasis,
+  [Syntax.EmphasisSingleAsterisk2]: Syntax.Emphasis,
+  [Syntax.SuperscriptShort]: Syntax.Superscript,
+  [Syntax.SubscriptShort]: Syntax.Subscript,
+  [Syntax.AbbreviationQuotes]: Syntax.Abbreviation,
+};
+
 import {
   decodeEntities,
   escapeHtml,
@@ -16,7 +25,7 @@ import {
   prependRoot,
   shortenUrl,
 } from "../../helpers.js";
-import { cloneNode, extractText } from "../../NodeHelpers.js";
+import { extractText } from "../../NodeHelpers.js";
 import {
   AnnotationNode,
   BlockQuoteNode,
@@ -25,17 +34,20 @@ import {
   ContentNode,
   DefinitionListNode,
   DirectiveNode,
+  DivNode,
   DocumentNode,
   EmailNode,
   EmoticonNode,
   FigureNode,
   HeadingNode,
   HorizontalRuleNode,
+  HtmlBlockNode,
   HtmlCommentNode,
   HtmlElementNode,
   HtmlTagNode,
   ImageDefinitionNode,
   ImageNode,
+  InlineCodeNode,
   LineBreakNode,
   LinkDefinitionNode,
   LinkNode,
@@ -44,11 +56,13 @@ import {
   ListType,
   ParagraphNode,
   PhraseNode,
+  PreformattedNode,
   RawTextNode,
-  SectionNode,
   TableCellNode,
   TableNode,
   TableRowNode,
+  TexySourceNode,
+  TextBlockNode,
   TextNode,
   UrlNode,
 } from "../../nodes.js";
@@ -105,7 +119,11 @@ export class Renderer extends NodeRenderer {
     this.handlers.set(HeadingNode, n => this.renderHeading(n));
     this.handlers.set(BlockQuoteNode, n => this.renderBlockQuote(n));
     this.handlers.set(CodeBlockNode, n => this.renderCodeBlock(n));
-    this.handlers.set(SectionNode, n => this.renderSection(n));
+    this.handlers.set(PreformattedNode, n => this.renderPreformatted(n));
+    this.handlers.set(HtmlBlockNode, n => this.renderHtmlBlock(n));
+    this.handlers.set(TextBlockNode, n => this.renderTextBlock(n));
+    this.handlers.set(TexySourceNode, n => this.renderTexySource(n));
+    this.handlers.set(DivNode, n => this.renderDiv(n));
     this.handlers.set(HorizontalRuleNode, n => this.renderHorizontalRule(n));
     this.handlers.set(FigureNode, n => this.renderFigure(n));
 
@@ -123,6 +141,7 @@ export class Renderer extends NodeRenderer {
     this.handlers.set(ImageNode, n => this.renderImage(n));
     this.handlers.set(LinkNode, n => this.renderLink(n));
     this.handlers.set(PhraseNode, n => this.renderPhrase(n));
+    this.handlers.set(InlineCodeNode, n => this.renderInlineCode(n));
     this.handlers.set(RawTextNode, n => escapeHtml(n.text));
     this.handlers.set(AnnotationNode, n => new Element("abbr", { title: n.annotation }).setText(n.text));
     this.handlers.set(EmoticonNode, n => this.renderEmoticon(n));
@@ -290,7 +309,7 @@ export class Renderer extends NodeRenderer {
       return this.wrapChildren([]);
     }
 
-    // Only replaced content (images) -> use nontextParagraph
+    // Only replaced content (images) -> use imageParagraphTag
     if (!info.hasText && !info.hasOther && info.hasReplaced) {
       return this.createNontextParagraph(children, node.modifier);
     }
@@ -345,70 +364,75 @@ export class Renderer extends NodeRenderer {
 
   /**
    * @param {CodeBlockNode} node
-   * @returns {Element|Raw|string}
+   * @returns {Element}
    */
   renderCodeBlock(node) {
-    // block/texysource - the HTML of the pre-parsed demo displayed as source code
-    if (node.type === "texysource") {
-      const html = this.finalizeFragment(this.renderNodes(node.content !== null ? node.content.children : []));
-      // Now escape the final HTML to show as source code
-      const escaped = escapeHtml(html);
-
-      const el = new Element("pre");
-      this.decorateElement(node.modifier, el);
-      settypeArray(el.attrs, "class");
-      el.attrs.class = ["html", ...el.attrs.class];
-      el.create("code").add(new Raw(escaped));
-      return el;
-    }
-
-    // block/html - passthrough HTML tags/comments
-    if (node.type === "html") {
-      if (node.code === "") {
-        return "\n";
-      }
-
-      return this.wrapChildren(this.renderNodes(node.content !== null ? node.content.children : [])).add(" ");
-    }
-
-    // block/text - plain text with <br> for newlines (no wrapper)
-    if (node.type === "text") {
-      return new Raw(escapeHtml(node.code).replaceAll("\n", "<br>") + " ");
-    }
-
-    // Types that use <pre> wrapper
     const el = new Element("pre");
     this.decorateElement(node.modifier, el);
-
-    // Language class prepended before modifier classes
+    // language class, the one highlighters read, prepended before modifier classes
     if (node.language) {
       settypeArray(el.attrs, "class");
-      el.attrs.class = [node.language, ...el.attrs.class];
+      el.attrs.class = ["language-" + node.language.toLowerCase(), ...el.attrs.class];
     }
-
-    // PRE block - passthrough HTML tags and decoded entities
-    if (node.type === "pre") {
-      el.children = [this.wrapChildren(this.renderNodes(node.content !== null ? node.content.children : []))];
-      return el;
-    }
-
-    const content = new Raw(escapeHtml(node.code));
-
-    if (node.type === "code") {
-      el.create("code").add(content);
-    } else {
-      el.children = [content];
-    }
-
+    el.create("code").add(new Raw(escapeHtml(node.code)));
     return el;
   }
 
   /**
-   * @param {SectionNode} node
+   * Preformatted text passes its HTML tags and decoded entities through.
+   * @param {PreformattedNode} node
    * @returns {Element}
    */
-  renderSection(node) {
-    const el = new Element(node.type === "div" ? "div" : "section");
+  renderPreformatted(node) {
+    const el = new Element("pre");
+    this.decorateElement(node.modifier, el);
+    el.children = [this.wrapChildren(this.renderNodes(node.content.children))];
+    return el;
+  }
+
+  /**
+   * /--html: passthrough HTML tags and comments.
+   * @param {HtmlBlockNode} node
+   * @returns {Element|Raw|string}
+   */
+  renderHtmlBlock(node) {
+    return node.code === ""
+      ? "\n"
+      : this.wrapChildren(this.renderNodes(node.content.children)).add(" ");
+  }
+
+  /**
+   * /--text: plain text with <br> for newlines, no wrapper.
+   * @param {TextBlockNode} node
+   * @returns {Raw}
+   */
+  renderTextBlock(node) {
+    return new Raw(escapeHtml(node.code).replaceAll("\n", "<br>") + " ");
+  }
+
+  /**
+   * /--texysource: the HTML of the parsed demo displayed as source code.
+   * @param {TexySourceNode} node
+   * @returns {Element}
+   */
+  renderTexySource(node) {
+    const html = this.finalizeFragment(this.renderNodes(node.content.children));
+    const el = new Element("pre");
+    this.decorateElement(node.modifier, el);
+    // language class, the one highlighters read, prepended before modifier classes
+    settypeArray(el.attrs, "class");
+    el.attrs.class = ["language-html", ...el.attrs.class];
+    el.create("code").add(new Raw(escapeHtml(html)));
+    return el;
+  }
+
+  /**
+   * /--div: a div with block-parsed content.
+   * @param {DivNode} node
+   * @returns {Element}
+   */
+  renderDiv(node) {
+    const el = new Element("div");
     this.decorateElement(node.modifier, el);
     el.children = this.renderNodes(node.content.children);
     return el;
@@ -437,37 +461,14 @@ export class Renderer extends NodeRenderer {
    * @returns {Element}
    */
   renderFigure(node) {
-    const el = new Element(this.config.figureTagName);
+    const el = new Element(this.config.figureTag);
 
-    // Get the actual ImageNode (might be wrapped in LinkNode)
-    let image = node.image;
-    const inner = image instanceof LinkNode ? (image.content.children[0] ?? null) : image;
-
-    // Extract alignment from ImageNode - we'll apply it to the figure
-    // wrapper instead; clear it on a copy so the generator won't add it
-    // to <img> (the node must stay untouched)
-    let hAlign = null;
-    if (inner instanceof ImageNode && inner.modifier !== null && inner.modifier.hAlign !== null) {
-      hAlign = inner.modifier.hAlign;
-      const cleared = cloneNode(inner);
-      cleared.modifier = inner.modifier.clone();
-      cleared.modifier.hAlign = null;
-      if (image instanceof LinkNode) {
-        image = cloneNode(image);
-        image.content = cloneNode(image.content);
-        image.content.children = [...image.content.children];
-        image.content.children[0] = cleared;
-      } else {
-        image = cleared;
-      }
-    }
-
-    // Build image via generator - this allows custom ImageNode handlers
-    el.children = this.renderNodes([image]);
+    // Build image via generator - this allows custom ImageNode handlers to work
+    el.children = this.renderNodes([node.image]);
 
     // Caption
     if (node.caption !== null) {
-      el.create(this.config.figureTagName === "figure" ? "figcaption" : "p").children = this.renderNodes(
+      el.create(this.config.figureTag === "figure" ? "figcaption" : "p").children = this.renderNodes(
         node.caption.children,
       );
     }
@@ -475,27 +476,24 @@ export class Renderer extends NodeRenderer {
     // Modifier classes/styles
     this.decorateElement(node.modifier, el);
 
-    // Figure class based on alignment (extracted from ImageNode above)
-    let cls = this.config.figureClass;
-    if (hAlign) {
-      const hAlignClass =
-        hAlign === "left" ? this.config.figureLeftClass : hAlign === "right" ? this.config.figureRightClass : null;
-      if (hAlignClass) {
-        cls = hAlignClass;
-      } else if (!(this.config.alignClasses[hAlign] ?? null)) {
-        settypeArray(el.attrs, "style");
-        el.attrs.style.float = hAlign;
-      } else {
-        cls = (cls ?? "") + "-" + this.config.alignClasses[hAlign];
-      }
+    if (this.config.figureClass) {
+      el.addClass(this.config.figureClass);
     }
-
-    if (cls) {
-      settypeArray(el.attrs, "class");
-      el.attrs.class.push(cls);
-    }
+    this.applyFloat(el, node.float);
 
     return el;
+  }
+
+  /**
+   * Applies a float alignment to an element: the configured float class or,
+   * with no class named for it, the inline float style.
+   * @param {Element} el
+   * @param {?string} float
+   */
+  applyFloat(el, float) {
+    if (float !== null) {
+      this.decorator.applyFloat(el, float);
+    }
   }
 
   /********************* list node renderers ****************/
@@ -537,25 +535,30 @@ export class Renderer extends NodeRenderer {
     // Regular list item (li)
     const el = new Element("li");
     this.decorateElement(node.modifier, el);
+    el.children = this.renderItemContent(node.content.children);
+    return el;
+  }
 
-    // The item is a block container itself, so a wrapper on the block
-    // that opens it adds nothing: <li>text<ul></ul></li> needs no <p>
-    // around the text. A second paragraph does get one, because there
-    // the wrapper is what separates them.
-    const content = node.content.children;
+  /**
+   * The item is a block container itself, so a wrapper on the block that
+   * opens it adds nothing: <li>text<ul></ul></li> needs no <p> around the
+   * text. A second paragraph does get one, because there the wrapper is
+   * what separates them.
+   * @param {Array<*>} content
+   * @returns {Array<Element|Raw|string>}
+   */
+  renderItemContent(content) {
     const first = content[0] ?? null;
     const rest = content.slice(1);
 
     let opening = null;
     if (first instanceof ParagraphNode && first.modifier === null) {
-      opening = this.renderNodes(first.content.children);
+      opening = this.renderParagraph(first).children;
     } else if (rest.length === 0 && first instanceof FigureNode && first.caption === null && first.modifier === null) {
       opening = this.renderNodes([first.image]);
     }
 
-    el.children = opening === null ? this.renderNodes(content) : [...opening, ...this.renderNodes(rest)];
-
-    return el;
+    return opening === null ? this.renderNodes(content) : [...opening, ...this.renderNodes(rest)];
   }
 
   /**
@@ -581,15 +584,7 @@ export class Renderer extends NodeRenderer {
     // Definition list item (dt for term=true, dd for term=false)
     const el = new Element(node.term ? "dt" : "dd");
     this.decorateElement(node.modifier, el);
-
-    // If content is a single simple ParagraphNode (no modifier), unwrap it
-    const content = node.content.children;
-    if (!node.term && content.length === 1 && content[0] instanceof ParagraphNode && content[0].modifier === null) {
-      el.children = this.renderNodes(content[0].content.children);
-    } else {
-      el.children = this.renderNodes(content);
-    }
-
+    el.children = node.term ? this.renderNodes(node.content.children) : this.renderItemContent(node.content.children);
     return el;
   }
 
@@ -672,52 +667,27 @@ export class Renderer extends NodeRenderer {
     // Check URL scheme (security - filter dangerous schemes like javascript:)
     if (node.url === null || !this.urlPolicy.isImageAllowed(node.url)) {
       // URL is missing or fails scheme filter, return just the alternative text
-      return this.wrapChildren([this.postLineText(node.modifier !== null ? (node.modifier.title ?? "") : "")]);
+      return this.wrapChildren([this.postLineText(node.alt ?? "")]);
     }
 
-    // Detect dimensions from the file system (imageFileRoot)
+    // Detect dimensions from the file system (imageBasePath)
     const [width, height] = this.imageDimensions.detect(node);
 
     const el = new Element("img");
-    let mod = node.modifier;
-
-    // Extract title/hAlign and clear them on a copy before decorate (the
-    // node must stay untouched)
-    const alt = mod !== null ? mod.title : null;
-    const hAlign = mod !== null ? mod.hAlign : null;
-    if (mod !== null) {
-      mod = mod.clone();
-      mod.title = null;
-      mod.hAlign = null;
+    this.decorateElement(node.modifier, el);
+    // src and alt are prepended, they win over the decorated attrs (the
+    // reference merges with a left-side array union)
+    const decorated = el.attrs;
+    el.attrs = {
+      src: prependRoot(node.url, this.config.imageBaseUrl),
+      alt: this.postLineText(node.alt ?? ""),
+    };
+    for (const [name, value] of Object.entries(decorated)) {
+      if (!(name in el.attrs)) {
+        el.attrs[name] = value;
+      }
     }
-
-    // Custom attrs from modifier (like {alt:...; title:...})
-    const hasCustomAlt = mod !== null && Object.hasOwn(mod.attrs, "alt");
-    if (hasCustomAlt) {
-      el.attrs.alt = mod.attrs.alt;
-    }
-    if (mod !== null && Object.hasOwn(mod.attrs, "title")) {
-      el.attrs.title = mod.attrs.title;
-    }
-
-    // Reserve src position (decorate() may overwrite the attrs array)
-    el.attrs.src = null;
-
-    // class/style from modifier
-    this.decorateElement(mod, el);
-
-    // src
-    el.attrs.src = prependRoot(node.url, this.config.imageRoot);
-
-    // alt: from title or empty (if not set by custom attrs)
-    if (!hasCustomAlt && !Object.hasOwn(el.attrs, "alt")) {
-      el.attrs.alt = alt !== null ? this.postLineText(alt) : "";
-    }
-
-    // hAlign -> float class or style
-    if (hAlign) {
-      this.decorator.applyFloat(el, hAlign, this.config.imageLeftClass, this.config.imageRightClass);
-    }
+    this.applyFloat(el, node.float);
 
     // dimensions
     el.attrs.width = width;
@@ -757,9 +727,9 @@ export class Renderer extends NodeRenderer {
 
     const normalized = normalizeWww(rawUrl);
 
-    // Prepend root to relative URLs; use imageRoot for image links,
-    // linkRoot otherwise
-    const root = node.isImageLink ? this.config.imageRoot : this.config.linkRoot;
+    // Prepend root to relative URLs: imageBaseUrl for image links,
+    // linkBaseUrl otherwise
+    const root = node.isImageLink ? this.config.imageBaseUrl : this.config.linkBaseUrl;
     el.attrs.href = prependRoot(normalized, root);
 
     // rel="nofollow"
@@ -778,7 +748,8 @@ export class Renderer extends NodeRenderer {
    * @returns {Element}
    */
   renderPhrase(node) {
-    const tag = this.config.phraseTags[node.type] ?? "span";
+    const tags = this.config.phraseTags;
+    const tag = tags[node.type] ?? tags[PhraseVariants[node.type] ?? ""] ?? "span";
 
     if (node.type === Syntax.StrongEmphasis) {
       const el = new Element(this.config.phraseTags[Syntax.Strong] ?? "strong");
@@ -788,19 +759,23 @@ export class Renderer extends NodeRenderer {
       return el;
     }
 
-    // Code phrases - escape and protect content from typography
-    if (node.type === Syntax.Code) {
-      const el = new Element(tag);
-      this.decorateElement(node.modifier, el);
-      // Only escape <, >, & - not quotes
-      el.children = [new Raw(escapeHtml(extractText(node.content)))];
-      return el;
-    }
-
     // Normal phrases
     const el = new Element(tag);
     this.decorateElement(node.modifier, el);
     el.children = this.renderNodes(node.content.children);
+    return el;
+  }
+
+  /**
+   * Inline `code`: the content is not parsed, it renders escaped.
+   * @param {InlineCodeNode} node
+   * @returns {Element}
+   */
+  renderInlineCode(node) {
+    const el = new Element(this.config.phraseTags[Syntax.Code] ?? "code");
+    this.decorateElement(node.modifier, el);
+    // Only escape <, >, & - not quotes
+    el.children = [new Raw(escapeHtml(node.code))];
     return el;
   }
 
@@ -928,12 +903,10 @@ export class Renderer extends NodeRenderer {
    * @returns {string}
    */
   renderDirective(node) {
-    const parsed = node.parseContent();
-
     // {{texy: ...}} directives are normally consumed by
     // DirectiveModule.processDirectives() in the transform phase; swallow
     // any that reach the renderer (hand-built AST)
-    if (parsed.name === "texy" && parsed.args.length > 0) {
+    if (node.name === "texy" && node.args.length > 0) {
       return "";
     }
 
@@ -1060,9 +1033,9 @@ export class Renderer extends NodeRenderer {
    */
   createNontextParagraph(children, modifier) {
     const el =
-      this.config.nontextParagraph instanceof Element
-        ? this.config.nontextParagraph.clone()
-        : new Element(this.config.nontextParagraph);
+      this.config.imageParagraphTag instanceof Element
+        ? this.config.imageParagraphTag.clone()
+        : new Element(this.config.imageParagraphTag);
     this.decorateElement(modifier, el);
     el.children = children;
     return el;

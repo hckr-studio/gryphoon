@@ -101,7 +101,7 @@ export class LinkReferenceModule extends Module {
 
     // [reference] - bare reference link (opt-in); the raw target is kept in
     // LinkNode.ref for consumer resolution passes (wiki links etc.)
-    this.texy.addLineSyntax(
+    this.texy.addInlineSyntax(
       Syntax.LinkReference,
       String.raw`~
 				(?<! [.\#\[])        # exclude modifier .[class], PHP attribute #[Attr] and nested [

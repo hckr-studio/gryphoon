@@ -52,6 +52,6 @@ describe("renderDom", () => {
     const dom = texy.renderDom(texy.parse("[* img.jpg *]"));
     const img = dom.body.querySelector("img");
     assert.strictEqual(img.childNodes.length, 0);
-    assert.strictEqual(img.outerHTML, '<img alt="" src="images/img.jpg">');
+    assert.strictEqual(img.outerHTML, '<img alt="" src="img.jpg">');
   });
 });

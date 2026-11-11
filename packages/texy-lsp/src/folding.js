@@ -14,13 +14,13 @@
  */
 
 import { NodeTraverser } from "@gryphoon/texy/NodeTraverser.js";
-import { BlockQuoteNode, CodeBlockNode, CommentNode, DefinitionListNode, ListItemNode, ListNode, ParagraphNode, SectionNode, TableNode } from "@gryphoon/texy/nodes.js";
+import { BlockQuoteNode, CommentNode, DefinitionListNode, DivNode, ListItemNode, ListNode, ParagraphNode, TableNode, VerbatimBlockNode } from "@gryphoon/texy/nodes.js";
 import { positionAt } from "./positions.js";
 
 /** Node class => LSP FoldingRangeKind, null for the default kind. */
 const FOLDABLE = new Map([
-  [CodeBlockNode, "region"], // /--code, /--pre, /--html, /--text, /--default … \--
-  [SectionNode, "region"], // /--div … \--
+  [VerbatimBlockNode, "region"], // /--code, /--pre, /--html, /--text, /--default … \--
+  [DivNode, "region"], // /--div … \--
   [CommentNode, "comment"], // /--comment … \--
   [BlockQuoteNode, null], // > lines
   [ParagraphNode, null], // a soft-wrapped paragraph folds
@@ -59,7 +59,14 @@ function extentOf(node) {
 export function collectFoldings(document) {
   const foldings = [];
   new NodeTraverser().traverse(document, node => {
-    const kind = FOLDABLE.get(node.constructor);
+    // classes form a hierarchy (VerbatimBlockNode), so instanceof beats a Map lookup
+    let kind = undefined;
+    for (const [cls, foldKind] of FOLDABLE) {
+      if (node instanceof cls) {
+        kind = foldKind;
+        break;
+      }
+    }
     if (kind === undefined) {
       return null;
     }

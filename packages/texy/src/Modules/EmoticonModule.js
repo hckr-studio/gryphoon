@@ -41,7 +41,7 @@ export class EmoticonModule extends Module {
     const icons = Object.keys(this.icons).sort((a, b) => (a < b ? 1 : a > b ? -1 : 0)); // krsort: descending key order
     const pattern = icons.map(key => quote(key, "~") + "+").join("|");
 
-    this.texy.addLineSyntax(
+    this.texy.addInlineSyntax(
       Syntax.Emoticon,
       String.raw`~
 				(?<= ^ | [\x00-\x20] )

@@ -91,7 +91,7 @@ describe("Texy 3 references: definition modifier", () => {
   it("the image definition modifier applies to a [*img*] link target", () => {
     assert.equal(
       texy3().process('[*img*]: http://e.com/pic.gif .(alt-title)[piccls]\n\nclick "[*img*]":[*img*]'),
-      '<p>click <a href="http://e.com/pic.gif" title="alt-title" class="piccls"><img\nsrc="http://e.com/pic.gif" alt="alt-title"></a></p>\n',
+      '<p>click <a href="http://e.com/pic.gif" class="piccls"><img\nsrc="http://e.com/pic.gif" alt="alt-title"></a></p>\n',
     );
   });
 

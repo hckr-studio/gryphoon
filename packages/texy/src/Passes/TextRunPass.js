@@ -16,16 +16,18 @@ import { extractText } from "../NodeHelpers.js";
 import { DontTraverseChildren, NodeTraverser } from "../NodeTraverser.js";
 import {
   AnnotationNode,
-  CodeBlockNode,
+  VerbatimBlockNode,
   CommentNode,
   ContentNode,
   DirectiveNode,
   EmailNode,
   HeadingNode,
+  ImageNode,
   HtmlCommentNode,
   HtmlElementNode,
   HtmlTagNode,
   ImageDefinitionNode,
+  InlineCodeNode,
   InlineNode,
   LinkDefinitionNode,
   LinkNode,
@@ -43,6 +45,9 @@ export const Textual = "\x15";
 export const Replaced = "\x16";
 /** Markup boundary; transparent to patterns. */
 export const Markup = "\x17";
+
+/** HTML elements holding code or preformatted text, protected like a code phrase. */
+const VerbatimElements = new Set(["code", "kbd", "pre", "samp", "script", "style", "textarea"]);
 
 /** Block-level markup splits the image into segments. */
 const Break = null;
@@ -64,7 +69,7 @@ export class TextRunPass {
     new NodeTraverser().traverse(doc, node => {
       this.transformTitle(node);
 
-      if (node instanceof CodeBlockNode) {
+      if (node instanceof VerbatimBlockNode) {
         return DontTraverseChildren; // code blocks are protected from typography
       }
 
@@ -107,9 +112,11 @@ export class TextRunPass {
       modifier.title = this.titleTransformer(modifier.title);
     }
 
-    // the {toc: ...} label is display text too
+    // the {toc: ...} label and the alternative text are display text too
     if (node instanceof HeadingNode && node.titleOverride !== null) {
       node.titleOverride = this.titleTransformer(node.titleOverride);
+    } else if (node instanceof ImageNode && node.alt !== null) {
+      node.alt = this.titleTransformer(node.alt);
     }
   }
 
@@ -150,17 +157,15 @@ export class TextRunPass {
 
       if (node instanceof TextNode) {
         pieces.push([node.text, node]);
+      } else if (node instanceof InlineCodeNode) {
+        // content is protected from typography; the run length mirrors
+        // the visible length so length-sensitive patterns (short
+        // last word) judge it fairly
+        pieces.push([this.textualRun(node.code), null]);
       } else if (node instanceof PhraseNode) {
-        if (node.type === Syntax.Code) {
-          // content is protected from typography; the run length mirrors
-          // the visible length so length-sensitive patterns (short
-          // last word) judge it fairly
-          pieces.push([this.textualRun(extractText(node.content)), null]);
-        } else {
-          pieces.push([Markup, null]);
-          this.collect(node.content.children, pieces);
-          pieces.push([Markup, null]);
-        }
+        pieces.push([Markup, null]);
+        this.collect(node.content.children, pieces);
+        pieces.push([Markup, null]);
       } else if (node instanceof LinkNode) {
         pieces.push([Markup, null]);
         this.collect(node.content.children, pieces);
@@ -179,13 +184,19 @@ export class TextRunPass {
           pieces.push([inlineType ? Replaced : Markup, null]);
         }
       } else if (node instanceof HtmlElementNode) {
-        const inlineType = inlineElements.get(node.name.toLowerCase()) ?? null;
+        const name = node.name.toLowerCase();
+        const inlineType = inlineElements.get(name) ?? null;
         const boundary =
           inlineType === null
             ? Break // block-level element splits the segment
             : [inlineType === 1 ? Replaced : Markup, null];
         pieces.push(boundary);
-        this.collect(node.content.children, pieces);
+        // code and preformatted text is protected from typography, like a code phrase
+        if (VerbatimElements.has(name)) {
+          pieces.push([this.textualRun(extractText(node.content)), null]);
+        } else {
+          this.collect(node.content.children, pieces);
+        }
         pieces.push(boundary);
       } else if (node instanceof HtmlCommentNode) {
         pieces.push([Markup, null]);

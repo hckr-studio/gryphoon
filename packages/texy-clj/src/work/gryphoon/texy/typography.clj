@@ -263,7 +263,12 @@
     (update-in [:modifier :title] title-transformer)
 
     (and title-transformer (string? (:title-override node)))
-    (update :title-override title-transformer)))
+    (update :title-override title-transformer)
+
+    ;; the image alternative text is display text too (the reference
+    ;; typographs ImageNode::alt)
+    (and title-transformer (= :image (:type node)) (string? (:alt node)))
+    (update :alt title-transformer)))
 
 (defn- transform-titles-deep
   [node title-transformer]

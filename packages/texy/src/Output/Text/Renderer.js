@@ -8,7 +8,7 @@ import { phpTrim } from "../../helpers.js";
 import {
   AnnotationNode,
   BlockQuoteNode,
-  CodeBlockNode,
+  InlineCodeNode,
   CommentNode,
   ContentNode,
   DefinitionListNode,
@@ -31,8 +31,9 @@ import {
   ListNode,
   ParagraphNode,
   PhraseNode,
+  DivNode,
   RawTextNode,
-  SectionNode,
+  VerbatimBlockNode,
   TableCellNode,
   TableNode,
   TableRowNode,
@@ -54,8 +55,8 @@ export class Renderer extends NodeRenderer {
     this.handlers.set(ParagraphNode, n => this.renderChildren(n.content));
     this.handlers.set(HeadingNode, n => this.renderChildren(n.content));
     this.handlers.set(BlockQuoteNode, n => this.renderBlocks(n.content.children));
-    this.handlers.set(CodeBlockNode, n => phpTrim(n.code, "\n"));
-    this.handlers.set(SectionNode, n => this.renderBlocks(n.content.children));
+    this.handlers.set(VerbatimBlockNode, n => phpTrim(n.code, "\n"));
+    this.handlers.set(DivNode, n => this.renderBlocks(n.content.children));
     this.handlers.set(HorizontalRuleNode, () => "");
     this.handlers.set(FigureNode, n => (n.caption !== null ? this.renderChildren(n.caption) : ""));
 
@@ -73,9 +74,10 @@ export class Renderer extends NodeRenderer {
     this.handlers.set(TableCellNode, n => this.renderBlocks(n.content.children, "\n"));
 
     // Inline nodes
-    this.handlers.set(ImageNode, n => (n.modifier !== null ? (n.modifier.title ?? "") : ""));
+    this.handlers.set(ImageNode, n => n.alt ?? "");
     this.handlers.set(LinkNode, n => this.renderChildren(n.content));
     this.handlers.set(PhraseNode, n => this.renderChildren(n.content));
+    this.handlers.set(InlineCodeNode, n => n.code);
     this.handlers.set(RawTextNode, n => n.text);
     this.handlers.set(AnnotationNode, n => n.text);
     this.handlers.set(EmoticonNode, n => n.resolved ?? n.emoticon);

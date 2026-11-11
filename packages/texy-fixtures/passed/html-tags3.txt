@@ -6,7 +6,7 @@ DocumentNode
     ParagraphNode [41,46]
       ContentNode
         TextNode [41,6] "<head>"
-        TextNode [47,1] "\n"
+        TextNode [47,1] " "
         HtmlTagNode [48,39] <link>
     ParagraphNode [89,5]
       ContentNode

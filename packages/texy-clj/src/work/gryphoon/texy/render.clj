@@ -405,9 +405,9 @@
       ;; source code, in <pre class="html ...">
       (= :texysource style)
       (let [html' (to-html-fragment {:type :document :content (get node :content [])} *options*)
-            ;; the html class is prepended before the modifier classes
+            ;; the language-html class is prepended before the modifier classes
             a (assoc mod-decorated :class
-                     (str/trim (str "html " (:class mod-decorated))))]
+                     (str/trim (str "language-html " (:class mod-decorated))))]
         [(into [:pre (escape-attrs a)] [[:code (escape-html html')]])])
 
       ;; block/html - parse HTML tags/comments, escape the rest
@@ -426,10 +426,11 @@
                       (if (= :code style)
                         [[:code escaped]]
                         [escaped])))
-            ;; the language class is prepended before the modifier classes
+            ;; the language class (language-<lang>, the one highlighters read)
+            ;; is prepended before the modifier classes
             a (if (:language node)
                 (assoc mod-decorated :class
-                       (str/trim (str (:language node) " " (:class mod-decorated))))
+                       (str/trim (str "language-" (norm/lower-case (:language node)) " " (:class mod-decorated))))
                 mod-decorated)]
         [(into [:pre (escape-attrs a)] (into [] inner))]))))
 
@@ -542,48 +543,47 @@
                 (assoc :rel "nofollow"))]
         [(into [:a a] (render-children node))]))))
 
+(defn- apply-float
+  "A float alignment on an element (the reference applyFloat without
+  floatClasses configured): an inline float style appended to the
+  modifier styles."
+  [a float]
+  (if (nil? float)
+    a
+    (assoc a :style (str (when-some [s (:style a)] (str s ";"))
+                         "float:" (name float)))))
+
 (defmethod render-node :figure [node]
-  (let [image (:image node)
-        ;; the image's alignment is applied to the figure wrapper instead
-        inner (if (= :link (:type image)) (first (:content image)) image)
-        h-align (get-in inner [:modifier :h-align])
-        clear (fn [img] (update img :modifier #(some-> % (dissoc :h-align))))
-        image (if (= :link (:type image)) (update image :content #(mapv clear %)) (clear image))
-        a (escape-attrs
-           (cond-> (decorate (:modifier node))
-              ;; the figure class is appended after the modifier classes
-              ;; (:figure-class, the reference Config::figureClass)
-             true (assoc :class (str/trim (str (some-> (decorate (:modifier node)) :class)
-                                               " " (or (:figure-class *options*) "figure"))))
-              ;; no alignClasses configured: alignment becomes a float style
-             h-align (assoc :style (str (when-let [s (:style (decorate (:modifier node)))] (str s ";"))
-                                        "float:" (name h-align)))))]
-    [(into [:div a]
-           (concat (render-node image)
+  (let [tag (get *options* :figure-tag :figure)
+        ;; the figure class is appended to the modifier classes
+        mod-decorated (cond-> (decorate (:modifier node))
+                        (:figure-class *options*)
+                        (update :class (fn [c] (str/trim (str (or c nil) " " (:figure-class *options*))))))
+        a (apply-float (escape-attrs mod-decorated) (:float node))]
+    [(into (if (empty? a) [tag] [tag a])
+           (concat (render-node (:image node))
                    (when-some [caption (:caption node)]
-                     [(into [:p] (mapcat render-node caption))])))]))
+                     [(into [(if (= tag :figure) :figcaption :p)]
+                            (mapcat render-node caption))])))]))
 
 (defmethod render-node :image [node]
-  ;; the modifier's title becomes the alt text and its alignment a float
-  ;; style - both cleared from the modifier, as in the reference; custom
-  ;; {alt:...} / {title:...} attributes override
-  (let [title (get-in node [:modifier :title])
-        h-align (get-in node [:modifier :h-align])
-        mod* (some-> (:modifier node) (dissoc :title :h-align))
-        decorated (decorate mod*)
-        ;; alt is a raw string so that alt="" survives huff's omission of
-        ;; empty attribute values (the reference always emits alt)
-        a (escape-attrs
-           (merge (filter-url-attrs decorated)
-                  (if (url-allowed? (:url node) (:image-pattern *options*))
-                    {:src (prepend-root (:url node) (:image-root *options*))}
-                    {})
-                  {:alt (huff/raw (escape-attr (get decorated :alt (or title ""))))}
-                  (when (:width node) {:width (:width node)})
-                  (when (:height node) {:height (:height node)})))
-        a (cond-> a
-            h-align (update :style (fn [s] (str (when s (str s ";")) "float:" (name h-align)))))]
-    [[:img a]]))
+  ;; the alt and the float were taken out of the modifier at parse time,
+  ;; like the reference; src and alt are emitted from the node and win
+  ;; over the decorated modifier attrs
+  (if-not (url-allowed? (:url node) (:image-pattern *options*))
+    ;; an image rejected by the URL policy renders as its alternative text
+    [(escape-html (or (:alt node) ""))]
+    (let [decorated (filter-url-attrs (decorate (:modifier node)))
+          ;; alt is a raw string so that alt="" survives huff's omission
+          ;; of empty attribute values (the reference always emits alt)
+          a (escape-attrs
+             (merge decorated
+                    {:src (prepend-root (:url node) (:image-root *options*))
+                     :alt (huff/raw (escape-attr (or (:alt node) "")))}
+                    (when (:width node) {:width (:width node)})
+                    (when (:height node) {:height (:height node)})))
+          a (apply-float a (:float node))]
+      [[:img a]])))
 
 (defmethod render-node :url [node]
   (let [href (normalize-www (:url node))]

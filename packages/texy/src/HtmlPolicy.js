@@ -29,7 +29,8 @@ export class HtmlPolicy {
   }
 
   /**
-   * Is tag allowed by the allowedTags whitelist?
+   * Is tag allowed by the allowedTags whitelist? A tag listed as a bare
+   * value (without an attribute list) is allowed without attributes.
    * @param {string} tagName
    */
   isTagAllowed(tagName) {
@@ -38,7 +39,16 @@ export class HtmlPolicy {
       return false;
     }
 
-    return this.allowedTags === true || Object.hasOwn(this.allowedTags, tagName);
+    if (this.allowedTags === true) {
+      return true;
+    }
+
+    if (Object.hasOwn(this.allowedTags, tagName)) {
+      return true;
+    }
+
+    // a value without a key names a tag allowed without attributes
+    return Object.values(this.allowedTags).includes(tagName);
   }
 
   /**

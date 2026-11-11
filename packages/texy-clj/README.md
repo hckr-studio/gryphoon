@@ -48,10 +48,11 @@ reference's `process($text, singleLine: true)`.
 
 Converter options: `:merge-lines` (default true), `:top`,
 `:fixed-leveling`, `:generate-ids` / `:id-prefix` (heading ids for a
-`{toc:}`), `:image-root` (default `"images/"`), `:link-root`,
-`:link-no-follow`, `:link-pattern` / `:image-pattern` (URL scheme policy -
-a disallowed link drops to its content, a disallowed image drops its
-`src`), `:well-forming` (`:jsoup` default or `:direct` - the
+`{toc:}`), `:image-root` (default none, URLs are used as written),
+`:link-root`, `:link-no-follow`, `:link-pattern` / `:image-pattern`
+(URL scheme policy - a disallowed link drops to its content, a
+disallowed image renders as its alternative text), `:well-forming`
+(`:jsoup` default or `:direct` - the
   well-forming half of the renderer, see above), `:shorten-urls` (default true), `:emoticons` (opt-in, like the
 reference), `:typography` (default true), `:typography-locale`
 (default "cs"; unknown falls back to English), `:hyphenation`
@@ -59,8 +60,9 @@ reference), `:typography` (default true), `:typography-locale`
 true), `:line-wrap` (default 80, 0 disables), `:base-indent` (default
 0), `:phrase-tags`
 (replaces the phrase tag mapping, the reference Config::phraseTags),
-`:figure-class` (default `"figure"`, the reference Config::figureClass);
-render options may be
+`:figure-tag` (default `:figure`, the reference Config::figureTag;
+the caption then renders in `figcaption`), `:figure-class` (default
+none, the reference Config::figureClass); render options may be
 given per `process` call.
 
 ## Custom handlers
@@ -327,10 +329,12 @@ by the PHP oracle. Three fixture sets (all from
   name like the reference `allowed[]`; ins/del/sup/sub phrases are
   opt-in, matching the reference defaults.
 - Ordered list flavors render as `<ol>` with a `list-style-type` style,
-  like the reference; the figure `div` appends the `figure` class after
-  the modifier classes and turns the image alignment into a `float`
-  style, also like the reference.
-- `alt` is always emitted on `<img>` (empty when no title) - the value is
+  like the reference; a figure renders as `<figure>` with the caption in
+  `<figcaption>` (`:figure-tag` swaps the wrapper, the caption element
+  follows it) and the float written in the image brackets floats the
+  figure itself, also like the reference.
+- `alt` is always emitted on `<img>` (empty when the image has no
+  alternative text) - the value is
   passed as a huff raw string so the empty attribute survives huff's
   omission of empty values.
 

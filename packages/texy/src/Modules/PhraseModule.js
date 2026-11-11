@@ -3,9 +3,9 @@
  * (port of Texy\Modules\PhraseModule).
  */
 
-import { decodeEntities, removeSoftHyphens, unescapeHtml } from "../helpers.js";
+import { decodeEntities, cleanUrl, unescapeHtml } from "../helpers.js";
 import { Modifier } from "../Modifier.js";
-import { ContentNode, LinkNode, PhraseNode, RawTextNode, TextNode } from "../nodes.js";
+import { ContentNode, InlineCodeNode, LinkNode, PhraseNode, RawTextNode, TextNode } from "../nodes.js";
 import { Letter, LinkUrl, Modifier as ModifierPattern } from "../Patterns.js";
 import { Range } from "../Range.js";
 import { Syntax } from "../Syntax.js";
@@ -140,11 +140,11 @@ export class PhraseModule extends Module {
     const texy = this.texy;
 
     for (const [syntax, spec] of Object.entries(Phrases)) {
-      texy.addLineSyntax(syntax, "~" + buildPhrasePattern(spec), this.parsePhrase.bind(this, syntax));
+      texy.addInlineSyntax(syntax, "~" + buildPhrasePattern(spec), this.parsePhrase.bind(this, syntax));
     }
 
     // m^2 alternative superscript
-    texy.addLineSyntax(
+    texy.addInlineSyntax(
       Syntax.SuperscriptShort,
       String.raw`~
 				(?<= [a-z0-9] )                  # preceded by letter or number
@@ -156,7 +156,7 @@ export class PhraseModule extends Module {
     );
 
     // m_2 alternative subscript
-    texy.addLineSyntax(
+    texy.addInlineSyntax(
       Syntax.SubscriptShort,
       String.raw`~
 				(?<= [a-z] )                     # preceded by letter
@@ -168,7 +168,7 @@ export class PhraseModule extends Module {
     );
 
     // acronym/abbr "et al."((and others))
-    texy.addLineSyntax(
+    texy.addInlineSyntax(
       Syntax.AbbreviationQuotes,
       String.raw`~
 				(?<! " )                         # not preceded by "
@@ -189,7 +189,7 @@ export class PhraseModule extends Module {
     );
 
     // acronym/abbr NATO((North Atlantic Treaty Organisation))
-    texy.addLineSyntax(
+    texy.addInlineSyntax(
       Syntax.Abbreviation,
       String.raw`~
 				(?<! [${Letter}] )  # not preceded by char
@@ -203,7 +203,7 @@ export class PhraseModule extends Module {
     );
 
     // ''notexy''
-    texy.addLineSyntax(
+    texy.addInlineSyntax(
       Syntax.Raw,
       String.raw`~
 				(?<! ' )                         # not preceded by quote
@@ -218,7 +218,7 @@ export class PhraseModule extends Module {
     );
 
     // `code`
-    texy.addLineSyntax(
+    texy.addInlineSyntax(
       Syntax.Code,
       "~" +
         bt +
@@ -241,7 +241,7 @@ export class PhraseModule extends Module {
     );
 
     // ....:LINK
-    texy.addLineSyntax(
+    texy.addInlineSyntax(
       Syntax.QuickLink,
       String.raw`~
 				( [${Letter}0-9@#$%&.,_-]++ )  # allowed chars (1)
@@ -255,7 +255,7 @@ export class PhraseModule extends Module {
     );
 
     // [text |link]
-    texy.addLineSyntax(
+    texy.addInlineSyntax(
       Syntax.WikiLink,
       String.raw`~
 				(?<! \[ )                        # not preceded by [
@@ -275,7 +275,7 @@ export class PhraseModule extends Module {
     );
 
     // [text](link)
-    texy.addLineSyntax(
+    texy.addInlineSyntax(
       Syntax.MarkdownLink,
       String.raw`~
 				(?<! [[.] )                     # not preceded by [ or .
@@ -295,7 +295,7 @@ export class PhraseModule extends Module {
     );
 
     // \* escaped asterisk
-    texy.addLineSyntax(
+    texy.addInlineSyntax(
       Syntax.EscapedAsterisk,
       String.raw`~\\\*~`,
       (context, matches, offsets) => new TextNode("*", { offset: offsets[0], length: 2 }),
@@ -318,7 +318,7 @@ export class PhraseModule extends Module {
     if (phrase === Syntax.SpanQuotes || phrase === Syntax.SpanTilde) {
       if (mLink !== null && this.linksAllowed) {
         return new LinkNode(
-          removeSoftHyphens(mLink),
+          cleanUrl(mLink),
           context.parseInline(mContent.trim(), contentOffset),
           Modifier.parse(mMod, offsets[2] ?? null),
           range,
@@ -334,16 +334,16 @@ export class PhraseModule extends Module {
     }
 
     const mod = Modifier.parse(mMod, offsets[2] ?? null);
-    const content =
+    const node =
       phrase === Syntax.Code
-        ? new ContentNode([new TextNode(mContent.trim(), textRange)]) // code content is not parsed recursively
-        : context.parseInline(mContent.trim(), contentOffset);
+        ? new InlineCodeNode(mContent.trim(), mod, range, textRange) // code content is not parsed recursively
+        : new PhraseNode(context.parseInline(mContent.trim(), contentOffset), phrase, mod, range);
 
     // Other phrases with link
     if (mLink !== null && this.linksAllowed) {
       return new LinkNode(
-        removeSoftHyphens(mLink),
-        new ContentNode([new PhraseNode(content, phrase, mod, range)]),
+        cleanUrl(mLink),
+        new ContentNode([node]),
         null,
         range,
         false,
@@ -354,7 +354,7 @@ export class PhraseModule extends Module {
       );
     }
 
-    return new PhraseNode(content, phrase, mod, range);
+    return node;
   }
 
   /** Parses superscript/subscript alternative (m^2, H_2O). */
@@ -364,22 +364,16 @@ export class PhraseModule extends Module {
     return new PhraseNode(new ContentNode(content), phrase, null, { offset: offsets[0], length: matches[0].length });
   }
 
-  /** Parses acronym/abbr. */
+  /** Parses acronym/abbr; the content is inline-parsed. */
   parseAcronym(context, matches, offsets, phrase) {
     const [, mContent, mMod, mTitle] = matches;
     const contentOffset = offsets[1];
 
     const mod = Modifier.parse(mMod, offsets[2] ?? null) ?? new Modifier();
     mod.title = unescapeHtml(mTitle).trim();
-    const trimmedContent = mContent.trim();
-    const content = [
-      new TextNode(decodeEntities(trimmedContent), {
-        offset: contentOffset,
-        length: trimmedContent.length,
-      }),
-    ];
+    const content = context.parseInline(mContent.trim(), contentOffset);
 
-    return new PhraseNode(new ContentNode(content), phrase, mod, { offset: offsets[0], length: matches[0].length });
+    return new PhraseNode(content, phrase, mod, { offset: offsets[0], length: matches[0].length });
   }
 
   /** Parses ''notexy'' into a literal-source node. */
@@ -396,7 +390,7 @@ export class PhraseModule extends Module {
     }
 
     return new LinkNode(
-      removeSoftHyphens(mLink.trim()),
+      cleanUrl(mLink.trim()),
       content,
       null, // quicklink and markdown links don't support modifiers
       { offset: offsets[0], length: matches[0].length },
@@ -417,7 +411,7 @@ export class PhraseModule extends Module {
     }
 
     return new LinkNode(
-      removeSoftHyphens(mLink.trim()),
+      cleanUrl(mLink.trim()),
       content,
       null, // wikilinks don't support modifiers
       { offset: offsets[0], length: matches[0].length },

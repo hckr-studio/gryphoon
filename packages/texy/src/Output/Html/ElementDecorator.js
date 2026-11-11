@@ -163,23 +163,13 @@ export class ElementDecorator {
   }
 
   /**
-   * Applies a horizontal float: side-specific class, alignClasses
-   * fallback, or an inline float style.
+   * Applies a float alignment: the class configured for it in
+   * floatClasses or, with none, the inline float style.
    * @param {import('./Element.js').Element} el
-   * @param {string} hAlign
-   * @param {?string} leftClass
-   * @param {?string} rightClass
+   * @param {string} float left/right
    */
-  applyFloat(el, hAlign, leftClass, rightClass) {
-    let cls = hAlign === "left" ? leftClass : hAlign === "right" ? rightClass : null;
-    cls ??= this.config.alignClasses[hAlign] ?? null;
-    if (cls) {
-      settypeArray(el.attrs, "class");
-      el.attrs.class.push(cls);
-    } else {
-      settypeArray(el.attrs, "style");
-      el.attrs.style.float = hAlign;
-    }
+  applyFloat(el, float) {
+    ElementDecorator.applyClassOrStyle(el.attrs, this.config.floatClasses[float] ?? null, "float", float);
   }
 
   /**
@@ -188,25 +178,30 @@ export class ElementDecorator {
    */
   decorateAligns(modifier, attrs) {
     if (modifier.hAlign) {
-      const cls = this.config.alignClasses[modifier.hAlign] ?? null;
-      if (cls) {
-        settypeArray(attrs, "class");
-        attrs.class.push(cls);
-      } else {
-        settypeArray(attrs, "style");
-        attrs.style["text-align"] = modifier.hAlign;
-      }
+      const cls = this.config.textAlignClasses[modifier.hAlign] ?? null;
+      ElementDecorator.applyClassOrStyle(attrs, cls, "text-align", modifier.hAlign);
     }
 
     if (modifier.vAlign) {
-      const cls = this.config.alignClasses[modifier.vAlign] ?? null;
-      if (cls) {
-        settypeArray(attrs, "class");
-        attrs.class.push(cls);
-      } else {
-        settypeArray(attrs, "style");
-        attrs.style["vertical-align"] = modifier.vAlign;
-      }
+      const cls = this.config.verticalAlignClasses[modifier.vAlign] ?? null;
+      ElementDecorator.applyClassOrStyle(attrs, cls, "vertical-align", modifier.vAlign);
+    }
+  }
+
+  /**
+   * A configured class replaces the style; without one the style is set.
+   * @param {Object<string, *>} attrs
+   * @param {?string} cls
+   * @param {string} property
+   * @param {string} value
+   */
+  static applyClassOrStyle(attrs, cls, property, value) {
+    if (cls) {
+      settypeArray(attrs, "class");
+      attrs.class.push(cls);
+    } else {
+      settypeArray(attrs, "style");
+      attrs.style[property] = value;
     }
   }
 }

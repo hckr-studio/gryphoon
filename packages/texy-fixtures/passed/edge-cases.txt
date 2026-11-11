@@ -124,9 +124,7 @@ DocumentNode
             TextNode [688,1] "0"
     ParagraphNode [693,59]
       ContentNode
-        PhraseNode [693,13] phrase/code
-          ContentNode
-            TextNode [694,11] "slovo:[url]"
+        InlineCodeNode [693,13] codeRange[694,11] "slovo:[url]"
         TextNode [706,3] " a "
         LinkNode [709,12] textRange[709,6] urlRange[716,5] phrase/quicklink url=url ref=url
           ContentNode

@@ -220,6 +220,10 @@ export class ListModule extends Module {
       map[1] = first.offsets[3]; // 1 = the leading space
     }
 
+    // a bullet opening the first line is text, - * text is no nested list; the leading space keeps it so
+    const isBullet =
+      match(mContent ?? "", "~(?:" + Object.values(this.bullets).map(desc => desc[0]).join("|") + ")~Ax") !== null;
+
     // next lines
     let spaces = "";
     let next;
@@ -249,14 +253,14 @@ export class ListModule extends Module {
       itemEnd = next.offsets[0] + next.length;
     }
 
-    // Parse content as blocks
-    const parsed = context.parseBlock(content.trim());
+    const rtrimContent = content.replace(/[ \t\n\r\0\u000B]+$/, "");
+    const text = isBullet ? rtrimContent : content.trim();
+    const parsed = context.parseBlock(text);
 
     // Fix positions in parsed content using offset mapping
     const keys = Object.keys(map);
     if (keys.length > 0) {
-      const skipped = content.length - content.replace(/^[ \t\n]+/, "").length;
-      new OffsetMap(map, skipped).applyTo(parsed);
+      new OffsetMap(map, rtrimContent.length - text.length).applyTo(parsed);
     }
 
     return new ListItemNode(

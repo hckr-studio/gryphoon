@@ -20,22 +20,32 @@ export class Config {
     /** wrap width, doesn't include indent space */
     this.lineWrap = 80;
 
-    /** @type {Object<string, ?string>} CSS classes for align modifiers */
-    this.alignClasses = {
+    /** @type {Object<string, ?string>} classes in place of style="text-align" */
+    this.textAlignClasses = {
       left: null,
       right: null,
       center: null,
       justify: null,
+    };
+
+    /** @type {Object<string, ?string>} classes in place of style="vertical-align", null keeps the style */
+    this.verticalAlignClasses = {
       top: null,
       middle: null,
       bottom: null,
     };
 
+    /** @type {Object<string, ?string>} classes in place of style="float" of images and figures, null keeps the style */
+    this.floatClasses = {
+      left: null,
+      right: null,
+    };
+
     /** Do obfuscate e-mail addresses? */
     this.obfuscateEmail = true;
 
-    /** Element for image-only paragraphs: tag name or an Element instance */
-    this.nontextParagraph = "div";
+    /** element in place of <p> for a paragraph holding images only */
+    this.imageParagraphTag = "div";
 
     /** Shorten URLs to more readable form? */
     this.shortenUrls = true;
@@ -43,17 +53,11 @@ export class Config {
     /** CSS class for emoticons */
     this.emoticonClass = null;
 
-    /** Figure wrapper tag name */
-    this.figureTagName = "div";
+    /** element wrapping an image with its caption; <figure> puts the caption in <figcaption>, other elements in <p> */
+    this.figureTag = "figure";
 
-    /** Non-floated figure CSS class */
-    this.figureClass = "figure";
-
-    /** Left-floated figure CSS class */
-    this.figureLeftClass = null;
-
-    /** Right-floated figure CSS class */
-    this.figureRightClass = null;
+    /** class of every figure; a floated one gets the class of its float too */
+    this.figureClass = null;
 
     /** @type {Object<string, ?string>} default CSS class for HR types */
     this.horizontalRuleClasses = {
@@ -64,42 +68,32 @@ export class Config {
     /** Pass HTML comments to output? */
     this.passHtmlComments = true;
 
-    /** Left-floated images CSS class */
-    this.imageLeftClass = null;
-
-    /** Right-floated images CSS class */
-    this.imageRightClass = null;
-
-    /** Root path for image URLs */
-    this.imageRoot = "images/";
+    /** base URL prepended to relative image URLs */
+    this.imageBaseUrl = null;
 
     /**
-     * File system root for image dimension detection (the reference
-     * probes images with getimagesize() under this root).
+     * base path of the image files on disk, where the dimensions of an
+     * image are read from (the reference probes images with
+     * getimagesize() under this root).
      */
-    this.imageFileRoot = null;
+    this.imageBasePath = null;
 
     /** Always use rel="nofollow" for absolute links? */
     this.linkNoFollow = false;
 
-    /** Root path for link URLs */
-    this.linkRoot = null;
+    /** base URL prepended to relative link URLs */
+    this.linkBaseUrl = null;
 
-    /** @type {Object<string, string>} syntax id -> HTML tag mapping */
+    /** @type {Object<string, string>} syntax id -> HTML tag mapping; Emphasis covers *text* as well, Superscript and Subscript their short forms */
     this.phraseTags = {
       [Syntax.Strong]: "strong",
       [Syntax.Emphasis]: "em",
-      [Syntax.EmphasisSingleAsterisk]: "em",
-      [Syntax.EmphasisSingleAsterisk2]: "em",
       [Syntax.Inserted]: "ins",
       [Syntax.Deleted]: "del",
       [Syntax.Superscript]: "sup",
-      [Syntax.SuperscriptShort]: "sup",
       [Syntax.Subscript]: "sub",
-      [Syntax.SubscriptShort]: "sub",
       [Syntax.SpanQuotes]: "span",
       [Syntax.SpanTilde]: "span",
-      [Syntax.AbbreviationQuotes]: "abbr",
       [Syntax.Abbreviation]: "abbr",
       [Syntax.Code]: "code",
       [Syntax.Quote]: "q",

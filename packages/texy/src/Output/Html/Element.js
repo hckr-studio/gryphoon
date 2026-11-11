@@ -43,6 +43,16 @@ export class Element {
   }
 
   /**
+   * Adds a class to those the element has.
+   * @param {string} name
+   */
+  addClass(name) {
+    const classes = Array.isArray(this.attrs.class) ? this.attrs.class : this.attrs.class !== undefined ? [this.attrs.class] : [];
+    this.attrs.class = [...classes, name];
+    return this;
+  }
+
+  /**
    * Adds a child.
    * @param {Element|Raw|string} child
    */

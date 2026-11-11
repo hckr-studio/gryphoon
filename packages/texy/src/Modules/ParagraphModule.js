@@ -100,17 +100,14 @@ export class ParagraphModule extends Module {
       const leadingTrim = part.length - part.replace(/^[\t\n\r\0\x0B ]+/, "").length;
       const contentOffset = offset + leadingTrim;
 
-      let node;
-
-      // Text starting with a known block element - parse without soft line breaks
-      if (this.startsWithBlockElement(trimmed)) {
-        node = this.parseBlockHtml(context, trimmed, contentOffset);
-      } else {
+      // Text starting with a block element - parse without soft line
+      // breaks, unless the policy rejects it
+      let node = this.startsWithBlockElement(trimmed)
+        ? this.parseBlockHtml(context, trimmed, contentOffset)
+        : null;
+      if (node === null || !this.containsBlockHtmlTag(node.content.children)) {
         node = this.parseParagraph(context, trimmed, contentOffset);
-        // Check if parsed content contains block-level HTML tags
-        if (this.containsBlockHtmlTag(node.content.children)) {
-          node.blockHtml = true;
-        }
+        node.blockHtml = this.containsBlockHtmlTag(node.content.children);
       }
 
       if (this.isEmptyParagraph(node)) continue;
@@ -142,13 +139,20 @@ export class ParagraphModule extends Module {
   }
 
   /**
-   * Check if content contains a block-level HtmlTagNode.
+   * Check if content contains a block-level HtmlTagNode the policy accepts.
+   * Block = any HtmlTagNode that is NOT an inline element.
    */
   containsBlockHtmlTag(content) {
     for (const node of content) {
       if (node instanceof HtmlTagNode && !node.closing) {
+        const tagName = node.name.toLowerCase();
         // Not an inline element = block element (includes custom elements)
-        if (!inlineElements.has(node.name.toLowerCase())) return true;
+        if (
+          !inlineElements.has(tagName) &&
+          this.texy.htmlPolicy.isTagAcceptable(tagName, node.attributes, false)
+        ) {
+          return true;
+        }
       }
     }
     return false;

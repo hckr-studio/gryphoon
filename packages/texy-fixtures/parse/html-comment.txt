@@ -1,6 +1,6 @@
 DocumentNode
   ContentNode
-    CodeBlockNode [0,26] codeMap@8
+    HtmlBlockNode [0,26] codeMap@8
       ContentNode
         HtmlTagNode [8,3] <p>
         TextNode [11,1] "\n"

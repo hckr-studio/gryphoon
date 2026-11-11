@@ -73,12 +73,10 @@ function player({ src, width, height, cls, title, allow, allowfullscreen, dataRa
  * name (the PHP switch), returning AST nodes instead of protected
  * strings. Unknown directives render as the author wrote them (the
  * PHP $invocation->proceed() default).
- * @param {string} value
- * @param {Array<string>} args
  * @param {import('../src/nodes.js').DirectiveNode} node
  */
-function scriptHandler(value, args, node) {
-  const { name } = node.parseContent();
+function scriptHandler(node) {
+  const { name, args } = node;
   const escaped = args.map(arg => escapeHtml(arg));
 
   switch (name) {
@@ -160,8 +158,8 @@ function imageHandlerPass(document) {
 function prismRenderer(texy) {
   const renderer = texy.createHtmlRenderer();
   renderer.addRenderer(CodeBlockNode, (node, self, previous) => {
-    if (node.type !== "code" || !node.language) {
-      return previous(node, self); // proceed()
+    if (!node.language) {
+      return previous(node); // proceed()
     }
 
     const pre = new Element("pre");
@@ -184,8 +182,9 @@ function blogTexy() {
 
   texy.headingModule.top = 3;
   texy.headingModule.generateID = true;
+  texy.htmlOutput.figureTag = "div"; // the Texy 3-style layout of this blog
   texy.htmlOutput.figureClass = "image";
-  texy.htmlOutput.imageRoot =
+  texy.htmlOutput.imageBaseUrl =
     "https://res.cloudinary.com/rarous/image/fetch/dpr_auto,f_auto,q_auto,w_auto:100:800/https://www.rarous.net/data/obrazky/";
   texy.htmlOutput.phraseTags[Syntax.Emphasis] = "i"; // phrase/em -> <i>
 
@@ -228,8 +227,8 @@ describe("blog-texy setup", () => {
   it("every image gets loading=lazy and sizes=100vw on the cloudinary root, figure class from config", () => {
     assert.equal(
       blogTexy().process("[* photo.jpg *]"),
-      '<div class="image"><img loading="lazy" sizes="100vw" ' +
-        'src="https://res.cloudinary.com/rarous/image/fetch/dpr_auto,f_auto,q_auto,w_auto:100:800/https://www.rarous.net/data/obrazky/photo.jpg" alt=""></div>',
+      '<div class="image"><img ' +
+        'src="https://res.cloudinary.com/rarous/image/fetch/dpr_auto,f_auto,q_auto,w_auto:100:800/https://www.rarous.net/data/obrazky/photo.jpg" alt="" loading="lazy" sizes="100vw"></div>',
     );
   });
 

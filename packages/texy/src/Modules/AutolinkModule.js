@@ -3,7 +3,7 @@
  * (port of Texy\Modules\AutolinkModule).
  */
 
-import { removeSoftHyphens } from "../helpers.js";
+import { cleanUrl } from "../helpers.js";
 import { EmailNode, UrlNode } from "../nodes.js";
 import { Email, Letter } from "../Patterns.js";
 import { Syntax } from "../Syntax.js";
@@ -17,10 +17,10 @@ export class AutolinkModule extends Module {
 
   beforeParse() {
     // direct url; characters not allowed in URL <>[\]^`{|}
-    this.texy.addLineSyntax(
+    this.texy.addInlineSyntax(
       Syntax.AutolinkUrl,
       String.raw`~
-				(?<= ^ | [\s([<:] )                # must be preceded by these chars
+				(?<= ^ | [\s([<:>] )                # must be preceded by these chars
 				(?: https?:// | www\. | ftp:// )   # protocol or www
 				[0-9.` +
         Letter +
@@ -36,10 +36,10 @@ export class AutolinkModule extends Module {
     );
 
     // direct email
-    this.texy.addLineSyntax(
+    this.texy.addInlineSyntax(
       Syntax.AutolinkEmail,
       String.raw`~
-				(?<= ^ | [\s([<] )                  # must be preceded by these chars
+				(?<= ^ | [\s([<>] )                  # must be preceded by these chars
 			` +
         Email +
         String.raw`
@@ -52,13 +52,13 @@ export class AutolinkModule extends Module {
    * @param {import('../Parsing/ParseContext.js').ParseContext} context
    */
   parseUrl(context, matches, offsets) {
-    return new UrlNode(removeSoftHyphens(matches[0]), { offset: offsets[0], length: matches[0].length });
+    return new UrlNode(cleanUrl(matches[0]), { offset: offsets[0], length: matches[0].length });
   }
 
   /**
    * @param {import('../Parsing/ParseContext.js').ParseContext} context
    */
   parseEmail(context, matches, offsets) {
-    return new EmailNode(removeSoftHyphens(matches[0]), { offset: offsets[0], length: matches[0].length });
+    return new EmailNode(cleanUrl(matches[0]), { offset: offsets[0], length: matches[0].length });
   }
 }

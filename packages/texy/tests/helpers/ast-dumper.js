@@ -102,6 +102,8 @@ function getExtraInfo(node) {
       return '"' + escapeText(node.text) + '"';
     case "PhraseNode":
       return node.type;
+    case "InlineCodeNode":
+      return '"' + escapeText(node.code) + '"';
     case "HeadingNode":
       return "level=" + node.level + (node.marker === null ? "" : " marker=" + node.marker);
     case "ListNode":
@@ -121,7 +123,7 @@ function getExtraInfo(node) {
     case "CommentNode":
       return "# " + escapeText(Buffer.from(node.text, "utf8").subarray(0, 20).toString("utf8")); // substr counts bytes
     case "DirectiveNode":
-      return node.parseContent().name;
+      return node.name;
     case "HorizontalRuleNode":
       return "";
     default:

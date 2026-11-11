@@ -16,7 +16,7 @@ import { Module } from "./Module.js";
 export class DirectiveModule extends Module {
   constructor(texy) {
     super();
-    /** @type {Object<string, Function>} name -> handler(value, args, node) */
+    /** @type {Object<string, Function>} name -> handler(DirectiveNode): Node|null|void */
     this.handlers = {};
     this.fallback = null;
     this.texy = texy;
@@ -33,7 +33,7 @@ export class DirectiveModule extends Module {
   }
 
   beforeParse() {
-    this.texy.addLineSyntax(
+    this.texy.addInlineSyntax(
       Syntax.Directive,
       String.raw`~
 				\{\{
@@ -74,19 +74,19 @@ export class DirectiveModule extends Module {
         return null;
       }
 
-      const parsed = node.parseContent();
-      if (parsed.name === "texy" && parsed.args.length > 0) {
-        for (const arg of parsed.args) {
+      if (node.name === "texy" && node.args.length > 0) {
+        for (const arg of node.args) {
           doc.meta[arg] = true;
         }
         return RemoveNode;
       }
 
-      const handler = this.handlers[toLower(parsed.name)] ?? this.fallback;
+      const handler = this.handlers[toLower(node.name)] ?? this.fallback;
       if (handler === null || handler === undefined) {
         return null;
       }
-      return handler(parsed.value, parsed.args, node) ?? RemoveNode;
+      const result = handler(node);
+      return result?.getChildren instanceof Function ? result : RemoveNode;
     });
   }
 }

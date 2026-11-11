@@ -6,7 +6,7 @@
  * parseImageContent stays public for consumers running their own passes.
  */
 
-import { removeSoftHyphens, toLower } from "../helpers.js";
+import { cleanUrl, toLower } from "../helpers.js";
 import { Modifier } from "../Modifier.js";
 import { find } from "../NodeHelpers.js";
 import { NodeTraverser } from "../NodeTraverser.js";
@@ -51,7 +51,7 @@ export class ImageModule extends Module {
 
   beforeParse() {
     // [*image*]:LINK
-    this.texy.addLineSyntax(Syntax.Image, "~" + ImagePattern + LinkPattern + "\n~Ux", (context, matches, offsets) =>
+    this.texy.addInlineSyntax(Syntax.Image, "~" + ImagePattern + LinkPattern + "\n~Ux", (context, matches, offsets) =>
       this.parseImage(context, matches, offsets),
     );
 
@@ -106,6 +106,7 @@ export class ImageModule extends Module {
   parseDefinition(context, matches, offsets) {
     const [, mRef, mURLs, mMod] = matches;
     const parsed = this.parseImageContent(mURLs);
+    const modifier = Modifier.parse(mMod, offsets[3] ?? null);
 
     if (parsed.url === null) {
       return new ContentNode();
@@ -114,9 +115,10 @@ export class ImageModule extends Module {
     return new ImageDefinitionNode(
       mRef.trim(),
       parsed.url,
+      ImageModule.takeAlt(modifier),
       parsed.width,
       parsed.height,
-      Modifier.parse(mMod, offsets[3] ?? null),
+      modifier,
       { offset: offsets[0], length: matches[0].length },
     );
   }
@@ -126,26 +128,69 @@ export class ImageModule extends Module {
    */
   parseImage(context, matches, offsets) {
     const [, mURLs, mMod, mAlign, mLink] = matches;
-    const parsed = this.parseImageContent(mURLs, offsets[1]);
-    const modifier = Modifier.parse((mMod ?? "") + (mAlign ?? ""));
-
-    if (parsed.url === null) {
+    const imageNode = this.createImage(mURLs, (mMod ?? "") + (mAlign ?? ""), offsets);
+    if (imageNode === null) {
       return null;
     }
 
     // ImageNode source span is "[* ... <alignment>]" (1 = "]")
     const alignOffset = offsets[3] ?? offsets[0] + matches[0].length - 1 - (mAlign ? mAlign.length : 0);
-    const imageNode = new ImageNode(
+    imageNode.range = { offset: offsets[0], length: alignOffset + (mAlign ?? "").length + 1 - offsets[0] };
+
+    return mLink ? this.wrapInLink(imageNode, mLink, offsets[0], offsets[4], Syntax.Image) : imageNode;
+  }
+
+  /**
+   * Creates the image written as [* $mURLs $mMod *].
+   * @param {string} mURLs
+   * @param {string} mMod
+   * @param {Array<?number>} offsets
+   * @returns {?ImageNode}
+   */
+  createImage(mURLs, mMod, offsets) {
+    const parsed = this.parseImageContent(mURLs, offsets[1]);
+    if (parsed.url === null) {
+      return null;
+    }
+
+    const modifier = Modifier.parse(mMod);
+
+    // a standalone image floats itself by its <> alignment; the modifier
+    // alignment is consumed (a figure moves its float to the figure)
+    let float = null;
+    if (modifier !== null && (modifier.hAlign === "left" || modifier.hAlign === "right")) {
+      float = modifier.hAlign;
+      modifier.hAlign = null;
+    }
+
+    return new ImageNode(
       parsed.url,
+      ImageModule.takeAlt(modifier),
       parsed.width,
       parsed.height,
+      float,
       modifier,
-      { offset: offsets[0], length: alignOffset + (mAlign ?? "").length + 1 - offsets[0] },
+      null,
       null,
       parsed.urlRange,
     );
+  }
 
-    return mLink ? this.wrapInLink(imageNode, mLink, offsets[0], offsets[4], Syntax.Image) : imageNode;
+  /**
+   * Takes the alternative text out of the modifier, which writes it as
+   * .(text); {alt: text} wins.
+   * @param {?import('../Modifier.js').Modifier} modifier
+   * @returns {?string}
+   */
+  static takeAlt(modifier) {
+    if (modifier === null) {
+      return null;
+    }
+
+    const alt = modifier.attrs["alt"] !== undefined ? modifier.attrs["alt"] : modifier.title;
+    delete modifier.attrs["alt"];
+    modifier.title = null;
+    return Array.isArray(alt) ? alt.join(" ") : alt;
   }
 
   /**
@@ -155,22 +200,16 @@ export class ImageModule extends Module {
   parseFigure(context, matches, offsets) {
     const [, mURLs, mImgMod, mAlign, mLink, mContent, mMod] = matches;
 
-    const parsed = this.parseImageContent(mURLs, offsets[1]);
-    const modifier = Modifier.parse((mImgMod ?? "") + (mAlign ?? ""));
+    const imageNode = this.createImage(mURLs, (mImgMod ?? "") + (mAlign ?? ""), offsets);
+    if (imageNode === null) return null;
 
-    if (parsed.url === null) return null;
+    // the float is written in the brackets of the image, but it is the figure that floats
+    const float = imageNode.float;
+    imageNode.float = null;
 
     // ImageNode source span is "[* ... <alignment>]"
     const imageEnd = (offsets[3] ?? 0) + (mAlign ?? "").length + 1; // 1 = "]"
-    const imageNode = new ImageNode(
-      parsed.url,
-      parsed.width,
-      parsed.height,
-      modifier,
-      { offset: offsets[0], length: imageEnd - offsets[0] },
-      null,
-      parsed.urlRange,
-    );
+    imageNode.range = { offset: offsets[0], length: imageEnd - offsets[0] };
 
     const image = mLink ? this.wrapInLink(imageNode, mLink, offsets[0], offsets[4], Syntax.Figure) : imageNode;
 
@@ -181,10 +220,16 @@ export class ImageModule extends Module {
       caption = context.parseInline(trimmed, offsets[5] ?? offsets[0]);
     }
 
-    return new FigureNode(image, caption, Modifier.parse(mMod, offsets[6] ?? null), {
-      offset: offsets[0],
-      length: matches[0].length,
-    });
+    return new FigureNode(
+      image,
+      caption,
+      float,
+      Modifier.parse(mMod, offsets[6] ?? null),
+      {
+        offset: offsets[0],
+        length: matches[0].length,
+      },
+    );
   }
 
   /**
@@ -202,7 +247,7 @@ export class ImageModule extends Module {
     const isSelf = mLink === ":";
 
     return new LinkNode(
-      isSelf ? imageNode.url : removeSoftHyphens(mLink),
+      isSelf ? imageNode.url : cleanUrl(mLink),
       new ContentNode([imageNode]),
       null,
       { offset, length: linkOffset + mLink.length - offset },
@@ -226,7 +271,7 @@ export class ImageModule extends Module {
     const main = parts[0].trim();
     let written = main;
 
-    let url = removeSoftHyphens(main);
+    let url = cleanUrl(main);
     let width = null;
     let height = null;
 
@@ -261,8 +306,7 @@ export class ImageModule extends Module {
    * Adds a user-defined image definition (persists across parse() calls).
    */
   addDefinition(name, url, width = null, height = null, alt = null) {
-    const modifier = alt !== null ? Modifier.parse("(" + alt + ")") : null;
-    this.userDefinitions[name.toLowerCase()] = new ImageDefinitionNode(name, url, width, height, modifier);
+    this.userDefinitions[name.toLowerCase()] = new ImageDefinitionNode(name, url, alt, width, height);
   }
 
   /**
@@ -326,17 +370,14 @@ export class ImageModule extends Module {
 
     node.ref = node.url.trim(); // keep the written reference name for analyzers
     node.url = def.url;
+
+    if (node.alt === null) node.alt = def.alt;
     if (node.width === null) node.width = def.width;
     if (node.height === null) node.height = def.height;
 
-    // Merge modifier from definition if node doesn't have one
+    // Use modifier from definition if node doesn't have one
     if (def.modifier && !node.modifier) {
       node.modifier = def.modifier.clone();
-    } else if (def.modifier) {
-      // Merge: node modifier takes precedence, but inherit missing values from definition
-      if (node.modifier.title === null && def.modifier.title !== null) {
-        node.modifier.title = def.modifier.title;
-      }
     }
   }
 }

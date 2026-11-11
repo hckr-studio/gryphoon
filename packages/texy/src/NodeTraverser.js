@@ -3,13 +3,21 @@
  * Texy\NodeTraverser).
  *
  * Enter/leave callbacks may return: a Node (replaces the current one),
- * DontTraverseChildren (skip children), StopTraversal, RemoveNode, or
- * null/undefined (continue unchanged).
+ * TraverseAction.SkipChildren, TraverseAction.Stop, TraverseAction.Remove,
+ * or null/undefined (continue unchanged). The DontTraverseChildren /
+ * StopTraversal / RemoveNode names are the port's older aliases.
  */
 
 export const DontTraverseChildren = 1;
 export const StopTraversal = 2;
 export const RemoveNode = 3;
+
+/** The visitor answer (port of Texy\TraverseAction). */
+export const TraverseAction = Object.freeze({
+  SkipChildren: DontTraverseChildren,
+  Stop: StopTraversal,
+  Remove: RemoveNode,
+});
 
 export class NodeTraverser {
   /**

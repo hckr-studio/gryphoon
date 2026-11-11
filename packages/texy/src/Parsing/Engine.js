@@ -44,7 +44,7 @@ export class Engine {
    * @param {string} pattern PCRE pattern with delimiters
    * @param {Function} handler (context, matches, offsets, name) => InlineNode|ContentNode|null
    */
-  addLineSyntax(name, pattern, handler) {
+  addInlineSyntax(name, pattern, handler) {
     this.linePatterns.set(name, { handler, pattern, compiled: compile(pattern) });
   }
 

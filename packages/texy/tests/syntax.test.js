@@ -25,9 +25,11 @@ import {
   LinkDefinitionNode,
   LinkNode,
   ListNode,
+  InlineCodeNode,
   PhraseNode,
+  PreformattedNode,
   RawTextNode,
-  SectionNode,
+  DivNode,
   TableNode,
   TextNode,
   UrlNode,
@@ -51,7 +53,9 @@ describe("phrases", () => {
   it("strong, emphasis, strong+em, code", () => {
     const [para] = parse("**bold** //italic// ***both*** `code`");
     const types = para.content.children.filter(n => n instanceof PhraseNode).map(n => n.type);
-    assert.deepEqual(types, ["phrase/strong", "phrase/em", "phrase/strong+em", "phrase/code"]);
+    assert.deepEqual(types, ["phrase/strong", "phrase/em", "phrase/strong+em"]);
+    const code = para.content.children.find(n => n instanceof InlineCodeNode);
+    assert.equal(code.code, "code");
   });
 
   it("nested phrases", () => {
@@ -104,7 +108,8 @@ describe("phrases", () => {
   it("inline code content is not parsed recursively", () => {
     const [para] = parse("`**literal**`");
     const code = para.content.children[0];
-    assert.equal(code.content.children[0].text, "**literal**");
+    assert.ok(code instanceof InlineCodeNode);
+    assert.equal(code.code, "**literal**");
   });
 
   it("notexy is raw text", () => {
@@ -185,9 +190,14 @@ describe("images and figures", () => {
 
   it("image modifier inside [* ... *] (alignment char abuts the bracket)", () => {
     const blocks = parse("[* img.jpg .(alt text)>]");
-    const image = blocks[0].image;
-    assert.equal(image.modifier.title, "alt text");
-    assert.equal(image.modifier.hAlign, "right");
+    const figure = blocks[0];
+    const image = figure.image;
+    assert.equal(image.alt, "alt text");
+    // the alt is taken out of the modifier
+    assert.equal(image.modifier.title, null);
+    // the float is written on the image, but it is the figure that floats
+    assert.equal(image.float, null);
+    assert.equal(figure.float, "right");
   });
 
   it("image with :link is wrapped in a LinkNode", () => {
@@ -274,17 +284,15 @@ describe("blocks", () => {
   it("/--code with language", () => {
     const blocks = parse("/--code js\nvar x;\n\\--");
     assert.ok(blocks[0] instanceof CodeBlockNode);
-    assert.equal(blocks[0].type, "code");
     assert.equal(blocks[0].language, "js");
     assert.equal(blocks[0].code, "var x;");
   });
 
   it("/--div parses content as blocks", () => {
     const blocks = parse("/--div\ninner **text**\n\\--");
-    const section = blocks[0];
-    assert.ok(section instanceof SectionNode);
-    assert.equal(section.type, "div");
-    assert.ok(findFirst(section, n => n instanceof PhraseNode));
+    const div = blocks[0];
+    assert.ok(div instanceof DivNode);
+    assert.ok(findFirst(div, n => n instanceof PhraseNode));
   });
 
   it("/--comment is a hidden comment", () => {
@@ -376,9 +384,8 @@ describe("directives", () => {
 
     const [para] = parse("{{mydirective: arg1, arg2}}");
     const node = findFirst(para, n => n instanceof DirectiveNode); // unknown -> stays
-    const parsed = node.parseContent();
-    assert.equal(parsed.name, "mydirective");
-    assert.deepEqual(parsed.args, ["arg1", "arg2"]);
+    assert.equal(node.name, "mydirective");
+    assert.deepEqual(node.args, ["arg1", "arg2"]);
   });
 
   it("empty directive is refused", () => {

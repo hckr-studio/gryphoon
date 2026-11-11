@@ -9,6 +9,7 @@
  */
 
 import { None } from "./HtmlPolicy.js";
+import { defaultAllowedTags } from "./Output/Html/Schema.js";
 import { Syntax } from "./Syntax.js";
 
 /**
@@ -37,10 +38,12 @@ export class Configurator {
 
   /**
    * Configure Texy! for web comments and other usages, where input text
-   * may insert attacker.
+   * may insert attacker. Images and figures are disabled unless $images
+   * allows them, the definitions of images stay disabled.
    * @param {import('./Texy.js').Texy} texy
+   * @param {boolean} images keep images and figures enabled
    */
-  static safeMode(texy) {
+  static safeMode(texy, images = false) {
     texy.htmlPolicy.allowedClasses = None; // no class or ID are allowed
     texy.htmlPolicy.allowedStyles = None; // style modifiers are disabled
     // only some "safe" HTML tags and attributes are allowed; the '*' list names
@@ -48,7 +51,11 @@ export class Configurator {
     texy.htmlPolicy.allowedTags = { ...SafeTags, "*": ["title", "lang", "dir"] };
     texy.urlPolicy.linkPattern = String.raw`~https?:|ftp:|mailto:~A`;
     texy.urlPolicy.imagePattern = String.raw`~https?:~A`;
-    Configurator.disableImages(texy);
+    if (images) {
+      texy.allowed[Syntax.ImageDefinition] = false;
+    } else {
+      Configurator.disableImages(texy);
+    }
     texy.allowed[Syntax.LinkDefinition] = false; // disable [ref]: URL reference definitions
     texy.allowed[Syntax.HtmlComment] = false; // disable HTML comments
     texy.htmlOutput.linkNoFollow = true; // force rel="nofollow"
@@ -64,10 +71,7 @@ export class Configurator {
     texy.allowed[Syntax.LinkDefinition] = false;
     texy.allowed[Syntax.LinkReference] = false;
     texy.phraseModule.linksAllowed = false;
-
-    if (typeof texy.htmlPolicy.allowedTags === "object") {
-      delete texy.htmlPolicy.allowedTags.a;
-    }
+    Configurator.disallowTags(texy, "a");
   }
 
   /**
@@ -78,12 +82,28 @@ export class Configurator {
     texy.allowed[Syntax.Image] = false;
     texy.allowed[Syntax.Figure] = false;
     texy.allowed[Syntax.ImageDefinition] = false;
+    Configurator.disallowTags(texy, "img", "object", "embed", "applet");
+  }
 
-    if (typeof texy.htmlPolicy.allowedTags === "object") {
-      delete texy.htmlPolicy.allowedTags.img;
-      delete texy.htmlPolicy.allowedTags.object;
-      delete texy.htmlPolicy.allowedTags.embed;
-      delete texy.htmlPolicy.allowedTags.applet;
+  /**
+   * Removes tags from allowedTags, matching both the keys and the bare
+   * tag-name values; also works when all tags are allowed.
+   * @param {import('./Texy.js').Texy} texy
+   * @param {...string} names
+   */
+  static disallowTags(texy, ...names) {
+    const tags = texy.htmlPolicy.allowedTags;
+    if (tags === false) {
+      return;
     }
+
+    const base = tags === true ? defaultAllowedTags : tags;
+    const filtered = {};
+    for (const [key, value] of Object.entries(base)) {
+      if (!names.includes(key) && !(typeof value === "string" && names.includes(value))) {
+        filtered[key] = value;
+      }
+    }
+    texy.htmlPolicy.allowedTags = filtered;
   }
 }

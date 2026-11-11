@@ -27,9 +27,7 @@ DocumentNode
         TextNode [340,21] "A následují řádky"
         LineBreakNode [361,2]
         TextNode [363,32] "které Texy! oddělí elementem "
-        PhraseNode [395,13] phrase/code
-          ContentNode
-            TextNode [396,11] "<br> &nbsp;"
+        InlineCodeNode [395,13] codeRange[396,11] "<br> &nbsp;"
     ParagraphNode [411,174] mod[584,1]
       ContentNode
         PhraseNode [411,33] phrase/strong

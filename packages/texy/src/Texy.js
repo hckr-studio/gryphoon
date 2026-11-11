@@ -140,7 +140,7 @@ export class Texy {
    * @param {string} pattern PCRE pattern
    * @param {Function} handler (context, matches, offsets, name) => InlineNode|ContentNode|null
    */
-  addLineSyntax(name, pattern, handler) {
+  addInlineSyntax(name, pattern, handler) {
     if (this.inModulePrepare) {
       if (this.consumerSyntaxes.line[name]) return; // a syntax registered by the consumer is never overwritten by a module
     } else {
@@ -151,7 +151,7 @@ export class Texy {
       this.allowed[name] = true;
     }
 
-    this.engine.addLineSyntax(name, pattern, handler);
+    this.engine.addInlineSyntax(name, pattern, handler);
   }
 
   /**
@@ -177,13 +177,29 @@ export class Texy {
   /**
    * Parses text to an AST. The text is normalized first (idempotent).
    * @param {string} text
-   * @param {boolean} singleLine
    * @returns {import('./nodes.js').DocumentNode}
    */
-  parse(text, singleLine = false) {
-    text = normalize(text);
+  parse(text) {
+    this.prepareModules();
 
-    // let modules do per-parse initialization (pattern registration, state reset)
+    // the Syntax passes run inside the engine's parse()
+    return this.engine.parse(normalize(text), this.allowed);
+  }
+
+  /**
+   * Parses one line of text to the syntax tree: inline syntaxes only, no blocks.
+   * @param {string} text
+   * @returns {import('./nodes.js').DocumentNode}
+   */
+  parseLine(text) {
+    this.prepareModules();
+    return this.engine.parse(normalize(text), this.allowed, true);
+  }
+
+  /**
+   * Lets modules do per-parse initialization (pattern registration, state reset).
+   */
+  prepareModules() {
     this.inModulePrepare = true;
     try {
       for (const module of this.modules) {
@@ -192,17 +208,16 @@ export class Texy {
     } finally {
       this.inModulePrepare = false;
     }
-
-    // the Syntax passes run inside the engine's parse()
-    return this.engine.parse(text, this.allowed, singleLine);
   }
 
   /**
    * Turns the syntax tree into the document: resolves references, balances
    * headings, sanitizes HTML, applies typography and the consumer's passes.
-   * Changes the tree in place; a document is transformed only once.
+   * Changes the tree in place; a document is transformed only once, and
+   * returns it, so tx.transform(tx.parse(text)) is one expression.
    * @param {import('./nodes.js').DocumentNode} document
    * @param {?LintCollector} lintCollector optional issue collector; never changes the output
+   * @returns {import('./nodes.js').DocumentNode}
    */
   transform(document, lintCollector = null) {
     try {
@@ -211,6 +226,7 @@ export class Texy {
     } finally {
       this.lintCollector = null;
     }
+    return document;
   }
 
   /**
@@ -219,12 +235,11 @@ export class Texy {
    * pipeline run. Collection is passive - the collector never changes the
    * output.
    * @param {string} text
-   * @param {boolean} singleLine
    * @returns {{ document: import('./nodes.js').DocumentNode, issues: Array<import('./Lint.js').LintIssue> }}
    */
-  lint(text, singleLine = false) {
+  lint(text) {
     const collector = new LintCollector();
-    const document = this.parse(text, singleLine);
+    const document = this.parse(text);
     this.transform(document, collector);
     return { document, issues: collector.issues };
   }
@@ -282,13 +297,19 @@ export class Texy {
   /**
    * Converts Texy text to HTML.
    * @param {string} text
-   * @param {boolean} singleLine
    * @returns {string}
    */
-  process(text, singleLine = false) {
-    const document = this.parse(text, singleLine);
-    this.transform(document);
-    return this.renderHtml(document);
+  process(text) {
+    return this.renderHtml(this.transform(this.parse(text)));
+  }
+
+  /**
+   * Converts one line of Texy text to HTML: inline markup only, no paragraph around it.
+   * @param {string} text
+   * @returns {string}
+   */
+  processLine(text) {
+    return this.renderHtml(this.transform(this.parseLine(text)));
   }
 
   /**

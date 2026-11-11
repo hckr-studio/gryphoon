@@ -1,5 +1,5 @@
 /**
- * Image dimension detection from the file system (Config.imageFileRoot):
+ * Image dimension detection from the file system (Config.imageBasePath):
  * header parsing for PNG/GIF/JPEG/BMP/WebP and the dimension-scaling
  * arithmetic of the reference.
  */
@@ -106,7 +106,7 @@ describe("ImageDimensions.detect", () => {
   /** @param {Object} config overwrites for Config */
   function dimensions(config = {}) {
     const cfg = new Config();
-    cfg.imageFileRoot = dir;
+    cfg.imageBasePath = dir;
     Object.assign(cfg, config);
     return new ImageDimensions(cfg);
   }
@@ -119,14 +119,14 @@ describe("ImageDimensions.detect", () => {
   it("scales the missing dimension by the file aspect ratio", () => {
     const dims = dimensions();
     // width given (120x60 file): height = round(60/120 * 120) = 60
-    assert.deepStrictEqual(dims.detect(new ImageNode("b.gif", 120)), [120, 60]);
+    assert.deepStrictEqual(dims.detect(new ImageNode("b.gif", null, 120)), [120, 60]);
     // height given: width = round(120/60 * 30) = 60
-    assert.deepStrictEqual(dims.detect(new ImageNode("b.gif", null, 30)), [60, 30]);
+    assert.deepStrictEqual(dims.detect(new ImageNode("b.gif", null, null, 30)), [60, 30]);
   });
 
   it("keeps explicit dimensions untouched", () => {
     const dims = dimensions();
-    assert.deepStrictEqual(dims.detect(new ImageNode("a.png", 10, 20)), [10, 20]);
+    assert.deepStrictEqual(dims.detect(new ImageNode("a.png", null, 10, 20)), [10, 20]);
   });
 
   it("falls back to node dimensions when detection is impossible", () => {
@@ -139,7 +139,7 @@ describe("ImageDimensions.detect", () => {
     // absolute URL refused
     assert.deepStrictEqual(dimensions().detect(new ImageNode("https://x/a.png")), [null, null]);
     // no root configured
-    assert.deepStrictEqual(dimensions({ imageFileRoot: null }).detect(new ImageNode("a.png")), [null, null]);
+    assert.deepStrictEqual(dimensions({ imageBasePath: null }).detect(new ImageNode("a.png")), [null, null]);
   });
 
   it("caches file probes for the detector lifetime", () => {

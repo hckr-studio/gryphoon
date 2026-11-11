@@ -90,13 +90,13 @@ export function decodeEntity(ref) {
 }
 
 /**
- * Removes soft hyphens. URL targets parsed from source text are cleaned with
- * this: soft hyphens get into them by copy-pasting hyphenated text and would
- * break the address.
+ * Cleans a URL target parsed from source text: decodes HTML entities, which
+ * the author writes as in HTML, and removes soft hyphens, which get in by
+ * copy-pasting hyphenated text and would break the address.
  * @param {string} s
  */
-export function removeSoftHyphens(s) {
-  return s.replaceAll("\u00AD", "");
+export function cleanUrl(s) {
+  return decodeEntities(s).replaceAll("\u00AD", "");
 }
 
 /**
@@ -324,12 +324,13 @@ export function toAscii(s) {
 }
 
 /**
- * Converts to web-safe characters [a-z0-9-].
+ * Converts to web-safe characters [a-z0-9-]. A soft hyphen does not split
+ * the word.
  * @param {string} s
  * @returns {string}
  */
 export function webalize(s) {
-  s = toAscii(s).toLowerCase();
+  s = toAscii(s.replaceAll("\u00AD", "")).toLowerCase();
   s = s.replace(/[^a-z0-9]+/g, "-");
   return s.replace(/^-+|-+$/g, "");
 }

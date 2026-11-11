@@ -174,9 +174,14 @@
       (is (= "img.jpg" (:url img)))
       (is (= 100 (:width img)))
       (is (= 200 (:height img)))))
-  (testing "modifier title and align"
+  (testing "modifier alt and align hoist to the node (createImage)"
     (let [img (first-of (parse-inline-typed "look [* img.jpg .(alt text)<] here") :image)]
-      (is (= {:title "alt text" :h-align :left} (:modifier img))))))
+      (is (= "alt text" (:alt img)))
+      (is (= :left (:float img)))
+      (is (nil? (get-in img [:modifier :title]))
+          "the alt write is taken out of the modifier")
+      (is (nil? (get-in img [:modifier :h-align]))
+          "the float write is taken out of the modifier"))))
 
 (deftest figures
   (testing "a line starting with an image is a figure"

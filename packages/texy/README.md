@@ -111,9 +111,10 @@ and no well-forming is re-applied after DOM mutation.
   `safeMode` for untrusted input.
 - `texy.htmlOutput` - the HTML output configuration (port of
   `Texy\Output\Html\Config`): `indent`, `lineWrap`, `baseIndent`,
-  `preserveSpaces`, `alignClasses`, `phraseTags`, `imageRoot`, `linkRoot`,
-  `obfuscateEmail`, `nontextParagraph`, `figureTagName`, `figureClass`,
-  `emoticonClass`, `linkNoFollow`, `passHtmlComments`, ...
+  `preserveSpaces`, `textAlignClasses`, `verticalAlignClasses`,
+  `floatClasses`, `phraseTags`, `imageBaseUrl`, `imageBasePath`,
+  `linkBaseUrl`, `obfuscateEmail`, `imageParagraphTag`, `figureTag`,
+  `figureClass`, `emoticonClass`, `linkNoFollow`, `passHtmlComments`, ...
 - `texy.htmlPolicy` - HTML security policy (allowed tags/classes/styles),
   `texy.urlPolicy` - URL scheme policy; both enforced in the transform
   passes (protecting every output format) and again at render time.
@@ -129,7 +130,7 @@ and no well-forming is re-applied after DOM mutation.
 - `texy.paragraphModule.mergeLines`, `texy.listModule.bullets`,
   `texy.headingModule.*`, `texy.emoticonModule.icons`, ... - the same
   parse-relevant configuration surface the reference modules expose.
-- `texy.addLineSyntax(name, pattern, handler)` / `texy.addBlockSyntax(...)` -
+- `texy.addInlineSyntax(name, pattern, handler)` / `texy.addBlockSyntax(...)` -
   extension syntaxes; consumer registrations are never overwritten by
   module pattern refreshes (same precedence rules as the reference).
 - `texy.createHtmlRenderer()` - a `Renderer` wired to the current

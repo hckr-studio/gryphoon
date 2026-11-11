@@ -34,7 +34,7 @@ export class HtmlModule extends Module {
   }
 
   beforeParse() {
-    this.texy.addLineSyntax(
+    this.texy.addInlineSyntax(
       Syntax.HtmlTag,
       String.raw`~
 				< (/?)                          # tag begin
@@ -54,7 +54,7 @@ export class HtmlModule extends Module {
       (context, matches, offsets) => this.parseTag(context, matches, offsets),
     );
 
-    this.texy.addLineSyntax(
+    this.texy.addInlineSyntax(
       Syntax.HtmlComment,
       String.raw`~
 				<!--
@@ -64,7 +64,7 @@ export class HtmlModule extends Module {
       (context, matches, offsets) => this.parseComment(context, matches, offsets),
     );
 
-    this.texy.addLineSyntax(
+    this.texy.addInlineSyntax(
       Syntax.HtmlEntity,
       "~&(?:\\#[0-9]{1,7}|\\#[xX][0-9a-fA-F]{1,6}|[a-zA-Z][a-zA-Z0-9]{1,31});~",
       (context, matches, offsets) => this.parseEntity(context, matches, offsets),

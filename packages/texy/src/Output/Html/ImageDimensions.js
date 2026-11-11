@@ -1,6 +1,6 @@
 /**
  * Detects image dimensions from the file system
- * (Config.imageFileRoot), cached for the renderer's lifetime (port of
+ * (Config.imageBasePath), cached for the renderer's lifetime (port of
  * Texy\Output\Html\ImageDimensions). The only file-system touch of
  * rendering, kept out of the renderer proper.
  */
@@ -109,7 +109,7 @@ export class ImageDimensions {
   detect(node) {
     let [width, height] = [node.width, node.height];
 
-    const fileRoot = this.config.imageFileRoot;
+    const fileRoot = this.config.imageBasePath;
     if (node.url === null || !isRelative(node.url) || node.url.includes("..") || fileRoot === null) {
       return [width, height];
     }

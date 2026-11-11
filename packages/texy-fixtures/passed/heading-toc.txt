@@ -6,7 +6,7 @@ DocumentNode
     HeadingNode [13,29] textRange[13,14] level=2 marker==
       ContentNode
         TextNode [13,14] "subtitle * 123"
-    CodeBlockNode [44,46] codeMap@58
+    TexySourceNode [44,46] codeMap@58
       ContentNode
         HeadingNode [58,13] textRange[58,6] level=2 marker==
           ContentNode

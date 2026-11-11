@@ -28,14 +28,17 @@ export class NodeRenderer {
   addRenderer(nodeClass, renderer) {
     const previous = this.findRenderer(nodeClass);
     this.handlers.set(nodeClass, (node, self) => {
-      const result = renderer(node, self, previous);
+      // $previous renders a node the way the previous renderer in the
+      // chain does: previous(node)
+      const previousFn = previous === null ? null : n => previous(n, self);
+      const result = renderer(node, self, previousFn);
       if (result !== null && result !== undefined) {
         return result;
       }
-      if (previous === null) {
+      if (previousFn === null) {
         throw new Error("No renderer for node class " + node.constructor.name);
       }
-      return previous(node, self);
+      return previousFn(node);
     });
     this.resolved = new Map();
   }

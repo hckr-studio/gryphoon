@@ -94,10 +94,10 @@ describe("typography in the pipeline", () => {
     assert.strictEqual(processText("Use `10-20` and 30-40"), "<p>Use <code>10-20</code> and 30\u201340</p>\n");
   });
 
-  it("typographs modifier titles (image alt)", () => {
+  it("typographs the alternative text of an image", () => {
     assert.strictEqual(
       processText("[* img.jpg .(Nadpis knihy...) *]"),
-      '<div class="figure"><img src="images/img.jpg" alt="Nadpis knihy\u2026"></div>\n',
+      '<figure><img src="img.jpg" alt="Nadpis knihy\u2026"></figure>\n',
     );
   });
 

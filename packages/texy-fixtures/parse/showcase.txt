@@ -31,9 +31,7 @@ DocumentNode
         TextNode [545,161] "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Curabitur turpis enim, placerat tincidunt, tincidunt ac, fringilla et, mauris. still the same paragraph"
         LineBreakNode [706,2]
         TextNode [708,51] "still the same paragraph, but wrapped with element "
-        PhraseNode [759,6] phrase/code
-          ContentNode
-            TextNode [760,4] "<br>"
+        InlineCodeNode [759,6] codeRange[760,4] "<br>"
         LineBreakNode [765,2]
         TextNode [767,23] "and second wrapped line"
     ParagraphNode [792,25] mod[815,2]
@@ -60,13 +58,13 @@ DocumentNode
     HeadingNode [1149,25] textRange[1149,12] level=2 marker==
       ContentNode
         TextNode [1149,12] "Disable Texy"
-    CodeBlockNode [1177,47] codeMap@1186
+    HtmlBlockNode [1177,47] codeMap@1186
       ContentNode
         TextNode [1186,33] "  example: **this is not strong**"
     HeadingNode [1229,7] textRange[1229,3] level=2 marker==
       ContentNode
         TextNode [1229,3] "Div"
-    SectionNode [1238,41] mod[1247,8]
+    DivNode [1238,41] mod[1247,8]
       ContentNode
         ParagraphNode [1259,14]
           ContentNode
@@ -74,12 +72,12 @@ DocumentNode
     HeadingNode [1285,13] textRange[1285,6] level=3 marker=-
       ContentNode
         TextNode [1285,6] "nested"
-    SectionNode [1300,98] mod[1309,8]
+    DivNode [1300,98] mod[1309,8]
       ContentNode
         HeadingNode [1321,20] textRange[1324,17] level=5 marker=##
           ContentNode
             TextNode [1324,17] "This is a header."
-        SectionNode [1345,29]
+        DivNode [1345,29]
           ContentNode
             ParagraphNode [1357,10]
               ContentNode
@@ -245,9 +243,7 @@ DocumentNode
     ParagraphNode [3201,14]
       ContentNode
         TextNode [3201,6] "Code: "
-        PhraseNode [3207,8] phrase/code
-          ContentNode
-            TextNode [3208,6] "<br />"
+        InlineCodeNode [3207,8] codeRange[3208,6] "<br />"
     HeadingNode [3218,29] textRange[3218,14] level=3 marker=-
       ContentNode
         TextNode [3218,14] "with modifiers"

@@ -49,7 +49,7 @@
   (is (= "<hr>" (html "---"))))
 
 (deftest code-blocks
-  (is (= "<pre class=\"clojure\"><code>(def x 1)</code></pre>"
+  (is (= "<pre class=\"language-clojure\"><code>(def x 1)</code></pre>"
          (html "```clojure\n(def x 1)\n```"))))
 
 ;;-------------------------------------------------- inline
@@ -73,44 +73,44 @@
   (testing "www links gain the http scheme"
     (is (= "<p><a href=\"http://www.example.com\">www.example.com</a></p>"
            (html "www.example.com"))))
-  (testing "image links resolve their [*img*] target and use image-root"
-    (is (= "<p>look <a href=\"images/popup.jpg\"><img src=\"images/img.jpg\" alt=\"\"></a> here</p>"
+  (testing "image links resolve their [*img*] target"
+    (is (= "<p>look <a href=\"popup.jpg\"><img src=\"img.jpg\" alt=\"\"></a> here</p>"
            (html "look [* img.jpg *]:[* popup.jpg *] here")))))
 
 (deftest images
   (testing "inline image within text stays in the paragraph"
-    (is (= "<p>look <img src=\"images/img.jpg\" alt=\"\"> here</p>"
+    (is (= "<p>look <img src=\"img.jpg\" alt=\"\"> here</p>"
            (html "look [* img.jpg *] here"))))
   (testing "dimensions and alt from the title"
-    (is (= "<p>x <img src=\"images/img.jpg\" alt=\"photo\" width=\"100\" height=\"200\"> y</p>"
+    (is (= "<p>x <img src=\"img.jpg\" alt=\"photo\" width=\"100\" height=\"200\"> y</p>"
            (html "x [* img.jpg 100x200 .(photo) *] y"))))
 
   (testing "custom image root"
     (is (= "<p>look <img src=\"assets/i.jpg\" alt=\"\"> here</p>"
            (html "look [* i.jpg *] here" {:image-root "assets"}))))
 
-  (testing "custom {alt:...} and {title:...} attributes and figure class order"
-    (is (= "<div class=\"foo figure\"><img alt=\"alt text\" title=\"T\" src=\"images/img.jpg\"></div>"
+  (testing "custom {alt:...} and {title:...} attributes and the figure modifier class"
+    (is (= "<figure class=\"foo\"><img title=\"T\" src=\"img.jpg\" alt=\"alt text\"></figure>"
            (html "[* img.jpg .{alt:alt text; title:T} *] .[foo]"))))
 
   (testing "a lone image line is a figure, two images on one line is a paragraph"
-    (is (= "<div class=\"figure\"><img src=\"images/img.jpg\" alt=\"\"></div>"
+    (is (= "<figure><img src=\"img.jpg\" alt=\"\"></figure>"
            (html "[* img.jpg *]")))
-    (is (= "<div><img src=\"images/img.jpg\" alt=\"\"> <img src=\"images/img2.jpg\" alt=\"\"></div>"
+    (is (= "<div><img src=\"img.jpg\" alt=\"\"> <img src=\"img2.jpg\" alt=\"\"></div>"
            (html "[* img.jpg *] [* img2.jpg *]")))
-    (is (= "<p>text <img src=\"images/img.jpg\" alt=\"\"> <img src=\"images/img2.jpg\" alt=\"\"></p>"
+    (is (= "<p>text <img src=\"img.jpg\" alt=\"\"> <img src=\"img2.jpg\" alt=\"\"></p>"
            (html "text [* img.jpg *] [* img2.jpg *]"))))
 
   (testing "the relative-URL check looks at the URL start only (query strings stay relative)"
-    (is (= "<div class=\"figure\"><a href=\"images/popup.php?img=big.jpg\"><img src=\"images/img.jpg\" alt=\"\"></a></div>"
+    (is (= "<figure><a href=\"popup.php?img=big.jpg\"><img src=\"img.jpg\" alt=\"\"></a></figure>"
            (html "[* img.jpg *]:[* popup.php?img=big.jpg *]")))))
 
 (deftest figures
   (testing "a lone image line renders as a figure"
-    (is (= "<div class=\"figure\"><img src=\"images/img.jpg\" alt=\"\"></div>"
+    (is (= "<figure><img src=\"img.jpg\" alt=\"\"></figure>"
            (html "[* img.jpg *]"))))
   (testing "figure with caption"
-    (is (= "<div class=\"figure\"><img src=\"images/img.jpg\" alt=\"\"><p>the caption</p></div>"
+    (is (= "<figure><img src=\"img.jpg\" alt=\"\"><figcaption>the caption</figcaption></figure>"
            (html "[* img.jpg *] *** the caption")))))
 
 (deftest autolinks
@@ -164,9 +164,9 @@
       (is (= "<p>bad</p>" (core/process texy "\"bad\":javascript:x")))
       (is (= "<p><a href=\"https://example.com\">ok</a></p>"
              (core/process texy "\"ok\":https://example.com")))))
-  (testing "the image pattern drops the src of disallowed images"
+  (testing "the image pattern renders a disallowed image as its alternative text"
     (let [texy (core/->texy {:indent false :line-wrap 0 :image-pattern "https?:"})]
-      (is (= "<p>look <img alt=\"\"> here</p>"
+      (is (= "<p>look here</p>"
              (core/process texy "look [* javascript:x *] here")))))
   (testing "URL attributes from modifiers pass the policy too"
     (let [texy (core/->texy {:indent false :line-wrap 0 :link-pattern "https?:"})]
@@ -232,8 +232,8 @@
            (html "[ref]: https://example.com/\n\nsee \"text\":[ref#frag]"))))
   (testing "an unresolved reference becomes its own name"
     (is (= "<p>see <a href=\"nowhere\">text</a></p>" (html "see \"text\":[nowhere]"))))
-  (testing "image definitions resolve the image and inherit its modifier title"
-    (is (= "<div class=\"figure\"><img src=\"images/photo.png\" alt=\"alt text\"></div>"
+  (testing "image definitions resolve the image and supply its alt"
+    (is (= "<figure><img src=\"photo.png\" alt=\"alt text\"></figure>"
            (html "[*ref*]: photo.png .(alt text)\n\n[*ref*]"))))
   (testing "definition lines render to nothing"
     (is (= "<p>text</p>" (html "[ref]: https://example.com/\n\ntext")))))
@@ -322,7 +322,7 @@
 
 (deftest linked-image-self-reference
   (testing "the [*ref*]:: self-link resolves against the image definition"
-    (is (= "<p>x <a href=\"images/texy.jpg\"><img src=\"images/texy.jpg\" alt=\"\" style=\"float:left\"></a> y</p>"
+    (is (= "<p>x <a href=\"texy.jpg\"><img src=\"texy.jpg\" alt=\"\" style=\"float:left\"></a> y</p>"
            (html "x [*obrazek3<]:: y\n\n[*obrazek3*]: texy.jpg")))))
 
 (deftest locale-independence

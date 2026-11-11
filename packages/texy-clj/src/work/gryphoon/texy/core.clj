@@ -31,7 +31,10 @@
   :top               top heading level, 1..6 (default 1)
   :more-means-higher surrounded headings: more # means higher (default true)
   :fixed-leveling    disable dynamic heading balancing (default false)
-  :image-root        root path for image URLs (default \"images/\")
+  :image-root        root path for image URLs (default none, URLs are used
+                     as written)
+  :figure-tag        the element wrapping a figure (default :figure)
+  :figure-class      class added to every figure (default none)
   :link-root         root path for link URLs (default none)
   :link-no-follow    add rel=\"nofollow\" to external links (default false)
   :link-pattern      allowed URL scheme regex for links (default allow all)
@@ -230,17 +233,17 @@
         resolve-image (fn [node]
                         (let [key (normalize/lower-case (str/trim (:url node)))]
                           (if-some [def (get img-defs key)]
+                            ;; the definition fills in what the use did not
+                            ;; write (the reference resolveImageNode): the
+                            ;; whole modifier from the definition only when
+                            ;; the use has none
                             (let [def-mod (:modifier def)]
                               (-> (assoc node :ref (str/trim (:url node))
                                          :url (:url def))
+                                  (update :alt #(or % (:alt def)))
                                   (update :width #(or % (:width def)))
                                   (update :height #(or % (:height def)))
-                                  (update :modifier (fn [m]
-                                                      (cond
-                                                        (nil? m) def-mod
-                                                        (and def-mod (nil? (:title m)))
-                                                        (assoc m :title (:title def-mod))
-                                                        :else m)))))
+                                  (update :modifier #(or % def-mod))))
                             node)))
         legacy? legacy-references
         ;; the label content parses with the same context (custom
@@ -312,9 +315,15 @@
                                    url (if def (:url def) img-ref)]
                                (cond-> (assoc node :url url :ref img-ref :image-link true)
                                  ;; the image definition's modifier applies to the
-                                 ;; <a> too (the Texy 3 factoryLink); %s as above
-                                 (and legacy? def (:modifier def))
-                                 (update :modifier #(mod/merge-modifiers (:modifier def) %))
+                                 ;; <a> too (the Texy 3 factoryLink); its title now
+                                 ;; lives on the definition's :alt (the 4-dev
+                                 ;; takeAlt); %s as above
+                                 (and legacy? def)
+                                 (update :modifier (fn [m]
+                                                     (let [m (mod/merge-modifiers (:modifier def) m)]
+                                                       (if (and (:alt def) (not (:title m)))
+                                                         (assoc m :title (:alt def))
+                                                         m))))
 
                                  (and legacy? def (str/includes? (str url) "%s"))
                                  (assoc :url (str/replace url "%s" (form-urlencode (label-text node))))))
@@ -457,8 +466,10 @@
   with their defaults and the nofollow flag."
   [texy]
   (merge (:options texy)
-         {:image-root (get-in texy [:options :image-root] "images/")
+         {:image-root (get-in texy [:options :image-root] nil)
           :link-root (get-in texy [:options :link-root] nil)
+          :figure-tag (get-in texy [:options :figure-tag] :figure)
+          :figure-class (get-in texy [:options :figure-class] nil)
           :link-no-follow (get-in texy [:options :link-no-follow] nil)}))
 
 (defn render-hiccup

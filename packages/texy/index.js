@@ -90,7 +90,6 @@ export { Configurator, Syntax, Texy };
 /**
  * Converts Texy text to HTML.
  * @param {string} text
- * @param {boolean} singleLine
  * @param {?{
  *   allowed?: Array<string>|Object<string, boolean>,
  *   htmlPolicy?: Object<string, *>,
@@ -102,7 +101,7 @@ export { Configurator, Syntax, Texy };
  * (...Configuration.safe) applies its configurator first.
  * @returns {string}
  */
-export function process(text, singleLine = false, config) {
+export function process(text, config) {
   const texy = defTexy(config);
-  return texy.process(text, singleLine);
+  return texy.process(text);
 }

@@ -6,7 +6,7 @@
 import { webalize } from "../helpers.js";
 import { extractText, find } from "../NodeHelpers.js";
 import { NodeTraverser } from "../NodeTraverser.js";
-import { CodeBlockNode, HeadingNode, HeadingType, SectionNode } from "../nodes.js";
+import { HeadingNode, HeadingType, VerbatimBlockNode } from "../nodes.js";
 
 export class HeadingPass {
   /**
@@ -33,7 +33,9 @@ export class HeadingPass {
 
     const usedID = {};
     for (const node of headings) {
-      node.titleOverride = HeadingPass.hoistOverride(node);
+      // a pass that ran earlier may have set its own title override
+      const hoisted = HeadingPass.hoistOverride(node);
+      node.titleOverride ??= hoisted;
       if (!this.generateID) {
         continue;
       }
@@ -134,9 +136,9 @@ export function getTitle(node) {
 export function collectHeadings(root) {
   const headings = [];
   new NodeTraverser().traverse(root, node => {
-    if (node instanceof CodeBlockNode) {
-      // the reference HeadingNode::collectFrom does not traverse into
-      // CodeBlockNode, so /--texysource samples keep their written levels
+    if (node instanceof VerbatimBlockNode) {
+      // the reference getHeadings does not traverse into verbatim blocks,
+      // so /--texysource samples keep their written levels
       return NodeTraverser.DontTraverseChildren;
     }
 

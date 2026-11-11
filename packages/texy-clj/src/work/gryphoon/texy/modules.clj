@@ -306,7 +306,14 @@
         [_ m-indent _ m-content mod-parts] (second first-match)]
     (when m-indent
       (let [indent-str m-indent
-            content (loop [content (or m-content "") spaces ""]
+            first-line (or m-content "")
+            ;; a bullet opening the first line is text, - * text is no
+            ;; nested list; the leading space in the seeded content keeps
+            ;; it so (the reference parseItem does the same)
+            is-bullet (some? (re-find (re-pattern (str "^(?:"
+                                                       (str/join "|" (map :pattern list-bullets)) ")"))
+                                      first-line))
+            content (loop [content (str " " first-line) spaces ""]
                       (if-some [next (engine/block-next
                                       parser
                                       (compile-m (str "^(\\n*?)" (Pattern/quote indent-str)
@@ -319,7 +326,7 @@
                                  (if (str/blank? spaces) (str (count m-spaces)) spaces)))
                         content))]
         {:type :list-item
-         :content (engine/parse-block ctx (str/trim content))
+         :content (engine/parse-block ctx (if is-bullet (str/trimr content) (str/trim content)))
          :term false
          :modifier (mod/parse mod-parts)}))))
 
@@ -631,6 +638,17 @@
      (when (not= h "?") (parse-long h))]
     [content nil nil]))
 
+(defn- take-alt
+  "Takes the alternative text out of the modifier (the reference takeAlt):
+  .(text) writes it as the title, {alt: text} wins; both are removed from
+  the modifier so the render keeps them out of the img attributes."
+  [mod]
+  (let [alt (or (get-in mod [:attrs "alt"]) (:title mod))
+        mod (cond-> mod
+              (contains? (:attrs mod) "alt") (update :attrs dissoc "alt")
+              (:title mod) (assoc :title nil))]
+    [mod (if (vector? alt) (str/join " " alt) alt)]))
+
 (defn- image-node
   "The image part shared by the image and figure syntaxes: the image
   node, or the link node wrapping it when the pattern has a :link part
@@ -639,8 +657,15 @@
   (let [[url width height] (parse-image-content m-urls)
         ;; the image closing is *, > or <; only > and < are align parts
         align (when (contains? #{">" "<" "<>"} m-align) m-align)
+        mod (mod/parse (str (or m-mod-parts "") (or align "")))
+        [mod alt] (take-alt mod)
+        ;; a left/right alignment floats the image (the reference
+        ;; createImage); the write is removed from the modifier
+        float (when (contains? #{:left :right} (:h-align mod)) (:h-align mod))
+        mod (cond-> mod float (assoc :h-align nil))
         image {:type :image :url url :width width :height height
-               :modifier (mod/parse (str (or m-mod-parts "") (or align "")))}]
+               :alt alt :float float
+               :modifier mod}]
     (if m-link
       {:type :link
        :url (if (= m-link ":") url (strip-shy m-link))
@@ -669,9 +694,17 @@
 
 (defn- parse-figure [ctx groups]
   (let [[_ m-urls m-mod-parts m-align m-link m-caption m-fig-mod] groups
-        image (image-node m-urls m-mod-parts m-align m-link)]
+        image (image-node m-urls m-mod-parts m-align m-link)
+        ;; the float is written in the brackets of the image, but it is
+        ;; the figure that floats (the reference parseFigure)
+        float (or (get image :float)
+                  (get-in image [:content 0 :float]))
+        image (if (:content image)
+                (update image :content #(mapv (fn [img] (assoc img :float nil)) %))
+                (assoc image :float nil))]
     {:type :figure
      :image image
+     :float float
      :caption (when-not (str/blank? m-caption)
                 (engine/parse-inline ctx (str/trim m-caption)))
      :modifier (mod/parse m-fig-mod)}))
@@ -974,10 +1007,11 @@
 
 (defn parse-image-definition [_ groups]
   (let [[_ m-ref m-urls m-mod-parts] groups
-        [url width height] (parse-image-content m-urls)]
+        [url width height] (parse-image-content m-urls)
+        [mod alt] (take-alt (mod/parse m-mod-parts))]
     {:type :image-definition :reference (str/trim m-ref)
-     :url url :width width :height height
-     :modifier (mod/parse m-mod-parts)}))
+     :url url :alt alt :width width :height height
+     :modifier mod}))
 
 (defn definition-syntaxes []
   ;; image definitions register before the figure syntax (the reference's

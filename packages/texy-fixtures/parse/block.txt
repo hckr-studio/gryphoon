@@ -1,11 +1,11 @@
 DocumentNode
   ContentNode
-    SectionNode [0,653] mod[10,13]
+    DivNode [0,653] mod[10,13]
       ContentNode
         ParagraphNode [24,4]
           ContentNode
             TextNode [24,4] "auto"
-        SectionNode [29,86] mod[39,7]
+        DivNode [29,86] mod[39,7]
           ContentNode
             ListNode [49,28] unordered
               ListItemNode [49,19] mod[59,9] bulletRange[49,1] bullet=-
@@ -21,15 +21,15 @@ DocumentNode
             ParagraphNode [79,4]
               ContentNode
                 TextNode [79,4] "\\---"
-            SectionNode [84,26] mod[94,8]
+            DivNode [84,26] mod[94,8]
               ContentNode
                 ParagraphNode [103,2]
                   ContentNode
                     TextNode [103,2] "aa"
         HorizontalRuleNode [116,28] mod[134,10]
-        SectionNode [146,412] mod[156,10]
+        DivNode [146,412] mod[156,10]
           ContentNode
-            SectionNode [171,381] mod[181,7]
+            DivNode [171,381] mod[181,7]
               ContentNode
                 ListNode [195,169] unordered
                   ListItemNode [195,169] mod[225,16] bulletRange[195,1] bullet=-
@@ -147,7 +147,7 @@ DocumentNode
     ParagraphNode [782,4]
       ContentNode
         TextNode [782,4] "\\---"
-    SectionNode [788,69] mod[798,9]
+    DivNode [788,69] mod[798,9]
       ContentNode
         ParagraphNode [810,41]
           ContentNode
@@ -159,9 +159,9 @@ DocumentNode
               ContentNode
                 TextNode [825,11] "David Grudl"
             TextNode [841,10] " 2003-2005"
-    SectionNode [860,82] mod[870,13]
+    DivNode [860,82] mod[870,13]
       ContentNode
-        SectionNode [884,53] mod[894,7]
+        DivNode [884,53] mod[894,7]
           ContentNode
             ListNode [904,28] unordered
               ListItemNode [904,19] mod[914,9] bulletRange[904,1] bullet=-

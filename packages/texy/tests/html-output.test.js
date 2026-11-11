@@ -133,9 +133,9 @@ describe("ElementDecorator", () => {
     assert.deepStrictEqual(el.attrs.style, { "text-align": "right", "vertical-align": "top" });
   });
 
-  it("maps aligns to CSS classes when alignClasses are configured", () => {
+  it("maps aligns to CSS classes when textAlignClasses are configured", () => {
     const d = makeDecorator();
-    d.config.alignClasses.right = "r";
+    d.config.textAlignClasses.right = "r";
     const el = new Element("p");
     d.decorate(Modifier.parse(">"), el);
     assert.deepStrictEqual(el.attrs.class, ["r"]);
@@ -176,20 +176,17 @@ describe("ElementDecorator", () => {
     assert.strictEqual(el.attrs.title, "Hello");
   });
 
-  it("applyFloat: side class, alignClasses fallback, then inline float style", () => {
+  it("applyFloat: the class from floatClasses, or the inline float style", () => {
     const d = makeDecorator();
+    d.config.floatClasses.left = "il";
     const el = new Element("img");
-    d.applyFloat(el, "left", "il", "ir");
+    d.applyFloat(el, "left");
     assert.deepStrictEqual(el.attrs.class, ["il"]);
 
+    d.config.floatClasses.left = null;
     const el2 = new Element("img");
-    d.applyFloat(el2, "left", null, null);
+    d.applyFloat(el2, "left");
     assert.deepStrictEqual(el2.attrs.style, { float: "left" });
-
-    d.config.alignClasses.left = "al";
-    const el3 = new Element("img");
-    d.applyFloat(el3, "left", null, null);
-    assert.deepStrictEqual(el3.attrs.class, ["al"]);
   });
 });
 

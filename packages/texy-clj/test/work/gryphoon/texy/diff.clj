@@ -10,7 +10,8 @@
   (doseq [[name source expected] (ct/fixtures)
           :when (not (contains? ct/known-gaps name))]
     (let [e (ct/normalize expected)
-          a (ct/normalize (core/process (core/->texy {:indent false :line-wrap 0}) source))]
+          a (ct/normalize (core/process (core/->texy {:typography false :hyphenation false
+                                                      :indent false :line-wrap 0}) source))]
       (when-not (= e a)
         (let [i (first (filter #(not= (nth e % nil) (nth a % nil)) (range (max (count e) (count a)))))
               i (or i 0)

@@ -125,7 +125,9 @@
          :image-root "https://res.cloudinary.com/rarous/image/fetch/dpr_auto,f_auto,q_auto,w_auto:100:800/https://www.rarous.net/data/obrazky/"
          ;; Texy 3: $texy->phraseModule->tags['phrase/em'] = 'i'
          :phrase-tags (merge render/phrase-tags {"phrase/em" :i})
-         ;; Texy 3: $texy->figureModule->class = 'image'
+         ;; Texy 3: $texy->figureModule->class = 'image'; the 4-dev figure
+         ;; element replaced the old div, this blog keeps the Texy 3 wrapper
+         :figure-tag :div
          :figure-class "image"})
       (core/set-fallback-directive script-handler)
       (core/add-pass image-handler-pass)))
