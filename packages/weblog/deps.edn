@@ -2,5 +2,5 @@
  :deps {work.gryphoon/texy-clj {:local/root "../texy-clj"}
         clj-time/clj-time {:mvn/version "0.15.2"}
         enlive/enlive {:mvn/version "1.1.6"}
-        cheshire/cheshire {:mvn/version "6.2.0"}
+        cheshire/cheshire {:mvn/version "6.2.1"}
         net.cgrand/xforms {:mvn/version "0.19.6"}}}
