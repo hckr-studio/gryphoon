@@ -47,7 +47,7 @@
     [net.cgrand.xforms :as x]
     [clojure.java.io :as io]
     [clojure.string :as string]
-    [cheshire.core :as json]
+    [jsonista.core :as json]
     [net.cgrand.enlive-html :as html :refer [deftemplate xml-parser]]
     [work.gryphoon.texy.core :refer [process]])
   (:import
@@ -441,7 +441,7 @@
 
 (defn og-images [{:keys [articles config]}]
   (let [images-meta (into [] (comp (map article->image) (map hash-content)) articles)
-        data (json/generate-string images-meta)]
+        data (json/write-value-as-string images-meta)]
     [{:file/name (get-in config [:cards :file] "cards.json")
       :file/dir (get-in config [:cards :dir] "..")
       :file/content data}]))
