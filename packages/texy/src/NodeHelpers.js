@@ -77,3 +77,22 @@ export function extractText(node) {
 export function cloneNode(node) {
   return Object.assign(Object.create(Object.getPrototypeOf(node)), node);
 }
+
+/**
+ * Deep copy of an AST subtree: every node of the subtree is new, the
+ * modifiers are shared (PHP Node::__clone semantics). Covers the getChildren
+ * shapes of inline subtrees: a `children` array and a `content` slot.
+ * @param {Node} node
+ * @returns {Node}
+ */
+export function deepCloneNode(node) {
+  const copy = cloneNode(node);
+
+  if (Array.isArray(copy.children)) {
+    copy.children = copy.children.map(deepCloneNode);
+  } else if (copy.content !== undefined) {
+    copy.content = deepCloneNode(copy.content);
+  }
+
+  return copy;
+}

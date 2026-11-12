@@ -33,9 +33,9 @@ DocumentNode
           ParagraphNode [170,27]
             ContentNode
               TextNode [170,6] "odkaz "
-              TextNode [176,3] "<a>"
+              RawTextNode [176,3] "<a>"
               TextNode [179,4] "test"
-              TextNode [183,4] "</a>"
+              RawTextNode [183,4] "</a>"
               TextNode [187,10] " prázdný"
       ListItemNode [198,56] bulletRange[199,1] bullet=-
         ContentNode
@@ -504,18 +504,16 @@ DocumentNode
         ContentNode
           ParagraphNode [3151,21]
             ContentNode
-              LinkNode [3151,20] textRange[3152,5] urlRange[3159,12] phrase/span url=www.text.cz(
+              LinkNode [3151,21] textRange[3152,5] urlRange[3159,13] phrase/span url=www.text.cz()
                 ContentNode
                   TextNode [3152,5] "text1"
-              TextNode [3171,1] ")"
       ListItemNode [3173,24] bulletRange[3173,1] bullet=-
         ContentNode
           ParagraphNode [3175,22]
             ContentNode
-              LinkNode [3175,21] textRange[3176,5] urlRange[3183,13] phrase/span url=www.text.cz(x
+              LinkNode [3175,22] textRange[3176,5] urlRange[3183,14] phrase/span url=www.text.cz(x)
                 ContentNode
                   TextNode [3176,5] "text1"
-              TextNode [3196,1] ")"
       ListItemNode [3198,22] bulletRange[3198,1] bullet=-
         ContentNode
           ParagraphNode [3200,20]
@@ -527,10 +525,9 @@ DocumentNode
         ContentNode
           ParagraphNode [3223,28]
             ContentNode
-              LinkNode [3223,27] textRange[3224,5] urlRange[3231,19] phrase/span url=javascript:alert(''
+              LinkNode [3223,28] textRange[3224,5] urlRange[3231,20] phrase/span url=javascript:alert('')
                 ContentNode
                   TextNode [3224,5] "text3"
-              TextNode [3250,1] ")"
       ListItemNode [3252,33] bulletRange[3252,1] bullet=-
         ContentNode
           ParagraphNode [3254,31]

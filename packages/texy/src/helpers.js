@@ -90,16 +90,6 @@ export function decodeEntity(ref) {
 }
 
 /**
- * Cleans a URL target parsed from source text: decodes HTML entities, which
- * the author writes as in HTML, and removes soft hyphens, which get in by
- * copy-pasting hyphenated text and would break the address.
- * @param {string} s
- */
-export function cleanUrl(s) {
-  return decodeEntities(s).replaceAll("\u00AD", "");
-}
-
-/**
  * Translate all whitespaces (\t \n \r space) to the meta-space bytes
  * \x01-\x04, which the line wrapper must not break inside.
  * @param {string} s
@@ -324,13 +314,13 @@ export function toAscii(s) {
 }
 
 /**
- * Converts to web-safe characters [a-z0-9-]. A soft hyphen does not split
- * the word.
+ * Converts to web-safe characters [a-z0-9-]. Format characters (soft
+ * hyphen, zero-width joiners) do not split the word.
  * @param {string} s
  * @returns {string}
  */
 export function webalize(s) {
-  s = toAscii(s.replaceAll("\u00AD", "")).toLowerCase();
+  s = toAscii(s.replace(/\p{Cf}/gu, "")).toLowerCase();
   s = s.replace(/[^a-z0-9]+/g, "-");
   return s.replace(/^-+|-+$/g, "");
 }

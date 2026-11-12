@@ -15,6 +15,9 @@ const PhraseVariants = {
   [Syntax.AbbreviationQuotes]: Syntax.Abbreviation,
 };
 
+/** HTML elements whose content is raw text, not markup. */
+const RawTextElements = new Set(["script", "style"]);
+
 import {
   decodeEntities,
   escapeHtml,
@@ -25,7 +28,7 @@ import {
   prependRoot,
   shortenUrl,
 } from "../../helpers.js";
-import { extractText } from "../../NodeHelpers.js";
+import { deepCloneNode, extractText, find } from "../../NodeHelpers.js";
 import {
   AnnotationNode,
   BlockQuoteNode,
@@ -90,6 +93,22 @@ function settypeArray(attrs, key) {
   attrs[key] = key === "style" ? {} : v === undefined || v === null ? [] : [v];
 }
 
+/**
+ * Adds nofollow to the values of rel the author gave.
+ * @param {Array|boolean|number|string|null|undefined} rel value of the attribute
+ * @returns {string}
+ */
+function addNoFollow(rel) {
+  const values = Array.isArray(rel)
+    ? rel
+    : typeof rel === "string"
+      ? rel.split(" ")
+      : [];
+
+  return [...values.filter((value) => typeof value === "string" && value !== "" && value !== "nofollow"), "nofollow"]
+    .join(" ");
+}
+
 export class Renderer extends NodeRenderer {
   /**
    * @param {import('./Config.js').Config} config
@@ -142,7 +161,7 @@ export class Renderer extends NodeRenderer {
     this.handlers.set(LinkNode, n => this.renderLink(n));
     this.handlers.set(PhraseNode, n => this.renderPhrase(n));
     this.handlers.set(InlineCodeNode, n => this.renderInlineCode(n));
-    this.handlers.set(RawTextNode, n => escapeHtml(n.text));
+    this.handlers.set(RawTextNode, n => n.text);
     this.handlers.set(AnnotationNode, n => new Element("abbr", { title: n.annotation }).setText(n.text));
     this.handlers.set(EmoticonNode, n => this.renderEmoticon(n));
     this.handlers.set(LineBreakNode, () => (this.plainBreaks ? "\n" : new Raw("<br>")));
@@ -463,8 +482,13 @@ export class Renderer extends NodeRenderer {
   renderFigure(node) {
     const el = new Element(this.config.figureTag);
 
-    // Build image via generator - this allows custom ImageNode handlers to work
-    el.children = this.renderNodes([node.image]);
+    // Build image via generator - this allows custom ImageNode handlers to work;
+    // the figure floats, not the image in it (work on a copy, the node must stay untouched)
+    const image = deepCloneNode(node.image);
+    for (const imageNode of find(image, n => n instanceof ImageNode)) {
+      imageNode.float = null;
+    }
+    el.children = this.renderNodes([image]);
 
     // Caption
     if (node.caption !== null) {
@@ -734,7 +758,7 @@ export class Renderer extends NodeRenderer {
 
     // rel="nofollow"
     if (nofollow || (this.noFollow && el.attrs.href.includes("//"))) {
-      el.attrs.rel = "nofollow";
+      el.attrs.rel = addNoFollow(el.attrs.rel);
     }
 
     // Add content
@@ -848,12 +872,7 @@ export class Renderer extends NodeRenderer {
     // Add rel="nofollow" for external links when linkNoFollow is enabled
     if (tagName === "a" && !node.closing && typeof attrs.href === "string") {
       if (this.noFollow && attrs.href.includes("//")) {
-        const existingRel = typeof attrs.rel === "string" ? attrs.rel : "";
-        const relParts = existingRel !== "" ? existingRel.split(" ") : [];
-        if (!relParts.includes("nofollow")) {
-          relParts.push("nofollow");
-        }
-        attrs.rel = relParts.join(" ");
+        attrs.rel = addNoFollow(attrs.rel);
       }
     }
 
@@ -889,9 +908,15 @@ export class Renderer extends NodeRenderer {
   renderHtmlElement(node) {
     const open = new HtmlTagNode(node.name, node.attributes, false, false, node.range);
     const close = node.closingTag ?? new HtmlTagNode(node.name, {}, true);
+    const content = node.content.children;
     return this.wrapChildren([
       this.renderHtmlTag(open),
-      ...this.renderNodes(node.content.children),
+      // script and style hold raw text, not markup
+      ...(RawTextElements.has(node.name.toLowerCase()) &&
+        content.length === 1 &&
+        content[0] instanceof RawTextNode
+        ? [new Raw(content[0].text)]
+        : this.renderNodes(content)),
       this.renderHtmlTag(close),
     ]);
   }

@@ -41,9 +41,17 @@
 (def modifier-h (modifier-pattern :align true :bound 4))
 (def modifier-hv (modifier-pattern :align true :valign true :bound 5))
 
-;; links, url - doesn't end by :).,!? (greedy body: PCRE {0,1000}? under U)
+;; links, url - doesn't end by :;,.!? and takes a ) only to close its own (,
+;; parentheses balanced through a nested-paren run (the reference
+;; Patterns::LinkUrl; the reference quotes it under the ungreedy flag, its
+;; (greedy-in-U) body translated to a plain greedy one here, possessives
+;; kept). Group N of the embedding pattern - always the first group the
+;; target contributes.
 (def link-url
-  (str "\\[[^\\]\\n]+]|(?=[\\w/+.~%&?@=_#$])\\S{0,1000}[^:);,.!?\\s]"))
+  (str "\\[[^\\]\\n]++]"
+       "|(?=[\\w/+.~%&?@=_#$])"
+       "(?:[^\\s()]|\\([^\\s()]{0,100}+\\)|\\()+"
+       "(?<![:;,.!?])"))
 
 (def email
   (str "[" letter "][0-9.+_" letter "\\x{ad}-]{0,63}@[0-9.+_"

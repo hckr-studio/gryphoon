@@ -3,7 +3,7 @@
  * (port of Texy\Modules\AutolinkModule).
  */
 
-import { cleanUrl } from "../helpers.js";
+import { decodeEntities } from "../helpers.js";
 import { EmailNode, UrlNode } from "../nodes.js";
 import { Email, Letter } from "../Patterns.js";
 import { Syntax } from "../Syntax.js";
@@ -52,13 +52,13 @@ export class AutolinkModule extends Module {
    * @param {import('../Parsing/ParseContext.js').ParseContext} context
    */
   parseUrl(context, matches, offsets) {
-    return new UrlNode(cleanUrl(matches[0]), { offset: offsets[0], length: matches[0].length });
+    return new UrlNode(decodeEntities(matches[0]), { offset: offsets[0], length: matches[0].length });
   }
 
   /**
    * @param {import('../Parsing/ParseContext.js').ParseContext} context
    */
   parseEmail(context, matches, offsets) {
-    return new EmailNode(cleanUrl(matches[0]), { offset: offsets[0], length: matches[0].length });
+    return new EmailNode(decodeEntities(matches[0]), { offset: offsets[0], length: matches[0].length });
   }
 }

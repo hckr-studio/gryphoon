@@ -6,7 +6,7 @@
  * parseImageContent stays public for consumers running their own passes.
  */
 
-import { cleanUrl, toLower } from "../helpers.js";
+import { decodeEntities, toLower } from "../helpers.js";
 import { Modifier } from "../Modifier.js";
 import { find } from "../NodeHelpers.js";
 import { NodeTraverser } from "../NodeTraverser.js";
@@ -203,9 +203,9 @@ export class ImageModule extends Module {
     const imageNode = this.createImage(mURLs, (mImgMod ?? "") + (mAlign ?? ""), offsets);
     if (imageNode === null) return null;
 
-    // the float is written in the brackets of the image, but it is the figure that floats
+    // the float is written in the brackets of the image, but it is the figure that floats;
+    // the image keeps it, the figure renderer drops it on its copy
     const float = imageNode.float;
-    imageNode.float = null;
 
     // ImageNode source span is "[* ... <alignment>]"
     const imageEnd = (offsets[3] ?? 0) + (mAlign ?? "").length + 1; // 1 = "]"
@@ -247,7 +247,7 @@ export class ImageModule extends Module {
     const isSelf = mLink === ":";
 
     return new LinkNode(
-      isSelf ? imageNode.url : cleanUrl(mLink),
+      isSelf ? imageNode.url : decodeEntities(mLink),
       new ContentNode([imageNode]),
       null,
       { offset, length: linkOffset + mLink.length - offset },
@@ -271,7 +271,7 @@ export class ImageModule extends Module {
     const main = parts[0].trim();
     let written = main;
 
-    let url = cleanUrl(main);
+    let url = decodeEntities(main);
     let width = null;
     let height = null;
 

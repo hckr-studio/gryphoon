@@ -1,7 +1,8 @@
 (ns work.gryphoon.texy.normalize
   "Normalizes text to the canonical form that parsing operates on (port of
-  Texy::normalize): converts line endings to \\n, strips control characters,
-  right-trims lines and drops blank lines at both ends. Idempotent.
+  Texy::normalize): converts line endings to \\n, strips control characters and soft hyphens,
+  right-trims lines and drops blank lines at both ends, keeping the newline
+  that ends the last line, so a file stays a file. Idempotent.
 
   Also the home of locale-independent case conversion: the reference
   lowercases with mb_strtolower's Unicode default mappings and never
@@ -24,14 +25,24 @@
 (defn- strip-controls [s]
   (str/replace s #"[\x00-\x08\x0B-\x1F]+" ""))
 
+(defn- strip-soft-hyphens
+  "Removes soft hyphens, which get in by copy-pasting hyphenated text."
+  [s]
+  (str/replace s "\u00AD" ""))
+
 (def ^:private line-end-trim
   (Pattern/compile "[ \t]+$" Pattern/MULTILINE))
 
 (defn normalize ^String [^String text]
-  (-> text
-      (str/replace "\r\n" "\n")
-      (str/replace "\r" "\n")
-      strip-controls
-      (str/replace line-end-trim "")     ; right trim line ends
-      (str/replace #"^[\n\uFEFF]+" "")   ; BOM + blank lines at the start
-      (str/replace #"\n+$" "")))         ; blank lines at the end
+  (let [s (-> text
+              (str/replace "\r\n" "\n")
+              (str/replace "\r" "\n")
+              strip-controls
+              strip-soft-hyphens
+              (str/replace line-end-trim "")   ; right trim line ends
+              (str/replace #"^[\n\uFEFF]+" "")) ; BOM + blank lines at the start
+        trimmed (str/replace s #"\n+$" "")]    ; blank lines at the end
+    ;; the last line keeps its newline, so a file stays a file
+    (if (and (not= trimmed s) (not= trimmed ""))
+      (str trimmed "\n")
+      trimmed)))

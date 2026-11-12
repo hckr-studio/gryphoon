@@ -3,7 +3,7 @@
  * (port of Texy\Modules\PhraseModule).
  */
 
-import { decodeEntities, cleanUrl, unescapeHtml } from "../helpers.js";
+import { decodeEntities, unescapeHtml } from "../helpers.js";
 import { Modifier } from "../Modifier.js";
 import { ContentNode, InlineCodeNode, LinkNode, PhraseNode, RawTextNode, TextNode } from "../nodes.js";
 import { Letter, LinkUrl, Modifier as ModifierPattern } from "../Patterns.js";
@@ -318,7 +318,7 @@ export class PhraseModule extends Module {
     if (phrase === Syntax.SpanQuotes || phrase === Syntax.SpanTilde) {
       if (mLink !== null && this.linksAllowed) {
         return new LinkNode(
-          cleanUrl(mLink),
+          decodeEntities(mLink),
           context.parseInline(mContent.trim(), contentOffset),
           Modifier.parse(mMod, offsets[2] ?? null),
           range,
@@ -342,7 +342,7 @@ export class PhraseModule extends Module {
     // Other phrases with link
     if (mLink !== null && this.linksAllowed) {
       return new LinkNode(
-        cleanUrl(mLink),
+        decodeEntities(mLink),
         new ContentNode([node]),
         null,
         range,
@@ -390,7 +390,7 @@ export class PhraseModule extends Module {
     }
 
     return new LinkNode(
-      cleanUrl(mLink.trim()),
+      decodeEntities(mLink.trim()),
       content,
       null, // quicklink and markdown links don't support modifiers
       { offset: offsets[0], length: matches[0].length },
@@ -411,7 +411,7 @@ export class PhraseModule extends Module {
     }
 
     return new LinkNode(
-      cleanUrl(mLink.trim()),
+      decodeEntities(mLink.trim()),
       content,
       null, // wikilinks don't support modifiers
       { offset: offsets[0], length: matches[0].length },

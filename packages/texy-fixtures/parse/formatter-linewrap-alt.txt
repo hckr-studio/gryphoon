@@ -1,6 +1,6 @@
 DocumentNode
   ContentNode
-    HeadingNode [0,91274] textRange[0,9] level=1 marker=*
+    HeadingNode [0,91274] textRange[0,9] level=2 marker=*
       ContentNode
         TextNode [0,9] "Vítejte!"
     ParagraphNode [91277,182530]

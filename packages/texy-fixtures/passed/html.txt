@@ -24,9 +24,9 @@ DocumentNode
             TextNode [236,10] "\n  Hello!\n"
     ParagraphNode [254,13]
       ContentNode
-        TextNode [254,6] "<my />"
+        RawTextNode [254,6] "<my />"
         TextNode [260,2] ".."
-        TextNode [262,5] "</my>"
+        RawTextNode [262,5] "</my>"
     ParagraphNode [269,17]
       ContentNode
         HtmlTagNode [269,8] <span>

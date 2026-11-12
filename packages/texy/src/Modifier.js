@@ -117,6 +117,15 @@ export class Modifier {
   }
 
   /**
+   * CSS property names match regardless of case, except custom properties (--name).
+   * @param {string} name
+   * @returns {string}
+   */
+  static normalizeProperty(name) {
+    return name.startsWith("--") ? name : name.toLowerCase();
+  }
+
+  /**
    * Returns a shallow copy (PHP clone semantics).
    * @returns {Modifier}
    */
@@ -184,7 +193,7 @@ export class Modifier {
       const pos = value.indexOf(":");
       if (pos === -1) continue;
 
-      const prop = value.slice(0, pos).trim().toLowerCase();
+      const prop = Modifier.normalizeProperty(value.slice(0, pos).trim());
       if (prop === "") continue;
 
       const val = value.slice(pos + 1).trim();

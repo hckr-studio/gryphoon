@@ -15,7 +15,6 @@ export class HtmlModule extends Module {
   constructor(texy) {
     super();
     this.texy = texy;
-    texy.addPass(doc => this.processPassthrough(doc));
   }
 
   /**

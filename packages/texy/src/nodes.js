@@ -767,7 +767,7 @@ export class EmoticonNode extends InlineNode {
   constructor(emoticon, range = null) {
     super();
     this.emoticon = emoticon;
-    /** filled by the transform phase */
+    /** replacement text/image, filled by the parse phase */
     this.resolved = null;
     this.range = range;
   }

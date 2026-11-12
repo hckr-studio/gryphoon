@@ -49,13 +49,13 @@ export const ModifierHVAlign = String.raw`(?x:
 	){1,5}?)
 )`;
 
-// links, url - doesn't end by :).,!?
+// links, url - does not end by :;,.!? and takes ) only to close its own (, used with the U flag
 export const LinkUrl = String.raw`(?x:
 	\[ [^]\n]++ ]                    # link text in brackets
 	|
 	(?= [\w/+.\~%&?@=_#$] )         # URL must start with these chars
-	\S{0,1000}?                     # URL body
-	[^:);,.!?\s]                    # URL must not end with these chars
+	(?: [^\s()] | \( [^\s()]{0,100}+ \) | \( )+?  # URL body, parentheses balanced
+	(?<! [:;,.!?] )                  # URL must not end with these chars
 )`;
 
 export const Email =

@@ -1,6 +1,6 @@
 DocumentNode
   ContentNode
-    HeadingNode [0,16] textRange[0,9] level=2 marker==
+    HeadingNode [0,16] textRange[0,9] level=3 marker==
       ContentNode
         TextNode [0,9] "日本語"
     ParagraphNode [18,28]

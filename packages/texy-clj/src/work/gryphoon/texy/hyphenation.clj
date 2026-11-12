@@ -143,11 +143,16 @@
 
 (defn post-line
   "Hyphenates words longer than the limit (default 20), splitting them
-  with soft hyphens at syllable boundaries. Spaces, tabs, newlines,
+  with soft hyphens at syllable boundaries - by the syllables of Czech,
+  which serve Slovak too; text in another language is left whole (the
+  reference CzechHyphenator's locale gate). Spaces, tabs, newlines,
   marker bytes, dashes and soft hyphens break words (the reference
   postLine)."
-  ([^String text] (post-line text 20))
-  ([^String text word-limit]
-   (str/replace text
-                (re-pattern (str "[^ \\n\\t\\x15\\x16\\u2013\\u2014\\u00AD-]{" word-limit ",}"))
-                #(hyphenate % word-limit))))
+  ([^String text] (post-line text 20 "cs"))
+  ([^String text word-limit] (post-line text word-limit "cs"))
+  ([^String text word-limit locale]
+   (if-not (contains? #{"cs" "sk"} locale)
+     text
+     (str/replace text
+                  (re-pattern (str "[^ \\n\\t\\x15\\x16\\u2013\\u2014\\u00AD-]{" word-limit ",}"))
+                  #(hyphenate % word-limit)))))

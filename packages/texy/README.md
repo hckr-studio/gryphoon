@@ -101,6 +101,10 @@ and no well-forming is re-applied after DOM mutation.
   same names as the reference `Texy\Syntax` constants (see `src/Syntax.js`).
   Typography (`allowed['typography']`) and hyphenation
   (`allowed['longwords']`) are on by default, like in the reference.
+  This map is the port's documented name for the reference `$allowedSyntax`.
+- `texy.toInlineHtml()` / `texy.parseInline()` / `texy.toHtml()` - the
+  reference's names of `processLine()` / `parseLine()` / `process()` are
+  available as aliases; the port's own names remain primary.
 - `texy.typographyModule.locale` - locale for typographic quotation marks
   (`'cs'` default, like the reference module); passed through to
   `processTypo`.

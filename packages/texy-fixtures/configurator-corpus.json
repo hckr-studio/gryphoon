@@ -2,7 +2,7 @@
     {
         "mode": "safe",
         "input": "<a href=\"javascript:alert(1)\">click</a> and <b onmouseover=\"alert(2)\">bold</b> <script>alert(3)</script> <div class=\"c\">div</div>",
-        "expected": "<p>&lt;a href=„javascrip­t:alert(1)“&gt;clic­k&lt;/a&gt; and <b>bold</b>\n&lt;script&gt;alert(3)&lt;/scrip­t&gt; &lt;div\nclass=„c“&gt;div&lt;/div&gt;</p>\n"
+        "expected": "<p>&lt;a href=\"javascript:alert(1)\"&gt;click&lt;/a&gt; and <b>bold</b>\n&lt;script&gt;alert(3)&lt;/script&gt; &lt;div class=\"c\"&gt;div&lt;/div&gt;</p>\n"
     },
     {
         "mode": "safe",
@@ -32,7 +32,7 @@
     {
         "mode": "disableLinks",
         "input": "<a href=\"javascript:alert(1)\">click</a> and <b onmouseover=\"alert(2)\">bold</b> <script>alert(3)</script> <div class=\"c\">div</div>",
-        "expected": "&lt;a href=„javascrip­t:alert(1)“&gt;clic­k&lt;/a&gt; and <b\nonmouseover=\"alert(2)\">bold</b> <script>alert(3)</script>\n<div class=\"c\">div</div>\n"
+        "expected": "&lt;a href=\"javascript:alert(1)\"&gt;click&lt;/a&gt; and <b\nonmouseover=\"alert(2)\">bold</b> <script>alert(3)</script>\n<div class=\"c\">div</div>\n"
     },
     {
         "mode": "disableLinks",
@@ -92,7 +92,7 @@
     {
         "mode": "all",
         "input": "<a href=\"javascript:alert(1)\">click</a> and <b onmouseover=\"alert(2)\">bold</b> <script>alert(3)</script> <div class=\"c\">div</div>",
-        "expected": "<p>&lt;a href=„javascrip­t:alert(1)“&gt;clic­k&lt;/a&gt; and <b>bold</b>\n&lt;script&gt;alert(3)&lt;/scrip­t&gt; &lt;div\nclass=„c“&gt;div&lt;/div&gt;</p>\n"
+        "expected": "<p>&lt;a href=\"javascript:alert(1)\"&gt;click&lt;/a&gt; and <b>bold</b>\n&lt;script&gt;alert(3)&lt;/script&gt; &lt;div class=\"c\"&gt;div&lt;/div&gt;</p>\n"
     },
     {
         "mode": "all",

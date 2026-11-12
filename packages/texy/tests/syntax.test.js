@@ -195,8 +195,9 @@ describe("images and figures", () => {
     assert.equal(image.alt, "alt text");
     // the alt is taken out of the modifier
     assert.equal(image.modifier.title, null);
-    // the float is written on the image, but it is the figure that floats
-    assert.equal(image.float, null);
+    // the float stays on the image; the figure floats it and the renderer
+    // drops it from its copy of the image
+    assert.equal(image.float, "right");
     assert.equal(figure.float, "right");
   });
 

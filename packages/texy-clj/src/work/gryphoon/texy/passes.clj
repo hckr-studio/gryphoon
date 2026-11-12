@@ -102,9 +102,10 @@
 
 (defn- webalize
   "Converts to web-safe [a-z0-9-] text (the reference Helpers::webalize);
-  a soft hyphen does not survive into the slug."
+  format characters (soft hyphen, zero-width joiners) do not survive
+  into the slug - they would not split the word."
   ^String [^String s]
-  (-> (norm/lower-case (to-ascii (str/replace s "\u00AD" "")))
+  (-> (norm/lower-case (to-ascii (str/replace s #"\p{Cf}" "")))
       (str/replace #"[^a-z0-9]+" "-")
       (str/replace #"^-+|-+$" "")))
 
@@ -133,47 +134,87 @@
   (or (:title-override node)
       (str/trim (engine/extract-text node))))
 
+(def heading-levels
+  "Underline character => written level 1..6 (the reference
+  TexyConfig::headingLevels)."
+  {\# 1 \* 2 \= 3 \- 4})
+
+(defn heading-written-level
+  "The level as written, by the notation alone (the reference
+  HeadingModule::readLevel): an underlined heading's underline character
+  maps through heading-levels, a surrounded heading's marker length
+  counts (clamped to 2..7; more characters mean a higher heading unless
+  more-means-higher is off)."
+  ([subtype marker] (heading-written-level subtype marker true))
+  ([subtype ^String marker more-means-higher]
+   (case subtype
+     :underlined (get heading-levels (first marker))
+     :surrounded (let [length (max 2 (min 7 (count marker)))]
+                  (if more-means-higher (- 8 length) (dec length)))
+     nil)))
+
 (defn balance-headings
   "Balances heading levels on the document (returns a new document), and
-  applies the rest of the reference's HeadingPass: hoists the {toc: ...}
-  style off the modifier (it must never reach the output) and, when
+  applies the rest of the reference's heading machinery: hoists the
+  {toc: ...} style off the modifier (it must never reach the output),
+  shifts every level by :top (the reference HeadingPass) and, when
   :generate-ids is on, gives every heading a slug id (webalized title,
-  :id-prefix prefix, uniquified; an explicit modifier id wins).
+  :id-prefix prefix, uniquified; an explicit modifier id wins and
+  reserves its name before any generated id).
 
-  Dynamic level balancing (default): underlined levels are ranked by
-  their preliminary level (densest becomes the top), surrounded levels
-  shift relative to the highest of them - so both families end at `top`.
+  Dynamic level balancing (default, the reference
+  HeadingModule::balanceLevels): both families are read by the notation
+  alone - the underlined styles rank by the order of their written
+  levels in the document, the surrounded ones shift relative to the
+  highest of their written levels - so both end at :top.
 
-  Fixed: every level shifts by `top` and is clamped to 1..6."
-  [doc {:keys [top dynamic generate-ids id-prefix]
-        :or {top 1 dynamic true generate-ids false id-prefix "toc-"}}]
-  (let [headings (collect-headings doc)]
-    (if (empty? headings)
-      doc
-      (let [level-fn (if-not dynamic
-                       (fn [node] (assoc node :level (-> (:level node) (+ top) (max 1) (min 6))))
-                       (let [surrounded (keep #(when (= :surrounded (:subtype %)) (:level %)) headings)
-                             min-level (if (seq surrounded) (reduce min surrounded) Integer/MAX_VALUE)
-                             underlined (sort (distinct (keep #(when (= :underlined (:subtype %)) (:level %)) headings)))
-                             rank (into {} (map-indexed (fn [r level] [level r])) underlined)
-                             offset (- top min-level)]
-                         (fn [node]
-                           (assoc node :level (-> (if (= :surrounded (:subtype node))
-                                                    (+ (:level node) offset)
-                                                    (+ (get rank (:level node) 0) top))
-                                                  (max 1) (min 6))))))
-            used-id (atom #{})]
-        (transform-nodes-except-code
-         (fn [node]
-           (if (not= :heading (:type node))
-             node
-             (let [node (hoist-toc (level-fn node))]
-               (if-not generate-ids
-                 node
-                 (let [mod-id (get-in node [:modifier :id])]
-                   (if mod-id
-                     (do (swap! used-id conj mod-id) (assoc node :id mod-id))
-                     (let [id (unique-id (str id-prefix (webalize (heading-title node))) used-id)]
-                       (swap! used-id conj id)
-                       (assoc node :id id))))))))
-         doc)))))
+  Fixed: the written levels only shift by :top and are clamped to 1..6."
+  ([doc] (balance-headings doc {}))
+  ([doc {:keys [top dynamic generate-ids id-prefix more-means-higher]
+         :or {top 1, dynamic true, generate-ids false, id-prefix "toc-", more-means-higher true}}]
+   (let [headings (collect-headings doc)
+         written (fn [node]
+                   (when-some [marker (:marker node)]
+                     (heading-written-level (:subtype node) marker more-means-higher)))
+         ;; underlined styles rank by written level; surrounded ones
+         ;; shift against the highest written level they use
+         order (into {}
+                     (map-indexed (fn [rank level] [level rank]))
+                     (sort (distinct (keep (fn [node] (when (= (:subtype node) :underlined) (written node))) headings))))
+         stop (let [levels (keep (fn [node] (when (= (:subtype node) :surrounded) (written node))) headings)]
+                (if (seq levels) (reduce min levels) Long/MAX_VALUE))
+         level-of (fn [node]
+                    (let [w (written node)]
+                      (-> (cond
+                            ;; a heading built without a marker keeps its level
+                            (nil? w) (:level node)
+                            (not dynamic) w
+                            (= :underlined (:subtype node)) (inc (get order w 0))
+                            :else (inc (- w stop)))
+                          (+ top)
+                          (dec)
+                          (max 1)
+                          (min 6))))
+         used-id (atom #{})
+         generate-id (fn [node]
+                       (let [explicit (get-in node [:modifier :id])]
+                         (if explicit
+                           (assoc node :id explicit)
+                           (let [id (unique-id (str id-prefix (webalize (heading-title node))) used-id)]
+                             (swap! used-id conj id)
+                             (assoc node :id id)))))]
+     ;; explicit ids reserve their names first, so a generated one never
+     ;; collides with an explicit one later in the document
+     (doseq [node headings
+             :let [explicit (get-in node [:modifier :id])]
+             :when explicit]
+       (swap! used-id conj explicit))
+     (transform-nodes-except-code
+      (fn [node]
+        (if (not= :heading (:type node))
+          node
+          (let [node (hoist-toc (assoc node :level (level-of node)))]
+            (if generate-ids
+              (generate-id node)
+              node))))
+      doc))))

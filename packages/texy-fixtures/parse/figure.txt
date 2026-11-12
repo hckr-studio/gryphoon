@@ -1,6 +1,6 @@
 DocumentNode
   ContentNode
-    HeadingNode [0,14] textRange[0,8] level=3 marker=-
+    HeadingNode [0,14] textRange[0,8] level=4 marker=-
       ContentNode
         TextNode [0,8] "Modifier"
     FigureNode [16,70]
@@ -19,7 +19,7 @@ DocumentNode
         TextNode [244,15] "any description"
     FigureNode [268,20] mod[283,5]
       ImageNode [268,13] urlRange[271,7] src=obr.jpg
-    HeadingNode [291,10] textRange[291,5] level=3 marker=-
+    HeadingNode [291,10] textRange[291,5] level=4 marker=-
       ContentNode
         TextNode [291,5] "Links"
     FigureNode [303,29]
@@ -52,7 +52,7 @@ DocumentNode
       LinkNode [463,45] urlRange[477,31] figure ref=popup.php?img=obr-big.jpg
         ContentNode
           ImageNode [463,13] urlRange[466,7] src=obr.jpg
-    HeadingNode [511,9] textRange[511,5] level=3 marker=-
+    HeadingNode [511,9] textRange[511,5] level=4 marker=-
       ContentNode
         TextNode [511,5] "Align"
     FigureNode [522,33]
@@ -67,7 +67,7 @@ DocumentNode
       ImageNode [592,13] urlRange[595,7] src=obr.jpg
     FigureNode [607,13]
       ImageNode [607,13] urlRange[610,7] src=obr.jpg
-    HeadingNode [623,13] textRange[623,8] level=3 marker=-
+    HeadingNode [623,13] textRange[623,8] level=4 marker=-
       ContentNode
         TextNode [623,8] "Multiple"
     FigureNode [638,33]
@@ -82,7 +82,7 @@ DocumentNode
       ImageNode [708,13] urlRange[711,7] src=obr.jpg
     FigureNode [722,13]
       ImageNode [722,13] urlRange[725,7] src=obr.jpg
-    HeadingNode [738,17] textRange[738,12] level=3 marker=-
+    HeadingNode [738,17] textRange[738,12] level=4 marker=-
       ContentNode
         TextNode [738,12] "Part of text"
     FigureNode [757,33]

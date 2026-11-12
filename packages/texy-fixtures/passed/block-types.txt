@@ -30,7 +30,7 @@ DocumentNode
             TextNode [363,1] " "
             HtmlTagNode [364,6] <br>
             TextNode [370,1] " "
-            TextNode [371,4] "<xx>"
+            RawTextNode [371,4] "<xx>"
     CodeBlockNode [381,56] codeMap@389
     CodeBlockNode [439,34] codeMap@448
     HtmlBlockNode [475,52] codeMap@483
@@ -40,7 +40,7 @@ DocumentNode
         TextNode [511,1] " "
         HtmlTagNode [512,6] <br>
         TextNode [518,1] " "
-        TextNode [519,4] "<xx>"
+        RawTextNode [519,4] "<xx>"
     HtmlBlockNode [529,34] codeMap@537
       ContentNode
         TextNode [537,22] "\tHtml: Odsazeny\n\t text"
@@ -59,7 +59,7 @@ DocumentNode
         TextNode [777,1] " "
         HtmlTagNode [778,6] <br>
         TextNode [784,1] " "
-        TextNode [785,4] "<xx>"
+        RawTextNode [785,4] "<xx>"
     PreformattedNode [795,32] codeMap@803
       ContentNode
         TextNode [803,20] "PRE: Odsazeny\n text"
@@ -77,7 +77,7 @@ DocumentNode
             TextNode [923,1] " "
             HtmlTagNode [924,6] <br>
             TextNode [930,1] " "
-            TextNode [931,4] "<xx>"
+            RawTextNode [931,4] "<xx>"
     DivNode [941,32]
       ContentNode
         ParagraphNode [949,20]

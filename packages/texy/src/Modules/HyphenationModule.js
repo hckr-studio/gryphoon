@@ -183,11 +183,18 @@ export class HyphenationModule extends Module {
   }
 
   /**
-   * Adds soft hyphens to long words.
+   * Adds soft hyphens to long words, by the syllables of Czech, which serve
+   * Slovak too; text in another language is left whole (the reference
+   * Typography\CzechHyphenator).
    * @param {string} text
    * @returns {string}
    */
   postLine(text) {
+    const locale = (this.texy?.typographyModule?.locale ?? "cs").substring(0, 2);
+    if (locale !== "cs" && locale !== "sk") {
+      return text;
+    }
+
     // \x15 (protected text) and \x16 (replaced content) break words,
     // \x17 (markup boundary) is transparent - see the TextRunPass image alphabet
     return replace(text, String.raw`~[^ \n\t\x15\x16\x{2013}\x{2014}\x{ad}-]{` + this.wordLimit + ",}~", m =>

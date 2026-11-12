@@ -35,7 +35,7 @@
 (deftest texy3-comment-setup
   (testing "safe mode, enabled phrases, top 4 headings, user references"
     (is (= (str "<p><ins>ins</ins> <del>del</del> sup<sup>2</sup> sub<sub>2</sub>_ \u201Enice\u201C</p>\n\n"
-                "<p>&lt;script&gt;alert(1)&lt;/scrip\u00ADt&gt; x</p>\n\n"
+                "<p>&lt;script&gt;alert(1)&lt;/script&gt; x</p>\n\n"
                 "<h4>Title</h4>\n\n"
                 "<p>see <a href=\"https://example.com/comment-1#comment\"\n"
                 "rel=\"nofollow\">comment</a>"

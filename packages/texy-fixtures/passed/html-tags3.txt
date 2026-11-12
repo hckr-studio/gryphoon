@@ -5,7 +5,7 @@ DocumentNode
         HtmlTagNode [0,39] <link>
     ParagraphNode [41,46]
       ContentNode
-        TextNode [41,6] "<head>"
+        RawTextNode [41,6] "<head>"
         TextNode [47,1] " "
         HtmlTagNode [48,39] <link>
     ParagraphNode [89,5]

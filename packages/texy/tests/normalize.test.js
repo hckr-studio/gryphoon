@@ -22,16 +22,17 @@ describe("normalize()", () => {
     assert.equal(normalize("a\tb"), "a\tb");
   });
 
-  it("soft hyphens are preserved", () => {
-    assert.equal(normalize("wo\u00ADrd"), "wo\u00ADrd");
+  it("soft hyphens are removed (they get in by copy-pasting)", () => {
+    assert.equal(normalize("wo\u00ADrd"), "word");
   });
 
   it("lines are right-trimmed", () => {
     assert.equal(normalize("a  \t\nb\t"), "a\nb");
+    assert.equal(normalize("a  \t\nb\n"), "a\nb\n");
   });
 
-  it("blank edge lines are dropped", () => {
-    assert.equal(normalize("\n\n  \ntext\n \n\n"), "text");
+  it("blank edge lines are dropped, the last line keeps its newline", () => {
+    assert.equal(normalize("\n\n  \ntext\n \n\n"), "text\n");
   });
 
   it("idempotence", () => {

@@ -1,6 +1,6 @@
 DocumentNode
   ContentNode
-    HeadingNode [0,29] textRange[0,14] level=1 marker=*
+    HeadingNode [0,29] textRange[0,14] level=2 marker=*
       ContentNode
         TextNode [0,14] "Texy! is sexy!"
     ParagraphNode [31,266]
@@ -17,13 +17,13 @@ DocumentNode
           ContentNode
             TextNode [444,3] "CSS"
         TextNode [470,1] "."
-    HeadingNode [475,15] textRange[475,7] level=2 marker==
+    HeadingNode [475,15] textRange[475,7] level=3 marker==
       ContentNode
         TextNode [475,7] "Headers"
-    HeadingNode [492,25] textRange[496,16] level=4 marker====
+    HeadingNode [492,25] textRange[496,16] level=5 marker====
       ContentNode
         TextNode [496,16] "Low Level Header"
-    HeadingNode [522,21] textRange[522,10] level=2 marker==
+    HeadingNode [522,21] textRange[522,10] level=3 marker==
       ContentNode
         TextNode [522,10] "Paragraphs"
     ParagraphNode [545,245]
@@ -40,7 +40,7 @@ DocumentNode
     ParagraphNode [819,33] mod[840,12]
       ContentNode
         TextNode [819,19] "Colored by modifier"
-    HeadingNode [858,33] textRange[858,16] level=2 marker==
+    HeadingNode [858,33] textRange[858,16] level=3 marker==
       ContentNode
         TextNode [858,16] "Horizontal lines"
     ParagraphNode [893,44]
@@ -48,20 +48,20 @@ DocumentNode
         TextNode [893,44] "four horizontal lines, written in four ways:"
     HorizontalRuleNode [939,3]
     HorizontalRuleNode [944,3]
-    HeadingNode [953,9] textRange[953,4] level=2 marker==
+    HeadingNode [953,9] textRange[953,4] level=3 marker==
       ContentNode
         TextNode [953,4] "Code"
     CodeBlockNode [964,131] codeMap@979 lang=php
     ParagraphNode [1097,47]
       ContentNode
         TextNode [1097,47] "Syntax can be highlighted by third party module"
-    HeadingNode [1149,25] textRange[1149,12] level=2 marker==
+    HeadingNode [1149,25] textRange[1149,12] level=3 marker==
       ContentNode
         TextNode [1149,12] "Disable Texy"
     HtmlBlockNode [1177,47] codeMap@1186
       ContentNode
         TextNode [1186,33] "  example: **this is not strong**"
-    HeadingNode [1229,7] textRange[1229,3] level=2 marker==
+    HeadingNode [1229,7] textRange[1229,3] level=3 marker==
       ContentNode
         TextNode [1229,3] "Div"
     DivNode [1238,41] mod[1247,8]
@@ -69,12 +69,12 @@ DocumentNode
         ParagraphNode [1259,14]
           ContentNode
             TextNode [1259,14] "content of div"
-    HeadingNode [1285,13] textRange[1285,6] level=3 marker=-
+    HeadingNode [1285,13] textRange[1285,6] level=4 marker=-
       ContentNode
         TextNode [1285,6] "nested"
     DivNode [1300,98] mod[1309,8]
       ContentNode
-        HeadingNode [1321,20] textRange[1324,17] level=5 marker=##
+        HeadingNode [1321,20] textRange[1324,17] level=6 marker=##
           ContentNode
             TextNode [1324,17] "This is a header."
         DivNode [1345,29]
@@ -85,7 +85,7 @@ DocumentNode
         ParagraphNode [1378,14]
           ContentNode
             TextNode [1378,14] "Texy! is sexy!"
-    HeadingNode [1406,21] textRange[1406,10] level=2 marker==
+    HeadingNode [1406,21] textRange[1406,10] level=3 marker==
       ContentNode
         TextNode [1406,10] "BlockQuote"
     BlockQuoteNode [1429,280]
@@ -97,12 +97,12 @@ DocumentNode
           ContentNode
             TextNode [1647,38] "640 K should be enough for everyone "
             UrlNode [1685,24]
-    HeadingNode [1712,13] textRange[1712,6] level=3 marker=-
+    HeadingNode [1712,13] textRange[1712,6] level=4 marker=-
       ContentNode
         TextNode [1712,6] "nested"
     BlockQuoteNode [1727,84]
       ContentNode
-        HeadingNode [1729,20] textRange[1732,17] level=5 marker=##
+        HeadingNode [1729,20] textRange[1732,17] level=6 marker=##
           ContentNode
             TextNode [1732,17] "This is a header."
         BlockQuoteNode [1754,28]
@@ -113,7 +113,7 @@ DocumentNode
         ParagraphNode [1787,24]
           ContentNode
             TextNode [1787,24] "Back to the first level."
-    HeadingNode [1816,11] textRange[1816,5] level=2 marker==
+    HeadingNode [1816,11] textRange[1816,5] level=3 marker==
       ContentNode
         TextNode [1816,5] "Links"
     ListNode [1829,158] unordered
@@ -144,7 +144,7 @@ DocumentNode
                 ContentNode
                   ImageNode [1943,15] urlRange[1946,9] src=image.gif
               TextNode [1974,13] " is clickable"
-    HeadingNode [1990,33] textRange[1990,16] level=3 marker=-
+    HeadingNode [1990,33] textRange[1990,16] level=4 marker=-
       ContentNode
         TextNode [1990,16] "using references"
     LinkDefinitionNode [2025,36]
@@ -159,12 +159,12 @@ DocumentNode
                 ContentNode
                   TextNode [2106,4] "this"
               TextNode [2122,6] " site?"
-    HeadingNode [2133,13] textRange[2133,6] level=2 marker==
+    HeadingNode [2133,13] textRange[2133,6] level=3 marker==
       ContentNode
         TextNode [2133,6] "Images"
     FigureNode [2148,15]
       ImageNode [2148,15] urlRange[2151,9] src=image.gif
-    HeadingNode [2165,25] textRange[2165,12] level=3 marker=-
+    HeadingNode [2165,25] textRange[2165,12] level=4 marker=-
       ContentNode
         TextNode [2165,12] "in paragraph"
     ParagraphNode [2192,172]
@@ -175,14 +175,14 @@ DocumentNode
       ContentNode
         ImageNode [2366,15] urlRange[2369,9] src=image.gif
         TextNode [2381,209] " Right-aligned image. Curabitur quam justo, hendrerit a, mattis ut, ultrices at, dui. In mollis. Ut pellentesque erat vehicula nunc. Ut ultricies. Nulla nunc velit, consequat vel, laoreet in, blandit et, eros."
-    HeadingNode [2593,33] textRange[2593,16] level=3 marker=-
+    HeadingNode [2593,33] textRange[2593,16] level=4 marker=-
       ContentNode
         TextNode [2593,16] "with description"
     FigureNode [2628,62]
       ImageNode [2628,15] urlRange[2631,9] src=image.gif
       ContentNode
         TextNode [2648,42] "This is description under image (or photo)"
-    HeadingNode [2693,33] textRange[2693,16] level=3 marker=-
+    HeadingNode [2693,33] textRange[2693,16] level=4 marker=-
       ContentNode
         TextNode [2693,16] "using references"
     ParagraphNode [2728,37]
@@ -191,12 +191,12 @@ DocumentNode
         ImageNode [2750,11] urlRange[2752,7] src=picture
         TextNode [2761,4] " :-)"
     ImageDefinitionNode [2767,42] mod[2791,18]
-    HeadingNode [2812,29] textRange[2812,14] level=3 marker=-
+    HeadingNode [2812,29] textRange[2812,14] level=4 marker=-
       ContentNode
         TextNode [2812,14] "with modifiers"
     FigureNode [2843,30]
       ImageNode [2843,30] urlRange[2846,9] src=image.gif
-    HeadingNode [2880,15] textRange[2880,7] level=2 marker==
+    HeadingNode [2880,15] textRange[2880,7] level=3 marker==
       ContentNode
         TextNode [2880,7] "Phrases"
     ParagraphNode [2897,86]
@@ -244,7 +244,7 @@ DocumentNode
       ContentNode
         TextNode [3201,6] "Code: "
         InlineCodeNode [3207,8] codeRange[3208,6] "<br />"
-    HeadingNode [3218,29] textRange[3218,14] level=3 marker=-
+    HeadingNode [3218,29] textRange[3218,14] level=4 marker=-
       ContentNode
         TextNode [3218,14] "with modifiers"
     ParagraphNode [3249,45]
@@ -253,7 +253,7 @@ DocumentNode
           ContentNode
             TextNode [3251,16] "strong and green"
         TextNode [3284,10] " like Hulk"
-    HeadingNode [3300,33] textRange[3300,16] level=2 marker==
+    HeadingNode [3300,33] textRange[3300,16] level=3 marker==
       ContentNode
         TextNode [3300,16] "Direct HTML tags"
     ParagraphNode [3335,37]
@@ -263,7 +263,7 @@ DocumentNode
         TextNode [3348,9] "is strong"
         HtmlTagNode [3357,9] <strong>
         TextNode [3366,6] " text."
-    HeadingNode [3378,9] textRange[3378,4] level=2 marker==
+    HeadingNode [3378,9] textRange[3378,4] level=3 marker==
       ContentNode
         TextNode [3378,4] "List"
     ListNode [3390,26] unordered
@@ -320,7 +320,7 @@ DocumentNode
           ParagraphNode [3476,4]
             ContentNode
               TextNode [3476,4] "Blue"
-    HeadingNode [3484,15] textRange[3484,7] level=3 marker=-
+    HeadingNode [3484,15] textRange[3484,7] level=4 marker=-
       ContentNode
         TextNode [3484,7] "ordered"
     ListNode [3501,30] ordered
@@ -403,7 +403,7 @@ DocumentNode
           ParagraphNode [3656,6]
             ContentNode
               TextNode [3656,6] "Parish"
-    HeadingNode [3666,13] textRange[3666,6] level=3 marker=-
+    HeadingNode [3666,13] textRange[3666,6] level=4 marker=-
       ContentNode
         TextNode [3666,6] "nested"
     ListNode [3682,158] ordered
@@ -470,7 +470,7 @@ DocumentNode
                 ParagraphNode [3834,6]
                   ContentNode
                     TextNode [3834,6] "Parish"
-    HeadingNode [3845,31] textRange[3845,15] level=3 marker=-
+    HeadingNode [3845,31] textRange[3845,15] level=4 marker=-
       ContentNode
         TextNode [3845,15] "definition list"
     DefinitionListNode [3878,117]
@@ -514,7 +514,7 @@ DocumentNode
           ParagraphNode [4105,19]
             ContentNode
               TextNode [4105,19] "Personal Home Pages"
-    HeadingNode [4129,19] textRange[4129,9] level=2 marker==
+    HeadingNode [4129,19] textRange[4129,9] level=3 marker==
       ContentNode
         TextNode [4129,9] "Modifiers"
     ParagraphNode [4150,39]
@@ -583,7 +583,7 @@ DocumentNode
                 ParagraphNode [4476,8]
                   ContentNode
                     TextNode [4476,8] "bottom _"
-    HeadingNode [4490,25] textRange[4490,10] level=2 marker==
+    HeadingNode [4490,25] textRange[4490,10] level=3 marker==
       ContentNode
         TextNode [4490,10] "Typography"
     ListNode [4517,624] unordered
@@ -667,7 +667,7 @@ DocumentNode
           ParagraphNode [5122,19]
             ContentNode
               TextNode [5122,19] "and many others :-)"
-    HeadingNode [5147,13] textRange[5147,6] level=2 marker==
+    HeadingNode [5147,13] textRange[5147,6] level=3 marker==
       ContentNode
         TextNode [5147,6] "Tables"
     TableNode [5162,70]
@@ -691,7 +691,7 @@ DocumentNode
         TableCellNode [5225,7]
           ContentNode
             TextNode [5226,6] "Franta"
-    HeadingNode [5235,23] textRange[5235,11] level=3 marker=-
+    HeadingNode [5235,23] textRange[5235,11] level=4 marker=-
       ContentNode
         TextNode [5235,11] "with header"
     TableNode [5260,151]
@@ -759,7 +759,7 @@ DocumentNode
         TableCellNode [5525,3]
           ContentNode
             TextNode [5526,2] "74"
-    HeadingNode [5531,17] textRange[5531,8] level=3 marker=-
+    HeadingNode [5531,17] textRange[5531,8] level=4 marker=-
       ContentNode
         TextNode [5531,8] "colspans"
     ParagraphNode [5550,20]
@@ -793,7 +793,7 @@ DocumentNode
         TableCellNode [5720,3]
           ContentNode
             TextNode [5721,2] "74"
-    HeadingNode [5726,17] textRange[5726,8] level=3 marker=-
+    HeadingNode [5726,17] textRange[5726,8] level=4 marker=-
       ContentNode
         TextNode [5726,8] "rowspans"
     TableNode [5745,181]
@@ -831,7 +831,7 @@ DocumentNode
         TableCellNode [5923,3]
           ContentNode
             TextNode [5924,2] "70"
-    HeadingNode [5929,37] textRange[5929,18] level=3 marker=-
+    HeadingNode [5929,37] textRange[5929,18] level=4 marker=-
       ContentNode
         TextNode [5929,18] "colspan & rowspans"
     TableNode [5968,181]
@@ -866,7 +866,7 @@ DocumentNode
         TableCellNode [6146,3]
           ContentNode
             TextNode [6147,2] "70"
-    HeadingNode [6152,19] textRange[6152,9] level=3 marker=-
+    HeadingNode [6152,19] textRange[6152,9] level=4 marker=-
       ContentNode
         TextNode [6152,9] "modifiers"
     TableNode [6173,125] mod[6174,11]
@@ -890,7 +890,7 @@ DocumentNode
         TableCellNode [6286,11]
           ContentNode
             TextNode [6287,6] "Franta"
-    HeadingNode [6305,19] textRange[6305,9] level=2 marker==
+    HeadingNode [6305,19] textRange[6305,9] level=3 marker==
       ContentNode
         TextNode [6305,9] "Copyright"
     ParagraphNode [6326,57]

@@ -7,6 +7,7 @@
   boundary for display text is escape-html."
   (:require
    [clojure.string :as str]
+   [clojure.walk :as walk]
    [work.gryphoon.texy.normalize :as norm]
    [huff2.core :as huff]
    [work.gryphoon.texy.dom :as dom]
@@ -520,6 +521,18 @@
       :else
       [(element tag node (render-children node))])))
 
+(defn- add-no-follow
+  "Adds nofollow to the values of rel the author gave (the reference
+  Renderer::addNoFollow)."
+  [a]
+  (let [rel (get a :rel)
+        values (cond
+                 (string? rel) (remove str/blank? (str/split rel re-whitespace-plus))
+                 (sequential? rel) (remove str/blank? rel)
+                 :else [])
+        values (remove #(= "nofollow" %) values)]
+    (assoc a :rel (str/join " " (concat values ["nofollow"])))))
+
 (defmethod render-node :link [node]
   (let [raw-url (normalize-www (:url node))
         href (prepend-root raw-url
@@ -540,7 +553,7 @@
                 true (assoc :href (escape-attr href))
                 (or nofollow?
                     (and (:link-no-follow *options*) (str/includes? href "//")))
-                (assoc :rel "nofollow"))]
+                add-no-follow)]
         [(into [:a a] (render-children node))]))))
 
 (defn- apply-float
@@ -553,6 +566,16 @@
     (assoc a :style (str (when-some [s (:style a)] (str s ";"))
                          "float:" (name float)))))
 
+(defn- figure-image
+  "The figure floats, not the image in it: every image of the wrapped
+  subtree renders with its own float dropped (the reference renderFigure
+  clones the image and nulls the float on the copy; immutability gives
+  the copy for free here)."
+  [image]
+  (walk/postwalk
+    (fn [node] (if (and (map? node) (= :image (:type node))) (assoc node :float nil) node))
+    image))
+
 (defmethod render-node :figure [node]
   (let [tag (get *options* :figure-tag :figure)
         ;; the figure class is appended to the modifier classes
@@ -561,7 +584,7 @@
                         (update :class (fn [c] (str/trim (str (or c nil) " " (:figure-class *options*))))))
         a (apply-float (escape-attrs mod-decorated) (:float node))]
     [(into (if (empty? a) [tag] [tag a])
-           (concat (render-node (:image node))
+           (concat (render-node (figure-image (:image node)))
                    (when-some [caption (:caption node)]
                      [(into [(if (= tag :figure) :figcaption :p)]
                             (mapcat render-node caption))])))]))

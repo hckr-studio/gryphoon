@@ -16,8 +16,8 @@
 (deftest line-trimming
   (testing "lines are right-trimmed"
     (is (= "a\nb" (normalize/normalize "a \t \nb \t"))))
-  (testing "blank lines at both ends are dropped"
-    (is (= "a\n\nb" (normalize/normalize "\n\n\na\n\nb\n\n\n")))))
+  (testing "blank lines at both ends are dropped; the last line keeps its newline"
+    (is (= "a\n\nb\n" (normalize/normalize "\n\n\na\n\nb\n\n\n")))))
 
 (deftest bom
   (testing "byte order mark at the start is removed"

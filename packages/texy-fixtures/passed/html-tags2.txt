@@ -80,10 +80,10 @@ DocumentNode
         HtmlTagNode [1572,12] <embed>
         HtmlTagNode [1584,8] <embed>
         HtmlTagNode [1592,5] <wbr>
-        TextNode [1597,9] "<marquee>"
-        TextNode [1606,9] "<bgsound>"
+        RawTextNode [1597,9] "<marquee>"
+        RawTextNode [1606,9] "<bgsound>"
         HtmlTagNode [1615,8] <canvas>
-        TextNode [1623,6] "<nobr>"
+        RawTextNode [1623,6] "<nobr>"
     ParagraphNode [1631,797]
       ContentNode
         HtmlElementNode [1631,31]

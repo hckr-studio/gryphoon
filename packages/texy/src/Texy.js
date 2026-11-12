@@ -40,6 +40,7 @@ import { Renderer } from "./Output/Html/Renderer.js";
 import { Renderer as TextRenderer } from "./Output/Text/Renderer.js";
 import { Engine } from "./Parsing/Engine.js";
 import { TextRunPass } from "./Passes/TextRunPass.js";
+import { HeadingPass } from "./Passes/HeadingPass.js";
 import { Stage } from "./Stage.js";
 import { Syntax } from "./Syntax.js";
 import { UrlPolicy } from "./UrlPolicy.js";
@@ -92,8 +93,22 @@ export class Texy {
     this.directiveModule = null;
     this.typographyModule = null;
     this.hyphenationModule = null;
+    this.htmlModule = null;
 
     this.loadModules();
+    // the passes of a document in any language, registered in one place so
+    // that their order cannot differ between languages; they go after the
+    // passes finishing the meaning of the language (the reference
+    // Passes\DocumentPasses)
+    this.engine.addPass(doc => this.htmlModule.processPassthrough(doc));
+    this.engine.addPass(
+      doc =>
+        new HeadingPass(
+          this.headingModule.top,
+          this.headingModule.generateID,
+          this.headingModule.idPrefix,
+        ).process(doc),
+    );
     this.engine.addPass(document => this.applyAstTypography(document), Stage.Finalize);
     this.engine.setGapHandler((context, gapText, offset) => this.paragraphModule.parseText(context, gapText, offset));
   }
@@ -106,7 +121,7 @@ export class Texy {
   loadModules() {
     // line parsing
     this.addModule((this.directiveModule = new DirectiveModule(this)));
-    this.addModule(new HtmlModule(this));
+    this.addModule((this.htmlModule = new HtmlModule(this)));
     this.addModule((this.imageModule = new ImageModule(this)));
     this.addModule((this.phraseModule = new PhraseModule(this)));
     this.addModule((this.linkModule = new LinkReferenceModule(this)));
@@ -194,6 +209,21 @@ export class Texy {
   parseLine(text) {
     this.prepareModules();
     return this.engine.parse(normalize(text), this.allowed, true);
+  }
+
+  /** The upstream name of parseLine(). */
+  parseInline(text) {
+    return this.parseLine(text);
+  }
+
+  /**
+   * Does the text read as block markup as opposed to plain paragraph text?
+   * @param {string} text
+   * @returns {boolean}
+   */
+  readsAsBlock(text) {
+    this.prepareModules();
+    return this.engine.matchesBlockSyntax(normalize(text), this.allowed);
   }
 
   /**
@@ -303,6 +333,11 @@ export class Texy {
     return this.renderHtml(this.transform(this.parse(text)));
   }
 
+  /** The upstream name of process(). */
+  toHtml(text) {
+    return this.process(text);
+  }
+
   /**
    * Converts one line of Texy text to HTML: inline markup only, no paragraph around it.
    * @param {string} text
@@ -310,6 +345,11 @@ export class Texy {
    */
   processLine(text) {
     return this.renderHtml(this.transform(this.parseLine(text)));
+  }
+
+  /** The upstream name of processLine(). */
+  toInlineHtml(text) {
+    return this.processLine(text);
   }
 
   /**

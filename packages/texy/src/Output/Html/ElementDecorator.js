@@ -10,6 +10,7 @@
  */
 
 import { All } from "../../HtmlPolicy.js";
+import { Modifier } from "../../Modifier.js";
 import { UrlImage, urlAttribute } from "./Schema.js";
 
 /**
@@ -40,7 +41,7 @@ export class ElementDecorator {
     this.renderer = renderer;
     /** @type {Set<string>|boolean|undefined} lazy lookup of policy.allowedClasses */
     this.classes = undefined;
-    /** @type {Set<string>|boolean|undefined} lazy lookup of policy.allowedStyles */
+    /** @type {Set<string>|boolean|undefined} lazy lookup of policy.allowedStyles, normalized like the properties of a modifier */
     this.styles = undefined;
   }
 
@@ -142,7 +143,7 @@ export class ElementDecorator {
     if (Object.keys(modifier.styles).length > 0) {
       if (this.styles === undefined) {
         this.styles = Array.isArray(this.policy.allowedStyles)
-          ? new Set(this.policy.allowedStyles)
+          ? new Set(this.policy.allowedStyles.map((prop) => Modifier.normalizeProperty(prop)))
           : this.policy.allowedStyles;
       }
       const allowedStyles = this.styles;

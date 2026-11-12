@@ -225,6 +225,21 @@
       :drop
       :else true)))
 
+(defn- allowed-attrs
+  "Attributes the whitelist gives the tag: :all for any, a list of
+  lowercase names, or nil when the tag is not in it. Names of tags and
+  attributes are compared regardless of case, as in HTML (the
+  reference HtmlPolicy::getAllowedAttrs)."
+  [tag allowed-tags]
+  (let [tag (norm/lower-case tag)
+        hit (or (when (contains? allowed-tags tag) (get allowed-tags tag))
+                ;; a key in another case
+                (some (fn [[k v]] (when (and (string? k) (= tag (norm/lower-case k))) v)) allowed-tags))]
+    (cond
+      (nil? hit) nil
+      (sequential? hit) (mapv norm/lower-case hit)
+      :else hit)))
+
 (defn tag-allowed?
   "The tag whitelist. The default accepts every known tag; a custom
   whitelist is a map {tag [attr names...]}, with '*' listing attributes
@@ -233,20 +248,24 @@
   (cond
     (false? allowed-tags) false
     (or (nil? allowed-tags) (= :all allowed-tags)) (contains? known-tags tag)
-    :else (contains? allowed-tags tag)))
+    :else (some? (allowed-attrs tag allowed-tags))))
 
 (defn filter-attrs
   "Drops attributes the whitelist does not name for the tag (the '*'
-  key lists attributes allowed on any element)."
+  key lists attributes allowed on any element; attribute names are
+  compared regardless of case, like tag names)."
   [tag attrs {:keys [allowed-tags]}]
   (let [tag (norm/lower-case tag)]
     (cond
       (or (nil? allowed-tags) (= :all allowed-tags)) attrs
       (false? allowed-tags) {}
-      :else (let [names (concat (get allowed-tags tag []) (get allowed-tags "*" []))]
-              (if (or (= :all (get allowed-tags tag)) (= :all (get allowed-tags "*")))
+      :else (let [own (allowed-attrs tag allowed-tags)
+                  star (allowed-attrs "*" allowed-tags)
+                  all? (or (= :all own) (= :all star))
+                  names (into #{} (map norm/lower-case) (concat own star))]
+              (if all?
                 attrs
-                (into {} (filter #(contains? (set names) (key %))) attrs))))))
+                (into {} (filter #(contains? names (norm/lower-case (name (key %))))) attrs))))))
 
 (defn tag-acceptable?
   "Is the (opening or closing) tag acceptable for the transform phase?"
@@ -346,7 +365,7 @@
 ;; Sanitize pass
 
 (defn- sanitize-children [children options]
-  (let [text (fn [node] {:type :text
+  (let [text (fn [node] {:type :raw-text
                          :text (unescape-html (reconstruct-tag node))})]
     (into []
           (mapcat (fn [child]
@@ -376,7 +395,8 @@
 
 (defn sanitize-pass
   "Evaluates the tag whitelist and validation over the paired tree:
-  rejected tags and elements become text with the reconstructed source,
-  kept tags keep only their whitelisted attributes."
+  rejected tags and elements become raw text (protected from
+  typography, escaped on output) with the reconstructed source, kept
+  tags keep only their whitelisted attributes."
   [doc options]
   (passes/transform-content #(sanitize-children % options) doc))

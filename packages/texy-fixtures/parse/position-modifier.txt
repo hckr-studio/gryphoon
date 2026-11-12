@@ -1,6 +1,6 @@
 DocumentNode
   ContentNode
-    HeadingNode [0,31] mod[8,7] textRange[0,6] level=0 marker=#
+    HeadingNode [0,31] mod[8,7] textRange[0,6] level=1 marker=#
       ContentNode
         TextNode [0,6] "Nadpis"
     ParagraphNode [33,23] mod[50,6]

@@ -55,10 +55,15 @@
   el-attrs (or data-/aria- prefixed) are HTML attributes, the rest are CSS
   styles (like the reference parseStyle)."
   [content]
-  (reduce
-   (fn [{:keys [attrs styles] :as acc} decl]
-     (let [[k v] (str/split decl re-colon 2)
-           prop (norm/lower-case (str/trim k))]
+  (let [;; CSS property names match regardless of case, except custom
+        ;; properties (--name), which keep theirs (the reference
+        ;; Modifier::normalizeProperty)
+        normalize-property (fn [^String name]
+                             (if (str/starts-with? name "--") name (norm/lower-case name)))]
+    (reduce
+     (fn [{:keys [attrs styles] :as acc} decl]
+       (let [[k v] (str/split decl re-colon 2)
+             prop (normalize-property (str/trim k))]
        (if (nil? v)
          acc
          (let [v (str/trim v)]
@@ -70,8 +75,8 @@
              (not= "" v)
              (assoc acc :styles (assoc styles prop v))
              :else acc)))))
-   {:attrs {} :styles (array-map)}
-   (str/split content re-semicolon)))
+     {:attrs {} :styles (array-map)}
+     (str/split content re-semicolon))))
 
 (defn- extent-pattern [bound]
   (re-pattern (str "[ \t]*(?<=[\t ]|^)\\.((?:\\((?:\\\\\\)|[^)\\n])+\\)|\\[[^\\]\\n]+\\]|"

@@ -1,13 +1,9 @@
 /**
  * Replaces emoticons with Unicode characters (port of
- * Texy\Modules\EmoticonModule; parse phase only).
- *
- * Resolution to the replacement character happens in the transform phase
- * in the reference; this module parses EmoticonNodes when the syntax is
+ * Texy\Modules\EmoticonModule). Parses EmoticonNodes when the syntax is
  * enabled via allowed['emoticon'].
  */
 
-import { find } from "../NodeHelpers.js";
 import { EmoticonNode } from "../nodes.js";
 import { quote } from "../Regexp.js";
 import { Syntax } from "../Syntax.js";
@@ -17,7 +13,6 @@ export class EmoticonModule extends Module {
   constructor(texy) {
     super();
     this.texy = texy;
-    texy.addPass(doc => this.resolveEmoticons(doc));
 
     /** @type {Object<string, string>} emoticon -> emoji/image mapping */
     this.icons = {
@@ -62,35 +57,12 @@ export class EmoticonModule extends Module {
 
     for (const emoticon of Object.keys(this.icons)) {
       if (match.startsWith(emoticon)) {
-        return new EmoticonNode(emoticon, { offset: offsets[0], length: matches[0].length });
+        const node = new EmoticonNode(emoticon, { offset: offsets[0], length: matches[0].length });
+        node.resolved = this.icons[emoticon];
+        return node;
       }
     }
 
     return null;
-  }
-
-  /**
-   * Resolves an emoticon node's display text (for consumers running the
-   * transform phase).
-   */
-  resolveEmoticon(node) {
-    node.resolved = this.icons[node.emoticon] ?? node.emoticon;
-  }
-
-  /**
-   * Writes resolved emoji into EmoticonNode so the AST is semantically
-   * complete and generators need not reach into this module (transform
-   * phase; only when emoticons are enabled).
-   * @param {import('../nodes.js').DocumentNode} doc
-   */
-  resolveEmoticons(doc) {
-    if (!this.texy.allowed.emoticon) {
-      // disabled = no EmoticonNodes in AST
-      return;
-    }
-
-    for (const node of find(doc, n => n instanceof EmoticonNode)) {
-      node.resolved = this.icons[node.emoticon] ?? node.emoticon;
-    }
   }
 }

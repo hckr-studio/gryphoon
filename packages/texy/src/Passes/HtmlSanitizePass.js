@@ -1,16 +1,17 @@
 /**
  * Evaluates the tag whitelist and validation over the paired passthrough
  * tree in the transform phase (port of Texy\Passes\HtmlSanitizePass):
- * rejected tags and elements are replaced by TextNode with the
+ * rejected tags and elements are replaced by RawTextNode with the
  * reconstructed tag source, so the AST tells the truth - escaped tags are
- * visible text, allowed tags are markup. Renderers keep their own checks
+ * visible text, shown exactly as written, allowed tags are markup.
+ * Renderers keep their own checks
  * as defense in depth.
  */
 
 import { decodeEntities } from "../helpers.js";
 import { Severity } from "../Lint.js";
 import { NodeTraverser } from "../NodeTraverser.js";
-import { ContentNode, HtmlElementNode, HtmlTagNode, TextNode } from "../nodes.js";
+import { ContentNode, HtmlElementNode, HtmlTagNode, RawTextNode } from "../nodes.js";
 
 export class HtmlSanitizePass {
   /**
@@ -47,7 +48,7 @@ export class HtmlSanitizePass {
           this.lint?.report(child.range, `Tag <${child.name}> is not allowed and will be rendered as text.`, {
             code: "html/tag-rejected",
           });
-          out.push(new TextNode(decodeEntities(this.policy.reconstructTag(child)), child.range));
+          out.push(new RawTextNode(decodeEntities(this.policy.reconstructTag(child)), child.range));
           continue;
         }
 
@@ -60,11 +61,11 @@ export class HtmlSanitizePass {
           });
           const open = new HtmlTagNode(child.name, { ...child.attributes }, false, false, child.range);
           const close = child.closingTag ?? new HtmlTagNode(child.name, {}, true);
-          out.push(new TextNode(decodeEntities(this.policy.reconstructTag(open)), child.range));
+          out.push(new RawTextNode(decodeEntities(this.policy.reconstructTag(open)), child.range));
           for (const inner of this.sanitize(child.content.children)) {
             out.push(inner);
           }
-          out.push(new TextNode(decodeEntities(this.policy.reconstructTag(close)), close.range));
+          out.push(new RawTextNode(decodeEntities(this.policy.reconstructTag(close)), close.range));
           continue;
         }
 

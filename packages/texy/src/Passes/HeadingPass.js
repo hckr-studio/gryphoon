@@ -1,23 +1,23 @@
 /**
- * Balances heading levels, hoists the {toc: ...} style onto the heading node
- * and generates heading IDs (transform phase). Port of Texy\Passes\HeadingPass.
+ * Shifts heading levels by the top setting and generates heading IDs
+ * (transform phase, after HTML sanitizing), for a document in any language.
+ * Port of Texy\Passes\HeadingPass; the level balancing and the {toc: ...}
+ * hoisting live in HeadingModule::processHeadings, which runs earlier.
  */
 
 import { webalize } from "../helpers.js";
-import { extractText, find } from "../NodeHelpers.js";
-import { NodeTraverser } from "../NodeTraverser.js";
-import { HeadingNode, HeadingType, VerbatimBlockNode } from "../nodes.js";
+import { extractText } from "../NodeHelpers.js";
+import { NodeTraverser, DontTraverseChildren } from "../NodeTraverser.js";
+import { HeadingNode, VerbatimBlockNode } from "../nodes.js";
 
 export class HeadingPass {
   /**
    * @param {number} top level of the top heading (1..6)
-   * @param {boolean} dynamicBalancing
    * @param {boolean} generateID
    * @param {string} idPrefix
    */
-  constructor(top = 1, dynamicBalancing = true, generateID = false, idPrefix = "toc-") {
+  constructor(top = 1, generateID = false, idPrefix = "toc-") {
     this.top = top;
-    this.dynamicBalancing = dynamicBalancing;
     this.generateID = generateID;
     this.idPrefix = idPrefix;
   }
@@ -25,21 +25,17 @@ export class HeadingPass {
   /** @param {import('../nodes.js').DocumentNode} doc */
   process(doc) {
     const headings = collectHeadings(doc);
-    if (headings.length === 0) {
+
+    for (const node of headings) {
+      node.level = Math.min(6, Math.max(1, node.level + this.top - 1));
+    }
+
+    if (!this.generateID) {
       return;
     }
 
-    this.balanceLevels(headings);
-
     const usedID = {};
     for (const node of headings) {
-      // a pass that ran earlier may have set its own title override
-      const hoisted = HeadingPass.hoistOverride(node);
-      node.titleOverride ??= hoisted;
-      if (!this.generateID) {
-        continue;
-      }
-
       if (node.modifier?.id) {
         // an explicit ID wins and reserves the name
         usedID[node.modifier.id] = true;
@@ -51,41 +47,6 @@ export class HeadingPass {
       const id = HeadingPass.uniqueID(this.idPrefix + webalize(getTitle(node)), usedID);
       usedID[id] = true;
       node.id = id;
-    }
-  }
-
-  /** @param {HeadingNode[]} headings */
-  balanceLevels(headings) {
-    if (!this.dynamicBalancing) {
-      for (const node of headings) {
-        node.level = Math.min(6, Math.max(1, node.level + this.top));
-      }
-      return;
-    }
-
-    const map = {};
-    let min = 100;
-
-    // collect level information
-    for (const node of headings) {
-      if (node.type === HeadingType.Surrounded) {
-        min = Math.min(node.level, min);
-      } else {
-        map[node.level] = node.level;
-      }
-    }
-
-    // top offset for surrounded headings
-    const top = this.top - min;
-
-    // sort underlined levels and create mapping
-    const sortedLevels = Object.values(map).sort((a, b) => a - b);
-    const levelToRank = new Map(sortedLevels.map((level, rank) => [level, rank])); // array_flip: 0-based
-
-    // apply calculated levels
-    for (const node of headings) {
-      const level = node.type === HeadingType.Surrounded ? node.level + top : levelToRank.get(node.level) + this.top;
-      node.level = Math.min(6, Math.max(1, level));
     }
   }
 
@@ -139,7 +100,7 @@ export function collectHeadings(root) {
     if (node instanceof VerbatimBlockNode) {
       // the reference getHeadings does not traverse into verbatim blocks,
       // so /--texysource samples keep their written levels
-      return NodeTraverser.DontTraverseChildren;
+      return DontTraverseChildren;
     }
 
     if (node instanceof HeadingNode) {

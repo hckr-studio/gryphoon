@@ -76,7 +76,9 @@ function appendDefinition(analysis, name, image) {
  * The definition edit appending `[name]: target` (images: `[*name*]`)
  * at the document end: a blank line away from the prose, but tight
  * under the existing definition list when the document already ends
- * in one (`[a]: …` then `[b]: …` on the next line).
+ * in one (`[a]: …` then `[b]: …` on the next line). The normalized
+ * source keeps the newline that ends its last line, so the appended
+ * definition carries its own line ending when the document has one.
  * @param {{ normalized: string, definitionNodes: Array }} analysis
  * @param {string} name
  * @param {string} target the definition URL
@@ -88,16 +90,19 @@ function appendReference(analysis, name, target, image) {
   const endsWithDefinition = analysis.definitionNodes.some(
     node => node.range !== null && node.range.offset <= trimmedLength && trimmedLength <= node.range.offset + node.range.length,
   );
+  const endsWithNewline = text.endsWith("\n");
   const lead = text === ""
     ? ""
     : endsWithDefinition
-      ? "\n"
-      : text.endsWith("\n")
+      ? endsWithNewline
+        ? ""
+        : "\n"
+      : endsWithNewline
         ? "\n"
         : "\n\n";
   return {
     range: { offset: text.length, length: 0 },
-    text: `${lead}[${image ? `*${name}*` : name}]: ${target}`,
+    text: `${lead}[${image ? `*${name}*` : name}]: ${target}${endsWithNewline ? "\n" : ""}`,
   };
 }
 

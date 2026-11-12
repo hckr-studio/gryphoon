@@ -243,7 +243,34 @@ function isJsWhitespace(c) {
   );
 }
 
-export function definePatterns({ singleQuotes, doubleQuotes }) {
+/**
+ * One-letter words that may not end a line, bound to the next word, per
+ * locale (the reference Config::$oneLetterWords). A locale without an
+ * entry has no such words, so its rule is left out.
+ */
+const oneLetterWords = new Map([
+  ["cs", "ksvzouiKSVZOUIA"],
+  ["pl", "wzioauWZIOAU"],
+  ["sk", "ksvzouaiKSVZOUAI"],
+]);
+
+/**
+ * @param {Object} spec
+ * @param {[string, string]} spec.singleQuotes
+ * @param {[string, string]} spec.doubleQuotes
+ * @param {string} [spec.oneLetterWords] the one-letter words of the locale
+ */
+export function definePatterns({ singleQuotes, doubleQuotes, oneLetterWords: words = "" }) {
+  // the one-letter word of the locale may not end a line; without any, no rule
+  const wordRule = words === "" ? [] : [
+    [
+      new RegExp(
+        String.raw`(?<=^|[^0-9\p{Letter}])([\x17-\x1F]*[${words.replace(/[\\\]\^-]/g, String.raw`\$&`)}][\x17-\x1F]*)\s+(?=[\x17-\x1F]*[0-9\p{Letter}])`,
+        "gmsv",
+      ),
+      "$1\u00A0",
+    ],
+  ];
   return [
     [/(?<![.\u{2026}])\.{3,4}(?![.\u{2026}])/gmu, "\u2026", "..."], // ellipsis  ...
     [/(?<=[\d ]|^)-(?=[\d ]|$)/g, "\u2013", "-"], // en dash 123-123
@@ -286,14 +313,12 @@ export function definePatterns({ singleQuotes, doubleQuotes }) {
     // (°, …, €, ...) - these have no faithful Unicode class, so they
     // stay ranges (\p{Punctuation} would wrongly match ",")
     [
-      /(?<=^| |\.|,|-|\+|\x16|\(|\d\xA0)([\x17-\x1F]*\d+\.?[\x17-\x1F]*)\s+(?=[\x17-\x1F]*[%\p{Letter}\u00B0-\u00BE\u2020-\u214F])/gmv,
+      /(?<=^| |\.|,|-|\u2013|\+|\x16|\(|\d\xA0)([\x17-\x1F]*\d+\.?[\x17-\x1F]*)\s+(?=[\x17-\x1F]*[%\p{Letter}\u00B0-\u00BE\u2020-\u214F])/gmv,
       "$1\u00A0",
     ],
-    // space between preposition and word
-    [
-      /(?<=^|[^0-9\p{Letter}])([\x17-\x1F]*[ksvzouiKSVZOUIA][\x17-\x1F]*)\s+(?=[\x17-\x1F]*[0-9\p{Letter}])/gmsv,
-      "$1\u00A0",
-    ],
+    // a unit after a range is bound to its number (the en dash lookbehind);
+    // the words come from the locale
+    ...wordRule,
 
     // double "" - the reference's lazy inner class with an embedded-quote
     // alternation, so a quote inside the span does not stop the substitution
@@ -311,7 +336,11 @@ export function definePatterns({ singleQuotes, doubleQuotes }) {
  */
 export function processTypo(input, options) {
   const { locale = "en" } = options ?? {};
-  const patterns = definePatterns(locales.get(locale.substring(0, 2)) ?? locales.get("en"));
+  const short = locale.substring(0, 2);
+  const patterns = definePatterns({
+    ...(locales.get(short) ?? locales.get("en")),
+    oneLetterWords: oneLetterWords.get(short) ?? "",
+  });
   // an entry is [regex, replacement] or [ruleFunction, ""]; a rule function
   // is a hand-implemented reference pattern. The optional third element is a
   // literal anchor: a match can only exist when the segment contains it, so

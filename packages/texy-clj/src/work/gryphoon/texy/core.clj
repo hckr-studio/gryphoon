@@ -42,7 +42,8 @@
   :shorten-urls      shorten autolink display text (default true)
   :typography        typographic corrections (default true, the reference default)
   :hyphenation       soft-hyphen breaking of long words (default true, the
-                     reference default)
+                     reference default); text in a locale other than
+                     cs/sk is left whole, like the reference
   :word-limit        minimum word length to hyphenate (default 20, like the
                      reference module's wordLimit)
   :indent            indent block elements with tabs in the HTML output
@@ -386,7 +387,8 @@
                           {:top (get-in texy [:options :top] 1)
                            :dynamic (not (get-in texy [:options :fixed-leveling]))
                            :generate-ids (get-in texy [:options :generate-ids])
-                           :id-prefix (get-in texy [:options :id-prefix] "toc-")}))
+                           :id-prefix (get-in texy [:options :id-prefix] "toc-")
+                           :more-means-higher (get-in texy [:options :more-means-higher] true)}))
                      (get-in texy [:options :passes] []))]
      ;; the text-run pass runs as parse()'s last step (the reference
      ;; applyAstTypography), typography and hyphenation default on;
@@ -403,7 +405,10 @@
              (typography/text-run-pass
               {:transformers (cond-> []
                                typo (conj typo-fn)
-                               hyph (conj #(hyphenation/post-line % word-limit)))
+                               ;; text in another language is left whole (the
+                               ;; reference CzechHyphenator locale gate)
+                               (and hyph (contains? #{"cs" "sk"} typo-locale))
+                               (conj #(hyphenation/post-line % word-limit typo-locale)))
                :title-transformer typo-fn})
              (assoc-in [:meta :typographed] true))
          doc)))))
@@ -498,15 +503,19 @@
   and hyphenation. No parsing, no markup handling."
   ([^Texy texy text] (apply-typography texy text {}))
   ([^Texy texy text {:keys [locale]}]
-   (let [text (normalize/normalize text)]
+   (let [text (normalize/normalize text)
+         locale (or locale (get-in texy [:options :typography-locale] "cs"))]
      (cond-> text
        (get-in texy [:options :typography] true)
        (typography/process-typo
-        {:locale (or locale (get-in texy [:options :typography-locale] "cs"))
+        {:locale locale
          :preserve-spaces true})
 
-       (get-in texy [:options :hyphenation] true)
-       (hyphenation/post-line (get-in texy [:options :word-limit] 20))))))
+       ;; text in another language is left whole (the reference
+       ;; CzechHyphenator locale gate)
+       (and (get-in texy [:options :hyphenation] true)
+            (contains? #{"cs" "sk"} locale))
+       (hyphenation/post-line (get-in texy [:options :word-limit] 20) locale)))))
 
 (defn process
   "Converts text to an HTML string. The :image-root / :link-root options

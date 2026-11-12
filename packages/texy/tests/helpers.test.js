@@ -10,7 +10,7 @@ import {
   decodeEntity,
   EntityPattern,
   phpLooseNull,
-  cleanUrl,
+
   stripControlChars,
   toAscii,
   toLower,
@@ -82,11 +82,6 @@ describe("string helpers", () => {
   it("toLower is unicode-aware", () => {
     assert.equal(toLower("ĚŠČŘŽÝÁÍÉ"), "ěščřžýáíé");
     assert.equal(toLower("ABC"), "abc");
-  });
-
-  it("cleanUrl removes soft hyphens and decodes entities", () => {
-    assert.equal(cleanUrl("a\u00ADb"), "ab");
-    assert.equal(cleanUrl("index.php?foo=bar&amp;x=1"), "index.php?foo=bar&x=1");
   });
 
   it("toAscii removes accents via Unicode normalization", () => {

@@ -17,7 +17,8 @@
   (:require
    [clojure.string :as str]
    [work.gryphoon.texy.html :as html]
-   [work.gryphoon.texy.normalize :as norm]))
+   [work.gryphoon.texy.normalize :as norm])
+  (:import (java.util.regex Pattern)))
 
 (def locales
   "Quotes per locale: the open/close pair for the nested (single) and
@@ -52,80 +53,106 @@
    "tr" {:single-quotes ["\u2018" "\u2019"] :double-quotes ["\u201C" "\u201D"]}
    "uk" {:single-quotes ["\u201E" "\u201C"] :double-quotes ["\u00AB" "\u00BB"]}})
 
+(def one-letter-words
+  "One-letter words that may not end a line, bound to the next word
+  (the reference Config::oneLetterWords); locales without an entry have
+  no word rule."
+  {"cs" "ksvzouiKSVZOUIA"
+   "pl" "wzioauWZIOAU"
+   "sk" "ksvzouaiKSVZOUAI"})
+
 (defn- build-patterns
   "Search => replacement pairs over the text image; the quote pairs are
   filled with the locale quotes (the reference's :ldq: placeholder
-  trick, inlined here)."
-  [{:keys [single-quotes double-quotes]}]
-  [[#"(?mu)(?<![.\x{2026}])\.{3,4}(?![.\x{2026}])" "\u2026"]                 ; ellipsis  ...
-   [#"(?<=[\d ]|^)-(?=[\d ]|$)" "\u2013"]                                    ; en dash 123-123
-   [#"(?<=[^!*+,/:;<=>@\\\\_|-])--(?=[^!*+,/:;<=>@\\\\_|-])" "\u2013"]       ; en dash alphanum--alphanum
-   [#",-" ",\u2013"]                                                          ; en dash ,-
-   [#"(?<!\d)(\d{1,2}\.) (\d{1,2}\.) (\d\d)" "$1\u00A0$2\u00A0$3"]            ; date 23. 1. 1978
-   [#"(?<!\d)(\d{1,2}\.) (\d{1,2}\.)" "$1\u00A0$2"]                           ; date 23. 1.
-   [#" --- " "\u00A0\u2014 "]                                                 ; em dash ---
-   [#"(?u) ([\u2013\u2014])" "\u00A0$1"]                                      ; nbsp behind dash (dash stays at line end)
-   [#" <-{1,2}> " " \u2194 "]                                                 ; left right arrow <-->
-   [#"-+> " "\u2192 "]                                                        ; right arrow -->
-   [#" <-+" " \u2190 "]                                                       ; left arrow <--
-   [#"=+> " "\u21D2 "]                                                        ; right arrow ==>
-   [#"\+-" "\u00B1"]                                                          ; +-
-   [#"(\d+) x (?=\d)" "$1\u00A0\u00D7\u00A0"]                                 ; dimension sign 123 x 123...
-   [#"(\d+)x(?=\d)" "$1\u00D7"]                                               ; dimension sign 123x123...
-   [#"(?m)(?<=\d)x(?= |,|\.|$)" "\u00D7"]                                     ; dimension sign 123x
-   [#"(?i)(\S ?)\(TM\)" "$1\u2122"]                                           ; trademark (TM)
-   [#"(?i)(\S ?)\(R\)" "$1\u00AE"]                                            ; registered (R)
-   [#"(?i)\(C\)( ?\S)" "\u00A9$1"]                                            ; copyright (C)
-   [#"\(EUR\)" "\u20AC"]                                                      ; Euro (EUR)
-   [#"(\d) (?=\d{3})" "$1\u00A0"]                                             ; (phone) number 1 123 123 123...
+  trick, inlined here) and the one-letter-words rule is built only for
+  locales that have them (a rule without them is left out)."
+  [{:keys [single-quotes double-quotes one-letter-words]}]
+  (let [base
+        [[#"(?mu)(?<![\.\x{2026}])\.{3,4}(?![\.\x{2026}])" "\u2026"]                 ; ellipsis  ...
+         [#"(?<=[\d ]|^)-(?=[\d ]|$)" "\u2013"]                                    ; en dash 123-123
+         [#"(?<=[^!*+,/:;<=>@\\\\_|-])--(?=[^!*+,/:;<=>@\\\\_|-])" "\u2013"]       ; en dash alphanum--alphanum
+         [#",-" ",\u2013"]                                                          ; en dash ,-
+         [#"(?<!\d)(\d{1,2}\.) (\d{1,2}\.) (\d\d)" "$1\u00A0$2\u00A0$3"]            ; date 23. 1. 1978
+         [#"(?<!\d)(\d{1,2}\.) (\d{1,2}\.)" "$1\u00A0$2"]                           ; date 23. 1.
+         [#" --- " "\u00A0\u2014 "]                                                 ; em dash ---
+         [#"(?u) ([\u2013\u2014])" "\u00A0$1"]                                      ; nbsp behind dash (dash stays at line end)
+         [#" <-{1,2}> " " \u2194 "]                                                 ; left right arrow <-->
+         [#"-+> " "\u2192 "]                                                        ; right arrow -->
+         [#" <-+" " \u2190 "]                                                       ; left arrow <--
+         [#"=+> " "\u21D2 "]                                                        ; right arrow ==>
+         [#"\+-" "\u00B1"]                                                          ; +-
+         [#"(\d+) x (?=\d)" "$1\u00A0\u00D7\u00A0"]                                 ; dimension sign 123 x 123...
+         [#"(\d+)x(?=\d)" "$1\u00D7"]                                               ; dimension sign 123x123...
+         [#"(?m)(?<=\d)x(?= |,|\.|$)" "\u00D7"]                                     ; dimension sign 123x
+         [#"(?i)(\S ?)\(TM\)" "$1\u2122"]                                           ; trademark (TM)
+         [#"(?i)(\S ?)\(R\)" "$1\u00AE"]                                            ; registered (R)
+         [#"(?i)\(C\)( ?\S)" "\u00A9$1"]                                            ; copyright (C)
+         [#"\(EUR\)" "\u20AC"]                                                      ; Euro (EUR)
+         [#"(\d) (?=\d{3})" "$1\u00A0"]                                             ; (phone) number 1 123 123 123...
 
-   ;; the text image alphabet: \x15 protected text, \x16 replaced, \x17 markup
-   [#"(?u)(?<=[^\s\x17])\s++(\x17++)(?=\s)" "$1"]                             ; remove intermarkup space phase 1
-   [#"(?u)(?<=\s)(\x17++)\s++" "$1"]                                          ; remove intermarkup space phase 2
+         ;; the text image alphabet: \x15 protected text, \x16 replaced, \x17 markup
+         [#"(?u)(?<=[^\s\x17])\s++(\x17++)(?=\s)" "$1"]                             ; remove intermarkup space phase 1
+         [#"(?u)(?<=\s)(\x17++)\s++" "$1"]                                          ; remove intermarkup space phase 2
 
-   [#"(?us)(?<=.{50})\s++(?=\x17*\S{1,6}\x17*$)" "\u00A0"]                    ; space before last short word
+         [#"(?us)(?<=.{50})\s++(?=\x17*\S{1,6}\x17*$)" "\u00A0"]                    ; space before last short word
 
-   ;; nbsp between number (optionally with dot) and word, symbol,
-   ;; currency symbol - % and letters kept as \p{L} (the long form
-   ;; \p{Letter} is unavailable: java.util.regex has no long category
-   ;; names - the JS sibling uses the full name there; a deliberate
-   ;; extension beyond the reference's legacy A-Za-z/Latin/Greek/Cyrillic
-   ;; ranges: it covers all scripts), plus the reference's
-   ;; U+00B0-U+00BE and U+2020-U+214F symbol blocks (°, …, €, ...) -
-   ;; these have no faithful Unicode class, so they stay ranges
-   ;; (\p{P} would wrongly match ",")
-   [#"(?mu)(?<=^| |\.|,|-|\+|\x16|\(|\d\x{A0})(\x17*\d++\.?\x17*)\s++(?=\x17*[%\p{L}\u00B0-\u00BE\u2020-\u214F])"
-    "$1\u00A0"]
-   ;; space between preposition and word
-   [#"(?mus)(?<=^|[^0-9\p{L}])(\x17*[ksvzouiKSVZOUIA]\x17*)\s++(?=\x17*[0-9\p{L}])"
-    "$1\u00A0"]
+         ;; nbsp between number (optionally with dot) and word, symbol,
+         ;; currency symbol - % and letters kept as \p{L} (the long form
+         ;; \p{Letter} is unavailable: java.util.regex has no long category
+         ;; names - the JS sibling uses the full name there; a deliberate
+         ;; extension beyond the reference's legacy A-Za-z/Latin/Greek/Cyrillic
+         ;; ranges: it covers all scripts), plus the reference's
+         ;; U+00B0-U+00BE and U+2020-U+214F symbol blocks (°, …, €, ...) -
+         ;; these have no faithful Unicode class, so they stay ranges
+         ;; (\p{P} would wrongly match ","); en dash counts like the
+         ;; hyphen (a unit after a range: 10-20 °C)
+         [#"(?mu)(?<=^| |\.|,|-|\x{2013}|\+|\x16|\(|\d\x{A0})(\x17*\d++\.?\x17*)\s++(?=\x17*[%\p{L}\u00B0-\u00BE\u2020-\u214F])"
+          "$1\u00A0"]]
 
-   ;; double ""
-   [#"(?u)(?<!\"|\w)\"(?![ \"])((?:[^\"]++|\")+?)(?<![ \"])\"(?![\"\p{L}])"
-    (str (first double-quotes) "$1" (second double-quotes))]
-   ;; single ''
-   [#"(?u)(?<!'|\w)'(?![ '])((?:[^']+|')+?)(?<![ '])'(?!['\p{L}])"
-    (str (first single-quotes) "$1" (second single-quotes))]])
+        ;; space between preposition and word: the one-letter words of
+        ;; the locale; a locale without an entry has no rule
+        word-rule (when (seq one-letter-words)
+                    [[(re-pattern (str "(?mus)(?<=^|[^0-9\\p{L}])(\\x17*["
+                                        (Pattern/quote one-letter-words)
+                                        "]\\x17*)\\s++(?=\\x17*[0-9\\p{L}])"))
+                      "$1\u00A0"]])]
+    (into []
+          (concat
+            base
+            word-rule
+            ;; double ""
+            [[#"(?u)(?<!\"|\w)\"(?![ \"])((?:[^\"]++|\")+?)(?<![ \"])\"(?![\"\p{L}])"
+              (str (first double-quotes) "$1" (second double-quotes))]
+             ;; single ''
+             [#"(?u)(?<!'|\w)'(?![ '])((?:[^']+|')+?)(?<![ '])'(?!['\p{L}])"
+              (str (first single-quotes) "$1" (second single-quotes))]]))))
 
 ;; compiled once per locale, like the reference localizedReplacements cache
-(def ^:private patterns (memoize build-patterns))
+(def ^:private patterns
+  (memoize
+    (fn [locale]
+      (build-patterns
+        (let [quotes (if (contains? locales locale) (get locales locale) (get locales "en"))]
+          {:single-quotes (:single-quotes quotes)
+           :double-quotes (:double-quotes quotes)
+           :one-letter-words (get one-letter-words locale "")})))))
 
 (defn process-typo
   "Applies the typographic corrections to one text image (the reference
-  TypographyModule::postLine). Unknown locale falls back to English,
-  like the reference. With :preserve-spaces true the leading tab and
-  multiple-space shrinking is skipped (the reference toText path)."
+  TypographyModule::postLine). Unknown locale falls back to English
+  quotes, like the reference. With :preserve-spaces true the leading
+  tab and multiple-space shrinking is skipped (the reference toText
+  path)."
   ([input] (process-typo input {:locale "cs"}))
   ([input {:keys [locale preserve-spaces]}]
    (let [s (if preserve-spaces
              input
              (-> input
                  (str/replace "\t" " ")
-                 (str/replace #" {2,}" " ")))
-         quotes (or (get locales locale) (get locales "en"))]
+                 (str/replace #" {2,}" " ")))]
      (reduce (fn [s [m r]] (str/replace s m r))
              s
-             (patterns quotes)))))
+             (patterns locale)))))
 
 ;;----------------------------------------------------------------
 ;; TextRunPass: builds a text image per inline container, transforms it,
@@ -171,13 +198,26 @@
   block-level markup (segments process independently)."
   [node]
   (case (:type node)
-    (:text :raw-text) [[(:text node) node]]
+    :text [[(:text node) node]]
+    ;; literal text (''notexy'' and rejected tags), protected from
+    ;; typography; the run length mirrors the visible length so
+    ;; length-sensitive patterns judge it fairly
+    :raw-text [[(textual-run (:text node)) nil]]
     :phrase (if (= "phrase/code" (:syntax node))
               ;; protected from typography; the run length mirrors the
               ;; visible length so length-sensitive patterns judge fairly
               [[(textual-run (extract-text node)) nil]]
               (concat [[markup nil]] (collect-children (:content node)) [[markup nil]]))
-    :link (concat [[markup nil]] (collect-children (:content node)) [[markup nil]])
+    :link (if (and (= 1 (count (:content node)))
+                   (let [first (get (:content node) 0)]
+                     (and (= :text (:type first))
+                          (contains? #{(:text first)
+                                        (str "mailto:" (:text first))
+                                        (str "http://" (:text first))}
+                                      (:url node)))))
+            ;; the link displays its own address, protected like the :url node
+            [[(textual-run (get-in node [:content 0 :text])) nil]]
+            (concat [[markup nil]] (collect-children (:content node)) [[markup nil]]))
     :html-tag (let [t (get html/inline-elements (norm/lower-case (:name node)))]
                 (cond
                   (nil? t) [[:break nil]]                 ; block-level tag ends the segment

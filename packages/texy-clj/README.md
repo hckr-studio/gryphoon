@@ -47,7 +47,8 @@ three gaps are documented in
 reference's `process($text, singleLine: true)`.
 
 Converter options: `:merge-lines` (default true), `:top`,
-`:fixed-leveling`, `:generate-ids` / `:id-prefix` (heading ids for a
+`:fixed-leveling`, `:more-means-higher` (default true), `:generate-ids` /
+`:id-prefix` (heading ids for a
 `{toc:}`), `:image-root` (default none, URLs are used as written),
 `:link-root`, `:link-no-follow`, `:link-pattern` / `:image-pattern`
 (URL scheme policy - a disallowed link drops to its content, a
@@ -55,7 +56,9 @@ disallowed image renders as its alternative text), `:well-forming`
 (`:jsoup` default or `:direct` - the
   well-forming half of the renderer, see above), `:shorten-urls` (default true), `:emoticons` (opt-in, like the
 reference), `:typography` (default true), `:typography-locale`
-(default "cs"; unknown falls back to English), `:hyphenation`
+(default "cs"; unknown falls back to English quotes, the one-letter
+word rule and hyphenation are Czech/Slovak only, like the reference),
+`:hyphenation`
 (default true) with `:word-limit` (default 20), `:indent` (default
 true), `:line-wrap` (default 80, 0 disables), `:base-indent` (default
 0), `:phrase-tags`

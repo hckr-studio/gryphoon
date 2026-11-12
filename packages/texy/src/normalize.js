@@ -1,9 +1,10 @@
 /**
  * Normalizes text to the canonical form that parsing operates on (port of
  * Texy::normalize): removes the leading byte order mark, converts line
- * endings to \n, strips control characters, right-trims lines and drops
- * blank lines at both ends. Idempotent, so it is safe to apply before
- * storing text and again before parsing.
+ * endings to \n, strips control characters and soft hyphens, right-trims
+ * lines and drops blank lines at both ends, keeping the newline that ends
+ * the last line, so a file stays a file. Idempotent, so it is safe to
+ * apply before storing text and again before parsing.
  *
  * @param {string} text
  * @returns {string}
@@ -21,13 +22,17 @@ export function normalize(text) {
   // remove control characters; leave \t + \n
   text = text.replace(/[\x00-\x08\x0B-\x1F]+/g, "");
 
+  // remove soft hyphens, which get in by copy-pasting hyphenated text
+  text = text.replaceAll("\u00AD", "");
+
   // right trim line ends
   text = text.replace(/[\t ]+$/gm, "");
 
-  // drop blank lines at both ends and byte order marks at the start;
-  // a mark hidden behind blank lines would surface after the trim otherwise
+  // drop blank lines and byte order marks at the start, blank lines at the end;
+  // the last line keeps its newline, so a file stays a file
   text = text.replace(/^[\n\u{FEFF}]+/u, "");
-  return text.replace(/\n+$/, "");
+  const trimmed = text.replace(/\n+$/, "");
+  return trimmed !== text && trimmed !== "" ? trimmed + "\n" : trimmed;
 }
 
 /** A JS string can only be invalid UTF-8 through an unpaired surrogate. */
@@ -77,7 +82,7 @@ export function normalizeWithMap(text) {
       continue;
     }
     const cu = text.charCodeAt(i);
-    if (cu <= 0x08 || (cu >= 0x0b && cu <= 0x1f)) continue;
+    if (cu <= 0x08 || (cu >= 0x0b && cu <= 0x1f) || cu === 0xad) continue; // control chars, soft hyphens
     chars.push(ch);
     origins.push(i);
   }
@@ -106,7 +111,15 @@ export function normalizeWithMap(text) {
   let start = 0;
   while (start < w && (chars[start] === "\n" || chars[start] === "\u{FEFF}")) start++;
   let end = w;
-  while (end > start && chars[end - 1] === "\n") end--;
+  let hadTrailingNewline = false;
+  while (end > start && chars[end - 1] === "\n") {
+    hadTrailingNewline = true;
+    end--;
+  }
+  // the last line keeps its newline, so a file stays a file
+  if (hadTrailingNewline && end > start) {
+    end++;
+  }
 
   const length = end - start;
   const map = new Int32Array(length + 1);

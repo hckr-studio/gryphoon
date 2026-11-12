@@ -1,6 +1,6 @@
 DocumentNode
   ContentNode
-    HeadingNode [0,13] textRange[0,6] level=3 marker=-
+    HeadingNode [0,13] textRange[0,6] level=4 marker=-
       ContentNode
         TextNode [0,6] "Odkazy"
     ListNode [15,871] unordered
@@ -198,7 +198,7 @@ DocumentNode
               LinkNode [1121,35] textRange[1122,4] urlRange[1142,14] phrase/code ref=php Fashion1
                 ContentNode
                   InlineCodeNode [1121,35] mod[1128,12] codeRange[1122,4] "Texy"
-    HeadingNode [1158,37] textRange[1158,19] level=3 marker=-
+    HeadingNode [1158,37] textRange[1158,19] level=4 marker=-
       ContentNode
         TextNode [1158,19] "Obrázkové odkazy:"
     ListNode [1197,271] unordered
@@ -250,7 +250,7 @@ DocumentNode
               LinkNode [1446,22] textRange[1447,7] urlRange[1456,12] phrase/span ref=obrazek3
                 ContentNode
                   TextNode [1447,7] "obrazek"
-    HeadingNode [1472,42] textRange[1472,22] level=3 marker=-
+    HeadingNode [1472,42] textRange[1472,22] level=4 marker=-
       ContentNode
         TextNode [1472,22] "Odkazující obrázky:"
     ListNode [1516,827] unordered
@@ -384,7 +384,7 @@ DocumentNode
             ContentNode
               TextNode [2301,30] "Čistě referenční obrázek "
               ImageNode [2331,12] urlRange[2333,8] src=obrazek4
-    HeadingNode [2346,38] textRange[2346,19] level=3 marker=-
+    HeadingNode [2346,38] textRange[2346,19] level=4 marker=-
       ContentNode
         TextNode [2346,19] "Obrázek s popiskou"
     ParagraphNode [2386,56]
@@ -393,7 +393,7 @@ DocumentNode
           ContentNode
             ImageNode [2386,14] urlRange[2389,8] src=texy.gif
         TextNode [2407,35] " * popiska s plným formátováním"
-    HeadingNode [2445,25] textRange[2445,12] level=3 marker=-
+    HeadingNode [2445,25] textRange[2445,12] level=4 marker=-
       ContentNode
         TextNode [2445,12] "Rel nofollow"
     ListNode [2472,608] unordered
@@ -481,7 +481,7 @@ DocumentNode
               HtmlTagNode [3033,38] <a>
               TextNode [3071,5] "test5"
               HtmlTagNode [3076,4] <a>
-    HeadingNode [3083,19] textRange[3083,9] level=3 marker=-
+    HeadingNode [3083,19] textRange[3083,9] level=4 marker=-
       ContentNode
         TextNode [3083,9] "Specialni"
     ListNode [3104,413] unordered
@@ -504,18 +504,16 @@ DocumentNode
         ContentNode
           ParagraphNode [3151,21]
             ContentNode
-              LinkNode [3151,20] textRange[3152,5] urlRange[3159,12] phrase/span url=www.text.cz(
+              LinkNode [3151,21] textRange[3152,5] urlRange[3159,13] phrase/span url=www.text.cz()
                 ContentNode
                   TextNode [3152,5] "text1"
-              TextNode [3171,1] ")"
       ListItemNode [3173,24] bulletRange[3173,1] bullet=-
         ContentNode
           ParagraphNode [3175,22]
             ContentNode
-              LinkNode [3175,21] textRange[3176,5] urlRange[3183,13] phrase/span url=www.text.cz(x
+              LinkNode [3175,22] textRange[3176,5] urlRange[3183,14] phrase/span url=www.text.cz(x)
                 ContentNode
                   TextNode [3176,5] "text1"
-              TextNode [3196,1] ")"
       ListItemNode [3198,22] bulletRange[3198,1] bullet=-
         ContentNode
           ParagraphNode [3200,20]
@@ -527,10 +525,9 @@ DocumentNode
         ContentNode
           ParagraphNode [3223,28]
             ContentNode
-              LinkNode [3223,27] textRange[3224,5] urlRange[3231,19] phrase/span url=javascript:alert(''
+              LinkNode [3223,28] textRange[3224,5] urlRange[3231,20] phrase/span url=javascript:alert('')
                 ContentNode
                   TextNode [3224,5] "text3"
-              TextNode [3250,1] ")"
       ListItemNode [3252,33] bulletRange[3252,1] bullet=-
         ContentNode
           ParagraphNode [3254,31]
@@ -594,7 +591,7 @@ DocumentNode
               HtmlTagNode [3474,34] <a>
               TextNode [3508,5] "test8"
               HtmlTagNode [3513,4] <a>
-    HeadingNode [3519,11] textRange[3519,4] level=3 marker=-
+    HeadingNode [3519,11] textRange[3519,4] level=4 marker=-
       ContentNode
         TextNode [3519,4] "Pure"
     ListNode [3531,323] unordered

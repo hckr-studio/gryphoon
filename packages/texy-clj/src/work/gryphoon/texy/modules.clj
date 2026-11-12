@@ -13,6 +13,7 @@
    [work.gryphoon.texy.engine :as engine]
    [work.gryphoon.texy.html :as html]
    [work.gryphoon.texy.modifier :as mod]
+   [work.gryphoon.texy.passes :as passes]
    [work.gryphoon.texy.patterns :as p])
   (:import (java.util.regex Pattern)))
 
@@ -192,24 +193,25 @@
 ;;----------------------------------------------------------------
 ;; Heading module
 
-(def heading-levels {\# 0 \* 1 \= 2 \- 3})
-
 (defn- heading-underlined [ctx groups]
   (let [[_ content mod-parts line] groups]
     {:type :heading
-     :level (get heading-levels (first line))
+     ;; the level as written; balancing happens in the transform phase
+     :level (passes/heading-written-level :underlined line)
      :subtype :underlined
+     :marker line
      :content (engine/parse-inline ctx (str/trim content))
      :modifier (mod/parse mod-parts)}))
 
 (defn- heading-surrounded [ctx groups]
   (let [[_ line content mod-parts] groups
-        level (-> (count line) (max 2) (min 7))
-        level (if (get-in ctx [:options :more-means-higher] true) (- 7 level) (- level 2))
+        level (passes/heading-written-level :surrounded line
+                                            (get-in ctx [:options :more-means-higher] true))
         content (str/replace (str/trim content) (compile-m (str "[" line " ]+$")) "")]
     {:type :heading
      :level level
      :subtype :surrounded
+     :marker line
      :content (engine/parse-inline ctx content)
      :modifier (mod/parse mod-parts)}))
 
@@ -696,12 +698,11 @@
   (let [[_ m-urls m-mod-parts m-align m-link m-caption m-fig-mod] groups
         image (image-node m-urls m-mod-parts m-align m-link)
         ;; the float is written in the brackets of the image, but it is
-        ;; the figure that floats (the reference parseFigure)
+        ;; the figure that floats; the image keeps its own float and the
+        ;; figure renderer drops it from its copy (the reference
+        ;; parseFigure and renderFigure)
         float (or (get image :float)
-                  (get-in image [:content 0 :float]))
-        image (if (:content image)
-                (update image :content #(mapv (fn [img] (assoc img :float nil)) %))
-                (assoc image :float nil))]
+                  (get-in image [:content 0 :float]))]
     {:type :figure
      :image image
      :float float

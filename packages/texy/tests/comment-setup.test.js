@@ -63,7 +63,7 @@ describe("Texy 3 comment setup translated", () => {
       ),
       "<p><ins>ins</ins> <del>del</del> sup<sup>2</sup> sub<sub>2</sub>_ „nice“</p>\n" +
         "\n" +
-        "<p>&lt;script&gt;alert(1)&lt;/scrip­t&gt; x</p>\n" +
+        "<p>&lt;script&gt;alert(1)&lt;/script&gt; x</p>\n" +
         "\n" +
         "<h4>Title</h4>\n" +
         "\n" +

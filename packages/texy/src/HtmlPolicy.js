@@ -31,6 +31,7 @@ export class HtmlPolicy {
   /**
    * Is tag allowed by the allowedTags whitelist? A tag listed as a bare
    * value (without an attribute list) is allowed without attributes.
+   * Names of tags and attributes are compared regardless of case.
    * @param {string} tagName
    */
   isTagAllowed(tagName) {
@@ -43,12 +44,38 @@ export class HtmlPolicy {
       return true;
     }
 
-    if (Object.hasOwn(this.allowedTags, tagName)) {
-      return true;
+    return this.getAllowedAttrs(tagName) !== null;
+  }
+
+  /**
+   * Attributes the whitelist gives the tag: true for any, a list of lowercase
+   * names, or null when the tag is not in it. Names of tags and attributes
+   * are compared regardless of case, as in HTML.
+   * @param {string} tagName
+   * @returns {true|string[]|null}
+   */
+  getAllowedAttrs(tagName) {
+    const lower = tagName.toLowerCase();
+    const entries = Object.hasOwn(this.allowedTags, lower)
+      ? { [lower]: this.allowedTags[lower] }
+      : this.allowedTags; // a key in another case, or a tag listed without attributes
+
+    for (const [key, value] of Object.entries(entries)) {
+      if (typeof value === "string") {
+        // a value without a key names a tag allowed without attributes
+        if (value.toLowerCase() === lower) {
+          return [];
+        }
+      } else if (key.toLowerCase() === lower) {
+        if (value === true) {
+          return true;
+        }
+
+        return Array.isArray(value) ? value.map((name) => name.toLowerCase()) : [];
+      }
     }
 
-    // a value without a key names a tag allowed without attributes
-    return Object.values(this.allowedTags).includes(tagName);
+    return null;
   }
 
   /**
@@ -99,8 +126,8 @@ export class HtmlPolicy {
     }
 
     const names = [];
-    for (const allowed of [this.allowedTags[tagName] ?? [], this.allowedTags["*"] ?? []]) {
-      if (allowed === All) {
+    for (const allowed of [this.getAllowedAttrs(tagName), this.getAllowedAttrs("*")]) {
+      if (allowed === true) {
         return { ...attrs };
       } else if (Array.isArray(allowed)) {
         names.push(...allowed);
@@ -108,7 +135,9 @@ export class HtmlPolicy {
     }
 
     const namesSet = new Set(names);
-    return Object.fromEntries(Object.entries(attrs).filter(([name]) => namesSet.has(name)));
+    return Object.fromEntries(
+      Object.entries(attrs).filter(([name]) => namesSet.has(String(name).toLowerCase())),
+    );
   }
 
   /**

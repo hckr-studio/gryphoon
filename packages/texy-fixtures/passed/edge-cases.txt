@@ -233,103 +233,103 @@ DocumentNode
         PhraseNode [1178,3] phrase/sub-alt
           ContentNode
             TextNode [1179,2] "2n"
-    ListNode [1184,89] unordered
+    ListNode [1184,85] unordered
       ListItemNode [1184,41] bulletRange[1184,1] bullet=-
         ContentNode
           ParagraphNode [1186,39]
             ContentNode
               UrlNode [1186,39]
-      ListItemNode [1226,47] bulletRange[1226,1] bullet=-
+      ListItemNode [1226,43] bulletRange[1226,1] bullet=-
         ContentNode
-          ParagraphNode [1228,45]
+          ParagraphNode [1228,41]
             ContentNode
-              UrlNode [1228,45]
-    ParagraphNode [1275,10]
+              UrlNode [1228,41]
+    ParagraphNode [1271,10]
       ContentNode
-        TextNode [1275,10] "10+-3 +-25"
-    ParagraphNode [1288,4]
+        TextNode [1271,10] "10+-3 +-25"
+    ParagraphNode [1284,4]
       ContentNode
-        TextNode [1288,4] "[**]"
-    ParagraphNode [1294,5]
+        TextNode [1284,4] "[**]"
+    ParagraphNode [1290,5]
       ContentNode
-        TextNode [1294,5] "[* *]"
-    ParagraphNode [1301,6]
+        TextNode [1290,5] "[* *]"
+    ParagraphNode [1297,6]
       ContentNode
-        TextNode [1301,6] "[* <>]"
-    ParagraphNode [1309,12]
+        TextNode [1297,6] "[* <>]"
+    ParagraphNode [1305,12]
       ContentNode
-        TextNode [1309,12] "[* image <>]"
-    FigureNode [1323,6]
-      ImageNode [1323,6] urlRange[1326,1] src=>
-    ParagraphNode [1331,5]
+        TextNode [1305,12] "[* image <>]"
+    FigureNode [1319,6]
+      ImageNode [1319,6] urlRange[1322,1] src=>
+    ParagraphNode [1327,5]
       ContentNode
-        TextNode [1331,5] "[* >]"
-    ParagraphNode [1338,5]
+        TextNode [1327,5] "[* >]"
+    ParagraphNode [1334,5]
       ContentNode
-        TextNode [1338,5] "[* <]"
-    FigureNode [1349,11]
-      ImageNode [1349,11] urlRange[1352,5] src=image
-    ParagraphNode [1363,142]
+        TextNode [1334,5] "[* <]"
+    FigureNode [1345,11]
+      ImageNode [1345,11] urlRange[1348,5] src=image
+    ParagraphNode [1359,142]
       ContentNode
-        PhraseNode [1363,142] phrase/em
+        PhraseNode [1359,142] phrase/em
           ContentNode
-            TextNode [1365,31] "V zahradě rozkoší zachmuřen"
-            LineBreakNode [1396,2]
-            LinkNode [1398,66] textRange[1399,16] urlRange[1417,47] phrase/span url=http://en.wikipedia.org/wiki/Hieronymus_Bosch ref=http://en.wikipedia.org/wiki/Hieronymus_Bosch
+            TextNode [1361,31] "V zahradě rozkoší zachmuřen"
+            LineBreakNode [1392,2]
+            LinkNode [1394,66] textRange[1395,16] urlRange[1413,47] phrase/span url=http://en.wikipedia.org/wiki/Hieronymus_Bosch ref=http://en.wikipedia.org/wiki/Hieronymus_Bosch
               ContentNode
-                TextNode [1399,16] "Hieronymus Bosch"
-            LineBreakNode [1464,2]
-            TextNode [1466,37] "v přístěnku Bestiář Aristotelův"
-    ParagraphNode [1508,35]
+                TextNode [1395,16] "Hieronymus Bosch"
+            LineBreakNode [1460,2]
+            TextNode [1462,37] "v přístěnku Bestiář Aristotelův"
+    ParagraphNode [1504,35]
       ContentNode
-        TextNode [1508,35] "200 Kč | 3 990 Kč | 5 000 000 Kč"
-    ParagraphNode [1546,15]
+        TextNode [1504,35] "200 Kč | 3 990 Kč | 5 000 000 Kč"
+    ParagraphNode [1542,15]
       ContentNode
-        TextNode [1546,15] "Hokus  -- pokus"
-    ListNode [1563,71] unordered
-      ListItemNode [1563,19] bulletRange[1563,1] bullet=-
+        TextNode [1542,15] "Hokus  -- pokus"
+    ListNode [1559,71] unordered
+      ListItemNode [1559,19] bulletRange[1559,1] bullet=-
         ContentNode
-          ParagraphNode [1565,17]
+          ParagraphNode [1561,17]
             ContentNode
-              UrlNode [1565,17]
-      ListItemNode [1583,20] bulletRange[1583,1] bullet=-
+              UrlNode [1561,17]
+      ListItemNode [1579,20] bulletRange[1579,1] bullet=-
         ContentNode
-          ParagraphNode [1585,18]
+          ParagraphNode [1581,18]
             ContentNode
-              TextNode [1585,18] "ftps://example.com"
-      ListItemNode [1604,30] bulletRange[1604,1] bullet=-
+              TextNode [1581,18] "ftps://example.com"
+      ListItemNode [1600,30] bulletRange[1600,1] bullet=-
         ContentNode
-          ParagraphNode [1606,28]
+          ParagraphNode [1602,28]
             ContentNode
-              TextNode [1606,28] "ftps://user:pass@example.com"
-    ParagraphNode [1636,25]
+              TextNode [1602,28] "ftps://user:pass@example.com"
+    ParagraphNode [1632,25]
       ContentNode
-        TextNode [1636,25] "'This guy's really nice.'"
-    ParagraphNode [1665,7]
+        TextNode [1632,25] "'This guy's really nice.'"
+    ParagraphNode [1661,7]
       ContentNode
-        TextNode [1665,7] "1. test"
-    ListNode [1675,15] ordered
-      ListItemNode [1675,7] bulletRange[1675,2] bullet=1.
+        TextNode [1661,7] "1. test"
+    ListNode [1671,15] ordered
+      ListItemNode [1671,7] bulletRange[1671,2] bullet=1.
         ContentNode
-          ParagraphNode [1678,4]
+          ParagraphNode [1674,4]
             ContentNode
-              TextNode [1678,4] "test"
-      ListItemNode [1683,7] bulletRange[1683,2] bullet=2.
+              TextNode [1674,4] "test"
+      ListItemNode [1679,7] bulletRange[1679,2] bullet=2.
         ContentNode
-          ParagraphNode [1686,4]
+          ParagraphNode [1682,4]
             ContentNode
-              TextNode [1686,4] "test"
-    ParagraphNode [1694,7]
+              TextNode [1682,4] "test"
+    ParagraphNode [1690,7]
       ContentNode
-        TextNode [1694,7] "2. test"
-    ParagraphNode [1705,6]
+        TextNode [1690,7] "2. test"
+    ParagraphNode [1701,6]
       ContentNode
-        TextNode [1705,6] "1.test"
-    ParagraphNode [1715,14]
+        TextNode [1701,6] "1.test"
+    ParagraphNode [1711,14]
       ContentNode
-        TextNode [1715,14] "1. test 2.test"
-    ParagraphNode [1732,16]
+        TextNode [1711,14] "1. test 2.test"
+    ParagraphNode [1728,16]
       ContentNode
-        HtmlElementNode [1732,4]
+        HtmlElementNode [1728,4]
           ContentNode
-            TextNode [1736,7] "\"neco\":"
+            TextNode [1732,7] "\"neco\":"

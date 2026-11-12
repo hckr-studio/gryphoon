@@ -9,7 +9,8 @@
  * this marker alphabet. Transformers run over the image and the result is
  * written back into the text nodes. The patterns never create nor destroy
  * marker bytes, so on the way back the markers delimit the runs
- * unambiguously.
+ * unambiguously. A marker byte occurring in the text itself travels as a
+ * stand-in character.
  */
 
 import { extractText } from "../NodeHelpers.js";
@@ -45,6 +46,46 @@ export const Textual = "\x15";
 export const Replaced = "\x16";
 /** Markup boundary; transparent to patterns. */
 export const Markup = "\x17";
+
+const markerBytes = /[\x15\x16\x17]/;
+
+/**
+ * Private-use characters not occurring in the text to carry its marker bytes through the transformers.
+ * @param {string} text
+ * @returns {Array<[string, string]>} marker byte => stand-in character
+ */
+function pickStandIns(text) {
+  const chars = [];
+  for (let code = 0xe000; chars.length < 3; code++) {
+    const char = String.fromCodePoint(code);
+    if (!text.includes(char)) {
+      chars.push(char);
+    }
+  }
+
+  return [
+    [Textual, chars[0]],
+    [Replaced, chars[1]],
+    [Markup, chars[2]],
+  ];
+}
+
+/**
+ * @param {string} s
+ * @param {Array<[string, string]>} map
+ */
+function strtr(s, map) {
+  for (const [from, to] of map) {
+    s = s.split(from).join(to);
+  }
+
+  return s;
+}
+
+/** @param {Array<[string, string]>} map */
+function flipMap(map) {
+  return map.map(([from, to]) => [to, from]);
+}
 
 /** HTML elements holding code or preformatted text, protected like a code phrase. */
 const VerbatimElements = new Set(["code", "kbd", "pre", "samp", "script", "style", "textarea"]);
@@ -109,15 +150,26 @@ export class TextRunPass {
 
     const modifier = typeof node.getModifier === "function" ? node.getModifier() : null;
     if (modifier !== null && modifier.title !== null) {
-      modifier.title = this.titleTransformer(modifier.title);
+      modifier.title = this.transformIsolated(modifier.title, this.titleTransformer);
     }
 
     // the {toc: ...} label and the alternative text are display text too
     if (node instanceof HeadingNode && node.titleOverride !== null) {
-      node.titleOverride = this.titleTransformer(node.titleOverride);
+      node.titleOverride = this.transformIsolated(node.titleOverride, this.titleTransformer);
     } else if (node instanceof ImageNode && node.alt !== null) {
-      node.alt = this.titleTransformer(node.alt);
+      node.alt = this.transformIsolated(node.alt, this.titleTransformer);
     }
+  }
+
+  /**
+   * Transforms an isolated string, protecting its marker bytes behind stand-in characters.
+   * @param {string} text
+   * @param {Function} transform
+   */
+  transformIsolated(text, transform) {
+    const standIns = markerBytes.test(text) ? pickStandIns(text) : [];
+
+    return strtr(transform(strtr(text, standIns)), flipMap(standIns));
   }
 
   /**
@@ -166,12 +218,16 @@ export class TextRunPass {
         pieces.push([Markup, null]);
         this.collect(node.content.children, pieces);
         pieces.push([Markup, null]);
+      } else if (node instanceof LinkNode && this.displaysItsAddress(node)) {
+        pieces.push([this.textualRun(node.content.children[0].text), null]); // protected like UrlNode
       } else if (node instanceof LinkNode) {
         pieces.push([Markup, null]);
         this.collect(node.content.children, pieces);
         pieces.push([Markup, null]);
       } else if (node instanceof RawTextNode) {
-        pieces.push([node.text, node]); // rendered as plain text, typography applies
+        // literal text, untouched by typography; the run length mirrors the
+        // visible length so length-sensitive patterns judge it fairly
+        pieces.push([this.textualRun(node.text), null]);
       } else if (node instanceof AnnotationNode) {
         pieces.push([Markup, null]);
         pieces.push([node.text, node]);
@@ -220,6 +276,20 @@ export class TextRunPass {
   }
 
   /**
+   * Is the text of the link its own address, as an autolink of Markdown writes it?
+   * @param {import('../nodes.js').LinkNode} node
+   */
+  displaysItsAddress(node) {
+    const children = node.content.children;
+
+    return (
+      children.length === 1 &&
+      children[0] instanceof TextNode &&
+      [children[0].text, `mailto:${children[0].text}`, `http://${children[0].text}`].includes(node.url)
+    );
+  }
+
+  /**
    * Applies transformers to the segment image and writes the result back.
    * @param {Array<[string, ?*]>} pieces
    */
@@ -232,9 +302,23 @@ export class TextRunPass {
       return;
     }
 
-    let image = "";
+    let whole = "";
     for (const [text] of pieces) {
-      image += text;
+      whole += text;
+    }
+
+    // a marker byte occurring in writable text travels as a stand-in character
+    let standIns = [];
+    for (const [text, target] of pieces) {
+      if (target !== null && markerBytes.test(text)) {
+        standIns = pickStandIns(whole);
+        break;
+      }
+    }
+
+    let image = "";
+    for (const [text, target] of pieces) {
+      image += target === null ? text : strtr(text, standIns);
     }
 
     let transformed = image;
@@ -246,7 +330,7 @@ export class TextRunPass {
       return;
     }
 
-    this.writeBack(pieces, transformed);
+    this.writeBack(pieces, transformed, flipMap(standIns));
   }
 
   /**
@@ -258,8 +342,9 @@ export class TextRunPass {
    * failed lookup leaves the AST untouched.
    * @param {Array<[string, ?*]>} pieces
    * @param {string} transformed
+   * @param {Array<[string, string]>} originals stand-in character => marker byte it replaced
    */
-  writeBack(pieces, transformed) {
+  writeBack(pieces, transformed, originals) {
     // phase 1: locate the markers, plan writes (no mutation yet)
     let pos = 0;
     let gap = []; // writable nodes since last marker
@@ -287,7 +372,7 @@ export class TextRunPass {
 
     // phase 2: apply
     for (const [node, text] of writes) {
-      node.text = text;
+      node.text = strtr(text, originals);
     }
   }
 
