@@ -2,7 +2,7 @@
   "name": "@gryphoon/infrastructure",
   "main": "index.js",
   "dependencies": {
-    "@pulumi/cloudflare": "6.23.3",
-    "@pulumi/pulumi": "3.274.1"
+    "@pulumi/cloudflare": "6.24.0",
+    "@pulumi/pulumi": "3.276.0"
   }
 }
