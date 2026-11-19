@@ -25,6 +25,7 @@
 (defmethod render-node :blockquote [node] (render-blocks (children node)))
 (defmethod render-node :section [node] (render-blocks (children node)))
 (defmethod render-node :code-block [node] (str/replace (:code node) #"^\n+|\n+$" ""))
+(defmethod render-node :unknown-delimited [node] (str/replace (:code node) #"^\n+|\n+$" ""))
 (defmethod render-node :horizontal-rule [_] "")
 (defmethod render-node :figure [node] (if-some [caption (:caption node)]
                                         (apply str (map render-node caption))

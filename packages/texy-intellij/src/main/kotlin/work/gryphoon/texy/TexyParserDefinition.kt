@@ -21,7 +21,7 @@ class TexyParserDefinition : ParserDefinition {
 
     override fun createFile(viewProvider: FileViewProvider): PsiFile = TexyFile(viewProvider)
 
-    override fun spaceExistanceTypeBetweenTokens(left: ASTNode, right: ASTNode): ParserDefinition.SpaceRequirements =
+    override fun spaceExistenceTypeBetweenTokens(left: ASTNode, right: ASTNode): ParserDefinition.SpaceRequirements =
         ParserDefinition.SpaceRequirements.MAY
 
     override fun getWhitespaceTokens(): TokenSet = TokenSet.EMPTY

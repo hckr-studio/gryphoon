@@ -35,8 +35,7 @@ empty	 	Junior
 empty	 	Junior
 
 Table in table
-| inner A | inner B
-| inner C | inner D	outer 1
+| inner A | inner B | inner C | inner D	outer 1
 outer 2
 
 List block collapses:

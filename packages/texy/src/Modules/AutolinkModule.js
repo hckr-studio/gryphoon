@@ -16,21 +16,27 @@ export class AutolinkModule extends Module {
   }
 
   beforeParse() {
-    // direct url; characters not allowed in URL <>[\]^`{|}
+    // direct url; characters not allowed in URL <>[\\]^`{|}
+    const char = String.raw`[/\d` + Letter + String.raw`+.\~%&?@=_:;#$!,*-]`;
+    // a ) is taken only to close its own (
+    const paren =
+      String.raw`(?: \( ` + char + String.raw`{0,1000}+ \) | \( ) ` + char + String.raw`{0,1000}`;
     this.texy.addInlineSyntax(
       Syntax.AutolinkUrl,
       String.raw`~
-				(?<= ^ | [\s([<:>] )                # must be preceded by these chars
-				(?: https?:// | www\. | ftp:// )   # protocol or www
+				(?<= ^ | [\s([<:>] )                 # must be preceded by these chars, > ends a tag
+				(?: https?:// | www\. | ftp:// )     # protocol or www
 				[0-9.` +
         Letter +
         String.raw`-]      # first char
-				[/\d` +
+				` +
+        char +
+        String.raw` (?: ` +
+        char +
+        String.raw`{1,1000} (?:` + paren + String.raw`){0,10} | (?:` + paren + String.raw`){1,10} )  # URL body
+				(?<= [/\d` +
         Letter +
-        String.raw`+.\~%&?@=_:;#$!,*()\x{ad}-]{1,1000}  # URL body
-				[/\d` +
-        Letter +
-        String.raw`+\~?@=_#$*]  # last char
+        String.raw`+\~@=_#$*)] )  # last char
 			~x`,
       (context, matches, offsets) => this.parseUrl(context, matches, offsets),
     );
@@ -40,7 +46,7 @@ export class AutolinkModule extends Module {
       Syntax.AutolinkEmail,
       String.raw`~
 				(?<= ^ | [\s([<>] )                  # must be preceded by these chars
-			` +
+` +
         Email +
         String.raw`
 			~x`,

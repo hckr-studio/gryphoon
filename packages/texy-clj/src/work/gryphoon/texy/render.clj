@@ -379,6 +379,10 @@
 
 (defmethod render-node :block-comment [_] [])
 
+;; a delimited block of a type the reference does not know: its whole source, as written
+(defmethod render-node :unknown-delimited [node]
+  [[:pre (escape-html (:code node))]])
+
 (defmethod render-node :section [node]
   [(element (if (= "div" (:subtype node)) :div :section) node (render-children node))])
 

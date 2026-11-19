@@ -4,9 +4,7 @@ DocumentNode
       ContentNode
         TextNode [10,5] "space"
     TextBlockNode [23,23] codeMap@34
-    ParagraphNode [48,20]
-      ContentNode
-        TextNode [48,20] "/--.[texy] te st \\--"
+    UnknownDelimitedNode [48,20] codeMap@48
     PreformattedNode [70,21] mod[75,6] codeMap@82
       ContentNode
         TextNode [82,5] "te\nst"
@@ -17,20 +15,19 @@ DocumentNode
     CodeBlockNode [124,27] mod[138,3] codeMap@142 lang=html
     CodeBlockNode [153,23] codeMap@167 lang=html
     TextBlockNode [180,138] codeMap@225
-    TexySourceNode [321,58] codeMap@335
+    ParagraphNode [321,58]
       ContentNode
-        ParagraphNode [335,40]
+        TextNode [321,20] "/--texysource Code: "
+        PhraseNode [341,13] phrase/em-alt
           ContentNode
-            TextNode [335,6] "Code: "
-            PhraseNode [341,13] phrase/em-alt
-              ContentNode
-                TextNode [342,11] "formátovat"
-            LineBreakNode [354,3]
-            TextNode [357,6] " "
-            TextNode [363,1] " "
-            HtmlTagNode [364,6] <br>
-            TextNode [370,1] " "
-            RawTextNode [371,4] "<xx>"
+            TextNode [342,11] "formátovat"
+        LineBreakNode [354,3]
+        TextNode [357,6] " "
+        TextNode [363,1] " "
+        HtmlTagNode [364,6] <br>
+        TextNode [370,1] " "
+        RawTextNode [371,4] "<xx>"
+        TextNode [375,4] " \\--"
     CodeBlockNode [381,56] codeMap@389
     CodeBlockNode [439,34] codeMap@448
     HtmlBlockNode [475,52] codeMap@483

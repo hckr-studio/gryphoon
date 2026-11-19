@@ -6,9 +6,32 @@ import { Modifier } from "../Modifier.js";
 import { ContentNode, TableCellNode, TableNode, TableRowNode, TextNode } from "../nodes.js";
 import { OffsetMap } from "../Parsing/OffsetMap.js";
 import { ModifierHVAlign } from "../Patterns.js";
-import { match, replace } from "../Regexp.js";
+import { match, matchAll } from "../Regexp.js";
 import { Syntax } from "../Syntax.js";
 import { Module } from "./Module.js";
+
+/**
+ * Removes the backslashes before pipes: \\| -> |, returning the offset map
+ * of the unescaped positions (null when there is nothing to unescape).
+ * @param {string} text
+ * @param {number} offset
+ * @returns {[string, ?OffsetMap]}
+ */
+function unescapePipes(text, offset = 0) {
+  const parts = text.split("\\|");
+  const last = parts.pop();
+  if (parts.length === 0) return [text, null];
+  const map = { 0: offset };
+  let local = 0;
+  for (const part of parts) {
+    local += part.length;
+    offset += part.length + 1;
+    map[local] = offset; // the | written behind a backslash
+    local++;
+    offset++;
+  }
+  return [parts.join("|") + "|" + last, new OffsetMap(map)];
+}
 
 export class TableModule extends Module {
   constructor(texy) {
@@ -69,7 +92,7 @@ export class TableModule extends Module {
 
       lineMatches = context
         .getBlockParser()
-        .next(String.raw`~^ ( \| ) (.*) (?: | \| [ \t]* ` + ModifierHVAlign + String.raw`?)$~Ux`);
+        .next(String.raw`~^ \| (.*) (?: | \| [ \t]* ` + ModifierHVAlign + String.raw`?)$~Ux`);
       if (lineMatches !== null) {
         // smarter head detection: if the first row is followed by a separator line, it is a head row
         if (
@@ -81,28 +104,33 @@ export class TableModule extends Module {
           context.getBlockParser().moveBackward();
         }
 
-        const mContent = lineMatches.matches[2];
-        const mRowMod = lineMatches.matches[3];
-        const lineBaseOffset = lineMatches.offsets[2]; // content after first |
+        const mContent = lineMatches.matches[1];
+        const mRowMod = lineMatches.matches[2];
+        const lineBaseOffset = lineMatches.offsets[1]; // content after first |
 
         const cells = [];
-        let content = mContent.replaceAll("\\|", "\x13");
-        content = replace(content, String.raw`~(\[[^]]*)\|~`, "$1\x13");
-
         let col = 0;
         let lastCell = null;
-        let cellOffset = 0; // position within $content
+
+        // a | divides cells unless it is escaped or stands inside [brackets]
+        const cellPieces = [];
+        let pos = 0;
+        for (const dm of matchAll(mContent, String.raw`~\\\||\[[^\]]*+\]|\|~x`)) {
+          if (dm.matches[0] === "|") {
+            cellPieces.push([mContent.slice(pos, dm.index), pos]);
+            pos = dm.index + 1;
+          }
+        }
+        cellPieces.push([mContent.slice(pos), pos]);
 
         let m;
-        for (const cell of content.split("|")) {
-          const originalCell = cell;
-          const unescapedCell = cell.replaceAll("\x13", "|");
+        for (const [cell, cellOffset] of cellPieces) {
           const cellAbsoluteOffset = lineBaseOffset + cellOffset;
 
           // rowSpan: ^ at end of cell or cell is just ^
           if (
             prevRow[col] !== undefined &&
-            (m = match(unescapedCell, String.raw`~\^[ \t]*$|\*??(.*)[ \t]+\^$~AU`)) !== null
+            (m = match(cell, String.raw`~\^[ \t]*$|\*??(.*)[ \t]+\^$~AU`)) !== null
           ) {
             prevRow[col].node.rowspan++;
             const cellText = m.matches[1] ?? "";
@@ -114,22 +142,20 @@ export class TableModule extends Module {
             cellTexts.set(prevRow[col].node, lines);
             col += prevRow[col].node.colspan;
             lastCell = null;
-            cellOffset += originalCell.length + 1; // +1 for |
             continue;
           }
 
           // colSpan: empty cell extends previous cell
-          if (unescapedCell === "" && lastCell !== null) {
+          if (cell === "" && lastCell !== null) {
             lastCell.colspan++;
             delete prevRow[col];
             col++;
-            cellOffset += originalCell.length + 1;
             continue;
           }
 
           // common cell
           const cellMatches = match(
-            unescapedCell,
+            cell,
             String.raw`~
 						( \*?? )                          # head mark (1)
 						[ \t]*
@@ -156,12 +182,12 @@ export class TableModule extends Module {
             // column modifier inheritance
             if (mModCol) {
               colModifier[col] = Modifier.parse(
-                mModCol,
+                mModCol.replaceAll("\\|", "|"),
                 cellMatches.offsets[2] >= 0 ? cellAbsoluteOffset + cellMatches.offsets[2] : null,
               );
             }
             const cellMod = colModifier[col] !== undefined ? colModifier[col].clone() : new Modifier();
-            cellMod.setProperties(mCellMod);
+            cellMod.setProperties(mCellMod === null ? null : mCellMod.replaceAll("\\|", "|"));
             if (mCellMod !== null && mCellMod !== "") {
               // the range covers the modifier only when it is written as a single part
               cellMod.range =
@@ -179,7 +205,7 @@ export class TableModule extends Module {
             // Create cell node - text will be parsed later
             lastCell = new TableCellNode(new ContentNode(), 1, 1, cellIsHeader, cellMod, {
               offset: cellAbsoluteOffset,
-              length: originalCell.length,
+              length: cell.length,
             });
             cells.push(lastCell);
             cellTexts.set(lastCell, [{ content: mCellContent, offset: contentAbsoluteOffset }]);
@@ -187,7 +213,6 @@ export class TableModule extends Module {
             col++;
           }
 
-          cellOffset += originalCell.length + 1; // +1 for |
         }
 
         // even up with empty cells
@@ -204,7 +229,7 @@ export class TableModule extends Module {
         end = lineMatches.offsets[0] + lineMatches.length;
 
         if (cells.length > 0) {
-          const rowMod = Modifier.parse(mRowMod, lineMatches.offsets[3] ?? null);
+          const rowMod = Modifier.parse(mRowMod, lineMatches.offsets[2] ?? null);
           const rowOffset = lineMatches.offsets[0];
           rows.push(new TableRowNode(cells, isHead, rowMod, { offset: rowOffset, length: end - rowOffset }));
         } else {
@@ -249,13 +274,15 @@ export class TableModule extends Module {
           if (lines.length > 1) {
             // multiline - parse as block (disable nested tables)
             const [outdented, map] = OffsetMap.outdentLines(lines);
+            const [unescaped, escapes] = unescapePipes(outdented);
             this.disableTables = true;
             let parsed;
             try {
-              parsed = context.parseBlock(outdented);
+              parsed = context.parseBlock(unescaped);
             } finally {
               this.disableTables = false;
             }
+            if (escapes !== null) escapes.applyTo(parsed);
             map.applyTo(parsed);
             cell.content.children = parsed.children;
           } else {
@@ -264,7 +291,10 @@ export class TableModule extends Module {
             const trimmed = text.replace(/^[\t ]+/, "");
             const trimOffset = text.length - trimmed.length;
             const baseOffset = (lines[0]?.offset ?? 0) + trimOffset;
-            cell.content.children = context.parseInline(trimmed, baseOffset).children;
+            const [unescaped, escapes] = unescapePipes(trimmed, baseOffset);
+            const parsed = context.parseInline(unescaped, escapes !== null ? 0 : baseOffset);
+            if (escapes !== null) escapes.applyTo(parsed);
+            cell.content.children = parsed.children;
           }
 
           // empty cell gets &nbsp;

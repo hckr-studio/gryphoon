@@ -14,6 +14,18 @@ dependencies {
         // the IDE home on macOS is the .app bundle's Contents directory
         local("/Users/rarous/Applications/WebStorm.app/Contents")
     }
+    testImplementation("org.junit.jupiter:junit-jupiter:5.13.4")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+
+tasks {
+    named<Test>("test") {
+        useJUnitPlatform()
+        // like lexSmoke: the platform is on the test *compile* classpath
+        // only, a test run needs the platform classes at runtime too
+        classpath =
+            sourceSets["test"].runtimeClasspath.plus(configurations["intellijPlatformTestClasspath"])
+    }
 }
 
 java {
@@ -76,7 +88,6 @@ intellijPlatform {
     pluginVerification {
         ides {
             create("WS", "2026.3")
-            create("WS", "2025.2")
         }
     }
 }
@@ -117,7 +128,7 @@ tasks.withType<org.jetbrains.intellij.platform.gradle.tasks.PrepareSandboxTask>(
     // EDN front-matter injection resolves to (clojure-lsp + lsp4ij) alive
     // across re-runs, so the sandbox matches the real IDE.
     for (extra in listOf("clojure-lsp", "lsp4ij")) {
-        val dir = file("${System.getProperty("user.home")}/Library/Application Support/JetBrains/WebStorm2026.2/plugins/$extra")
+        val dir = file("${System.getProperty("user.home")}/Library/Application Support/JetBrains/WebStorm2026.3/plugins/$extra")
         if (dir.isDirectory) {
             from(dir) { into(extra) }
         }
@@ -126,8 +137,9 @@ tasks.withType<org.jetbrains.intellij.platform.gradle.tasks.PrepareSandboxTask>(
 
 tasks {
     patchPluginXml {
-        sinceBuild.set("242")
-        untilBuild.set("")
+        sinceBuild.set("263")
+        // omit the attribute entirely (until-build="" fails the Plugin Verifier)
+        untilBuild.set(provider { null })
     }
     buildSearchableOptions {
         enabled = false

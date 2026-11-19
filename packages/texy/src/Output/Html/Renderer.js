@@ -60,6 +60,7 @@ import {
   ParagraphNode,
   PhraseNode,
   PreformattedNode,
+  UnknownDelimitedNode,
   RawTextNode,
   TableCellNode,
   TableNode,
@@ -139,6 +140,7 @@ export class Renderer extends NodeRenderer {
     this.handlers.set(BlockQuoteNode, n => this.renderBlockQuote(n));
     this.handlers.set(CodeBlockNode, n => this.renderCodeBlock(n));
     this.handlers.set(PreformattedNode, n => this.renderPreformatted(n));
+    this.handlers.set(UnknownDelimitedNode, n => new Element("pre").setText(n.code));
     this.handlers.set(HtmlBlockNode, n => this.renderHtmlBlock(n));
     this.handlers.set(TextBlockNode, n => this.renderTextBlock(n));
     this.handlers.set(TexySourceNode, n => this.renderTexySource(n));

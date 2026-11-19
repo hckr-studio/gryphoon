@@ -1,7 +1,7 @@
 {
   "name": "@gryphoon/texy-lsp",
   "description": "Language server for the Texy! markup language (LSP over stdio)",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "license": "EUPL-1.2",
   "type": "module",
   "bin": "bin/texy-lsp.js",

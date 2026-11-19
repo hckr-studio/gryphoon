@@ -22,7 +22,7 @@ import { quickFixes, refactors } from "./codeActions.js";
 import { createMessageReader, writeMessage } from "./framing.js";
 import { DocumentStore } from "./documents.js";
 import { collectDocumentLinks } from "./documentLinks.js";
-import { formatDocument } from "./formatting.js";
+import { formatDocument, HeadingStyle } from "./formatting.js";
 import { hoverAt } from "./hover.js";
 import { collectInlayHints } from "./inlayHints.js";
 import { collectReferences, definitionAt, definitionTokenRange, refNameAt, refTokenRange, referenceIssues, renameEdits, useAt } from "./links.js";
@@ -35,17 +35,21 @@ const MethodNotFound = -32601;
 const InvalidParams = -32602;
 const InternalError = -32603;
 
+/** Valid headingStyle values for options and configuration. */
+const HeadingStyles = new Set([HeadingStyle.Preserve, HeadingStyle.Inline, HeadingStyle.Multiline]);
+
 export class TexyLanguageServer {
   /**
    * @param {Object} [options]
    * @param {Texy} [options.texy]
    * @param {number} [options.debounceMs] didChange analysis delay
    * @param {number} [options.lineWidth] formatting line width
+   * @param {string} [options.headingStyle] formatting heading style: "preserve" (default), "inline" or "multiline"
    * @param {?boolean} [options.legacyReferences] Texy 3 bare [ref] syntax
    * @param {(code: number) => void} [options.onExit] exit hook, process.exit by default
    * @param {?((direction: "in"|"out", message: Object) => void)} [options.onTrace] protocol trace hook
    */
-  constructor({ texy = null, debounceMs = 150, lineWidth = null, legacyReferences = null, onExit = code => process.exit(code), onTrace = null } = {}) {
+  constructor({ texy = null, debounceMs = 150, lineWidth = null, headingStyle = null, legacyReferences = null, onExit = code => process.exit(code), onTrace = null } = {}) {
     this.texy = texy ?? new Texy();
     // the built-in instance generates heading ids, so #toc- anchors exist
     // for the anchor completion (a consumer-provided instance keeps its
@@ -65,6 +69,13 @@ export class TexyLanguageServer {
     // IDE right margin through the env var at spawn time
     const envWidth = Number.parseInt(process.env.TEXY_LSP_LINE_WIDTH ?? "", 10);
     this.lineWidth = lineWidth ?? (Number.isNaN(envWidth) ? 80 : envWidth);
+    // reformatting heading style: option > TEXY_LSP_HEADING_STYLE env var >
+    // "preserve" (each heading keeps the notation it was written in);
+    // "inline" converts to the written form, "multiline" to the underlined
+    // form - the IntelliJ extension passes the setting through the env
+    // var at spawn time
+    this.headingStyle = headingStyle
+      ?? (HeadingStyles.has(process.env.TEXY_LSP_HEADING_STYLE ?? "") ? process.env.TEXY_LSP_HEADING_STYLE : "preserve");
     this.debounceMs = debounceMs;
     this.onExit = onExit;
     this.store = new DocumentStore();
@@ -233,6 +244,9 @@ export class TexyLanguageServer {
     if (options.lineWidth !== undefined) {
       this.lineWidth = options.lineWidth;
     }
+    if (options.headingStyle !== undefined && HeadingStyles.has(options.headingStyle)) {
+      this.headingStyle = options.headingStyle;
+    }
     if (options.legacyReferences !== undefined && options.legacyReferences !== null) {
       this.setLegacyReferences(options.legacyReferences);
     }
@@ -259,7 +273,7 @@ export class TexyLanguageServer {
         documentFormattingProvider: true,
         documentRangeFormattingProvider: true,
       },
-      serverInfo: { name: "@gryphoon/texy-lsp", version: "0.2.0" },
+      serverInfo: { name: "@gryphoon/texy-lsp", version: "0.3.0" },
     };
   }
 
@@ -269,6 +283,9 @@ export class TexyLanguageServer {
     const texy = settings.texy ?? settings;
     if (texy.lineWidth !== undefined) {
       this.lineWidth = texy.lineWidth;
+    }
+    if (texy.headingStyle !== undefined && HeadingStyles.has(texy.headingStyle)) {
+      this.headingStyle = texy.headingStyle;
     }
     if (texy.debounceMs !== undefined) {
       this.debounceMs = texy.debounceMs;
@@ -430,7 +447,9 @@ export class TexyLanguageServer {
    * Go-to-definition on a link/image reference use: the cursor position is
    * bridged from the document's coordinates into the normalized source,
    * matched against the exact [ref] token, and the definition node's range
-   * is bridged back out.
+   * is bridged back out. On a definition line the definition itself is the
+   * answer, so go-to-declaration keeps the caret there instead of failing -
+   * jumping back to the uses is references' job.
    * @param {Object} params textDocument/definition
    * @returns {?Object} Location, or null off-token/undefined-reference
    */
@@ -440,14 +459,13 @@ export class TexyLanguageServer {
       return null;
     }
     const [document, analysis, uri] = context;
+    const offset = this.offsetAtPosition(analysis, document, params.position);
 
-    const use = useAt(analysis, this.offsetAtPosition(analysis, document, params.position));
-    if (use === null) {
-      return null;
-    }
-
-    const definitionNode = analysis.definitions.get(use.name.toLowerCase());
-    if (definitionNode === undefined || definitionNode.range === null) {
+    const use = useAt(analysis, offset);
+    const definitionNode = use !== null
+      ? analysis.definitions.get(use.name.toLowerCase())
+      : definitionAt(analysis, offset);
+    if (definitionNode === undefined || definitionNode === null || definitionNode.range === null) {
       return null; // reference not defined in this document
     }
 
@@ -819,7 +837,11 @@ export class TexyLanguageServer {
     }
     const [document, analysis] = context;
 
-    return this.textEdits(analysis, document, formatDocument(analysis.ast, analysis.normalized, this.lineWidth));
+    return this.textEdits(
+      analysis,
+      document,
+      formatDocument(analysis.ast, analysis.normalized, this.lineWidth, this.headingStyle, this.texy.headingModule),
+    );
   }
 
   /**
@@ -839,9 +861,13 @@ export class TexyLanguageServer {
     const from = this.offsetAtPosition(analysis, document, params.range?.start);
     const to = this.offsetAtPosition(analysis, document, params.range?.end);
 
-    const edits = formatDocument(analysis.ast, analysis.normalized, this.lineWidth).filter(
-      edit => edit.range.offset < to && from < edit.range.offset + edit.range.length,
-    );
+    const edits = formatDocument(
+      analysis.ast,
+      analysis.normalized,
+      this.lineWidth,
+      this.headingStyle,
+      this.texy.headingModule,
+    ).filter(edit => edit.range.offset < to && from < edit.range.offset + edit.range.length);
     return this.textEdits(analysis, document, edits);
   }
 

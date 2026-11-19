@@ -138,7 +138,7 @@
                      (sort-by (juxt :offset :order))
                      (into []))
         n (count matches)]
-    (loop [cursor 0 nodes []]
+    (loop [cursor 0 nodes [] gap-start 0]
       (let [i (loop [c cursor]
                 (cond
                   (>= c n) nil
@@ -146,20 +146,22 @@
                   :else (recur (inc c))))
             m (when i (nth matches i))
             offset (if i (:offset m) (count text))]
-        ;; between-matches content -> gap handler
-        (let [nodes (if (> offset (:offset @parser))
-                      (into nodes ((:gap-handler ctx) ctx (subs text (:offset @parser) offset)))
-                      nodes)]
-          (if (nil? i)
-            nodes
-            (let [mOffset (:offset m)
-                  mLen (count (:match m))]
-              (swap! parser assoc :offset (+ mOffset mLen 1)) ; consume the matched line
-              (let [node ((:handler m) ctx (:groups m))]
-                (if (or (nil? node) (<= (:offset @parser) mOffset)) ; handler rejects
-                  (do (swap! parser assoc :offset mOffset)
-                      (recur (inc i) nodes))
-                  (recur (inc i) (into nodes (if (map? node) [node] node))))))))))))
+        (if (nil? i)
+          ;; finito: flush the pending gap
+          (if (> offset gap-start)
+            (into nodes ((:gap-handler ctx) ctx (subs text gap-start offset)))
+            nodes)
+          (let [mOffset (:offset m)
+                mLen (count (:match m))]
+            (swap! parser assoc :offset (+ mOffset mLen 1)) ; consume the matched line
+            (let [node ((:handler m) ctx (:groups m))]
+              (if (or (nil? node) (<= (:offset @parser) mOffset)) ; handler rejects, the text stays in the gap
+                (do (swap! parser assoc :offset mOffset)
+                    (recur (inc i) nodes gap-start))
+                (let [nodes (if (> offset gap-start) ; flush the gap only on acceptance
+                              (into nodes ((:gap-handler ctx) ctx (subs text gap-start offset)))
+                              nodes)]
+                  (recur (inc i) (into nodes (if (map? node) [node] node)) (:offset @parser)))))))))))
 
 (defn- inline-candidate
   "The first match of the syntax at or after pos, or nil."

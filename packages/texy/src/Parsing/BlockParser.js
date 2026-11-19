@@ -31,6 +31,10 @@ export class BlockParser {
     this.offset = 0;
     /** @private */
     this.baseOffset = 0;
+    /** @private text from gapStart to gapEnd is not yet handed to the gap handler */
+    this.gapStart = 0;
+    /** @private */
+    this.gapEnd = 0;
     /** @type {Array} nodes produced so far by the running parse */
     this.nodes = [];
   }
@@ -43,10 +47,11 @@ export class BlockParser {
    */
   parse(context, text, baseOffset = 0) {
     this.text = text = text.replace(/\n+$/, "");
-    this.offset = 0;
+    this.offset = this.gapStart = 0;
     this.baseOffset = baseOffset;
     this.nodes = [];
 
+    this.context = context;
     const matches = this.matchAll(text);
     matches.push({ offset: text.length, name: null }); // terminal sentinel
     let cursor = 0;
@@ -62,12 +67,7 @@ export class BlockParser {
         if (mName === null || mOffset >= this.offset) break;
       } while (true);
 
-      // between-matches content -> delegate to gap handler
-      if (mOffset > this.offset) {
-        const s = text.slice(this.offset, mOffset);
-        this.nodes.push(...this.gapHandler(context, s, baseOffset + this.offset));
-      }
-
+      this.gapEnd = mOffset;
       if (mName === null) break; // finito
 
       this.offset = mOffset + m[0].length + 1; // 1 = \n
@@ -80,10 +80,13 @@ export class BlockParser {
       const node = this.patterns.get(mName).handler(context, mMatches, mOffsets, mName);
 
       if (node === null || this.offset <= mOffset) {
-        // handler rejects text
+        // handler rejects text, it stays in the gap
         this.offset = mOffset;
         continue;
       }
+
+      this.flushGap(context);
+      this.gapStart = this.offset;
 
       if (node instanceof ContentNode) {
         for (const child of node.children) {
@@ -102,7 +105,18 @@ export class BlockParser {
       }
     }
 
+    this.flushGap(context);
     return new ContentNode(this.nodes);
+  }
+
+  /** Hands the text in front of the current match to the gap handler. */
+  flushGap(context) {
+    const start = this.gapStart;
+    this.gapStart = this.gapEnd;
+    if (this.gapEnd > start) {
+      const s = this.text.slice(start, this.gapEnd); // slice takes an end index, unlike PHP substr
+      this.nodes.push(...this.gapHandler(context, s, this.baseOffset + start));
+    }
   }
 
   /**
@@ -112,6 +126,7 @@ export class BlockParser {
    * @returns {Array}
    */
   getNodes() {
+    this.flushGap(this.context);
     return [...this.nodes]; // live list; return a snapshot like the PHP value semantics
   }
 

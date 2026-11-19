@@ -4,7 +4,7 @@ import com.intellij.execution.ExecutionException
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.platform.lsp.api.LspServerDescriptor
+import com.intellij.platform.lsp.api.LspClientDescriptor
 import work.gryphoon.texy.TexyFileType
 import work.gryphoon.texy.TexyLanguage
 import work.gryphoon.texy.settings.TexySettings
@@ -24,7 +24,8 @@ import java.nio.file.Paths
  * workspace dev copy wins over the bundled one), then from the copy bundled
  * with the plugin.
  */
-class TexyLspServerDescriptor(project: Project) : LspServerDescriptor(project, "Texy") {
+class TexyLspServerDescriptor(project: Project, private val pluginPath: Path?) :
+    LspClientDescriptor(project, "Texy") {
 
     override fun isSupportedFile(file: VirtualFile): Boolean = isTexyFile(file)
 
@@ -41,7 +42,10 @@ class TexyLspServerDescriptor(project: Project) : LspServerDescriptor(project, "
      * selection) goes exclusively to the language server, which advertises
      * textDocument/formatting and textDocument/rangeFormatting. Rename
      * (prepareRename/rename) dispatches too - the default only allows
-     * TEXT/textmate files.
+     * TEXT/textmate files. The same default gate would drop
+     * textDocument/documentHighlight (usages highlighting on caret move and
+     * Highlight Usages in File) for a language with its own parser, so that
+     * dispatches too.
      */
     override val lspCustomization: com.intellij.platform.lsp.api.customization.LspCustomization
         get() = object : com.intellij.platform.lsp.api.customization.LspCustomization() {
@@ -49,14 +53,21 @@ class TexyLspServerDescriptor(project: Project) : LspServerDescriptor(project, "
                 get() = object : com.intellij.platform.lsp.api.customization.LspFormattingSupport() {
                     override fun shouldFormatThisFileExclusivelyByServer(
                         file: VirtualFile,
-                        isWholeFile: Boolean,
-                        isRange: Boolean,
+                        ideCanFormatThisFileItself: Boolean,
+                        serverExplicitlyWantsToFormatThisFile: Boolean,
                     ): Boolean = true
                 }
 
             override val renameCustomizer: com.intellij.platform.lsp.api.customization.LspRenameCustomizer
                 get() = object : com.intellij.platform.lsp.api.customization.LspRenameSupport() {
                     override fun shouldRunRename(psiFile: com.intellij.psi.PsiFile): Boolean =
+                        psiFile.fileType === TexyFileType ||
+                            psiFile.name.endsWith(".texy", ignoreCase = true)
+                }
+
+            override val documentHighlightsCustomizer: com.intellij.platform.lsp.api.customization.LspDocumentHighlightsCustomizer
+                get() = object : com.intellij.platform.lsp.api.customization.LspDocumentHighlightsSupport() {
+                    override fun shouldAskServerForDocumentHighlights(psiFile: com.intellij.psi.PsiFile): Boolean =
                         psiFile.fileType === TexyFileType ||
                             psiFile.name.endsWith(".texy", ignoreCase = true)
                 }
@@ -91,6 +102,8 @@ class TexyLspServerDescriptor(project: Project) : LspServerDescriptor(project, "
         val lineWidth = texySettings.lineWidth
             ?: com.intellij.application.options.CodeStyle.getSettings(project).getRightMargin(TexyLanguage)
         command.withEnvironment("TEXY_LSP_LINE_WIDTH", lineWidth.toString())
+        // how reformatting rewrites headings (Settings | Texy)
+        command.withEnvironment("TEXY_LSP_HEADING_STYLE", texySettings.headingStyle.value)
         return command
     }
 
@@ -103,10 +116,9 @@ class TexyLspServerDescriptor(project: Project) : LspServerDescriptor(project, "
     }
 
     private fun bundledScript(): Path? {
-        val plugin = com.intellij.ide.plugins.PluginManagerCore.getPlugin(
-            com.intellij.openapi.extensions.PluginId.getId("work.gryphoon.texy")
-        ) ?: return null
-        return plugin.pluginPath?.resolve("texy-lsp/bin/texy-lsp.js")
+        // no PluginManagerCore lookup: id/plugin-based lookups are @ApiStatus.Internal
+        // since 2026.2; the support provider receives the descriptor via PluginAware
+        return pluginPath?.resolve("texy-lsp/bin/texy-lsp.js")
     }
 
     /**

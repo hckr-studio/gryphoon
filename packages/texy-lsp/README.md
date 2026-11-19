@@ -57,7 +57,7 @@ node packages/texy-lsp/bin/texy-lsp.js   # Ctrl-C to quit
 | Method | What it does |
 |---|---|
 | `publishDiagnostics` | parser lint (`html/tag-*`, `link|image/reference-undefined`, ...) plus reference health: `reference/unused` (a definition never used), `reference/duplicate` (a name defined twice - the last one wins) |
-| `textDocument/definition` | `[ref]`/`[*ref*]` use -> its definition line |
+| `textDocument/definition` | `[ref]`/`[*ref*]` use -> its definition line; a definition line -> itself (go-to-declaration keeps the caret there) |
 | `textDocument/references` | all use sites of the reference under the cursor (use token or definition line), declaration optional |
 | `textDocument/documentHighlight` | the same tokens, `Read` for uses, `Write` for the definition |
 | `textDocument/documentSymbol` | the heading outline (nested by level, sections run to the next same-or-higher heading) and the reference definitions as keys |
@@ -82,11 +82,21 @@ issue codes, so filtering/severities can be configured by code.
 with `settings.texy`, either shape):
 
 ```js
-{ texy: { debounceMs: 150, lineWidth: 80 } }
+{ texy: { debounceMs: 150, lineWidth: 80, headingStyle: "preserve" } }
 ```
 
 - `debounceMs` - the didChange analysis delay
 - `lineWidth` - the formatting wrap width
+- `headingStyle` - how formatting rewrites headings: `preserve` (default,
+  each heading keeps the notation it was written in; the underlined form
+  stays verbatim, the written form loses only its closing marker run),
+  `inline` (convert to the written form, e.g. `Title\n=====` -> `##### Title`,
+  the level kept so it reparses the same), or `multiline` (convert to the
+  underlined form; a level with no underline character - 5 and 6 under the
+  default `# * = -` map - keeps the written form)
+
+The same styles are readable from the `TEXY_LSP_HEADING_STYLE` environment
+variable at spawn time (used by the IntelliJ extension).
 
 ## Tests
 

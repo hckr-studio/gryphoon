@@ -44,10 +44,10 @@ yarn workspace @gryphoon/texy-intellij build
 
 The artifact lands in `build/distributions/texy-intellij.zip`.
 
-Requires the JBR bundled with the locally installed WebStorm on `JAVA_HOME`
+Requires the JBR 25 bundled with the locally installed WebStorm 2026.3 on `JAVA_HOME`
 (Gradle runs on it via the toolchain; the plugin compiles to bytecode 17,
-`since-build 242`, no upper bound, verified compatible with WebStorm 2025.2
-and 2026.3). The `org.jetbrains.intellij.platform` plugin (2.20.1) compiles
+`since-build 263`, no upper bound, verified with WebStorm 2026.3). The
+`org.jetbrains.intellij.platform` plugin (2.20.1) compiles
 against the local WebStorm installation.
 
 ```bash
@@ -61,23 +61,37 @@ export JAVA_HOME=/Users/rarous/Applications/WebStorm.app/Contents/jbr/Contents/H
 open build/distributions/texy-intellij.zip
 ```
 
-## Lexer smoke
+## Tests
 
 ```bash
-./gradlew lexSmoke
+JAVA_HOME=<JBR> ./gradlew test      # JUnit: lexer, heading-style contract, LSP handshakes
 ```
 
-Checks exact token tiling and the token classes of a representative
-document (front matter, markers, inline syntaxes, blocks, fences).
+`./gradlew test` runs the JUnit suite: the lexer smoke (exact token
+tiling and the token classes of a representative document, front matter
+included), the `TexyHeadingStyle` values against the server's
+`TEXY_LSP_HEADING_STYLE` strings, and the LSP handshake scenarios
+(inline and preserve) against the workspace server copy - the same
+`node` + env spawn the plugin descriptor performs. The handshake tests
+skip, not fail, when `node` or the workspace copy is absent.
+
+## Lexer dump
+
+```bash
+./gradlew lexSmoke     # run the smoke standalone
+./gradlew lexSmoke -Pdump=<file>   # print the token stream of any texy document
+```
 
 ## LSP handshake smoke
 
 ```bash
-node lsp-handshake.mjs .intellijPlatform/sandbox/texy-intellij/WS-2026.3/plugins_runIde/texy-intellij/texy-lsp/bin/texy-lsp.js
+node lsp-handshake.mjs ../texy-lsp/bin/texy-lsp.js [headingStyle]  # default: inline
 ```
 
 Runs the full LSP lifecycle (initialize, didOpen, diagnostics push,
-requests, shutdown, exit) against the bundled server copy.
+requests, shutdown, exit) against a server copy - the workspace source,
+or the bundled sandbox copy - with `TEXY_LSP_HEADING_STYLE` passed the
+way `TexyLspServerDescriptor` passes it.
 
 ## Verify compatibility
 
@@ -85,7 +99,7 @@ requests, shutdown, exit) against the bundled server copy.
 ./gradlew verifyPlugin
 ```
 
-(Checks WS-2026.3 and WS-2025.2; add versions in `build.gradle.kts`.)
+(Checks WS-2026.3; add versions in `build.gradle.kts`.)
 
 ## Notes
 

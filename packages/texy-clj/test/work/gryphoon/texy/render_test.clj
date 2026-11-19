@@ -278,14 +278,14 @@
   (testing "long paths keep an ellipsis and the last 12 chars"
     (is (= "<p><a href=\"http://www.example.com/adresa/dlouha/moc.php\">www.example.com/…ouha/moc.php</a></p>"
            (html "www.example.com/adresa/dlouha/moc.php"))))
-  (testing "a trailing ? in the href is dropped from the display text"
-    (is (= "<p><a href=\"http://www.texy.info/path?\">www.texy.info/path</a></p>"
+  (testing "a trailing ? is not part of the URL"
+    (is (= "<p><a href=\"http://www.texy.info/path\">www.texy.info/path</a>?</p>"
            (html "www.texy.info/path?"))))
   (testing "a long fragment collapses to an ellipsis"
     (is (= "<p><a href=\"http://www.texy.info/path/#!/flag\">www.texy.info/path/#…</a></p>"
            (html "www.texy.info/path/#!/flag"))))
   (testing ":shorten-urls false keeps the full URL text"
-    (is (= "<p><a href=\"http://www.texy.info/path?\">www.texy.info/path?</a></p>"
+    (is (= "<p><a href=\"http://www.texy.info/path\">www.texy.info/path</a>?</p>"
            (html "www.texy.info/path?" {:shorten-urls false})))))
 
 (deftest nofollow

@@ -1,7 +1,8 @@
 /**
  * Source formatting: rewraps long lines according to the block syntax and
- * normalizes headings to the written (#) form. The leading YAML front
- * matter (`---` … `---`) is never touched - it is data, not prose.
+ * formats headings to the requested heading style (see {@link
+ * formatHeading}). The leading YAML front matter (`---` … `---`) is never
+ * touched - it is data, not prose.
  *
  * The unit of change is one block: a block whose formatted text differs
  * from its source yields a single replacement over its exact span, and
@@ -23,6 +24,7 @@ import {
   BlockQuoteNode,
   CommentNode,
   DefinitionListNode,
+  DivNode,
   FigureNode,
   HeadingNode,
   HeadingType,
@@ -31,10 +33,22 @@ import {
   LinkDefinitionNode,
   ListNode,
   ParagraphNode,
-  VerbatimBlockNode,
-  DivNode,
   TableNode,
+  VerbatimBlockNode,
 } from "@gryphoon/texy/nodes.js";
+
+/** The heading styles: keep the notation as written, or convert. */
+export const HeadingStyle = Object.freeze({
+  /** each heading stays in the notation it was written in */
+  Preserve: "preserve",
+  /** convert to the written form (`##### Title`) */
+  Inline: "inline",
+  /** convert to the underlined form (`Title\n=====`) */
+  Multiline: "multiline",
+});
+
+/** Underline character => level, the HeadingModule defaults. */
+const UNDERLINED_LEVELS = { "#": 1, "*": 2, "=": 3, "-": 4 };
 
 /** Classes kept verbatim: their exact source lines carry the semantics. */
 const VERBATIM = new Set([
@@ -119,29 +133,103 @@ function formatParagraph(slice, width) {
 }
 
 /**
+ * The written marker run of a heading level: the parser reads the level
+ * from the run length (more `#` or `=` means a higher heading), and a
+ * single character is not a heading, so a level-1 heading is `#######`.
+ * @param {number} level 1..6
+ * @param {boolean} moreMeansHigher
+ * @returns {string}
+ */
+function runOfLevel(level, moreMeansHigher) {
+  const length = Math.min(7, Math.max(2, moreMeansHigher ? 8 - level : level + 1));
+  return "#".repeat(length);
+}
+
+/**
+ * The rank of every heading level used in the document, by the balanced
+ * levels (node.level) ascending: the base of the multiline conversion.
+ * @param {Object} document
+ * @returns {Map<number, number>} level => 0-based rank
+ */
+function headingLevelRanks(document) {
+  const levels = new Set();
+  new NodeTraverser().traverse(document, node => {
+    if (node instanceof HeadingNode) {
+      levels.add(node.level);
+    }
+    return null;
+  });
+  return new Map([...levels].sort((a, b) => a - b).map((level, rank) => [level, rank]));
+}
+
+/**
+ * Formats a heading to the requested style. `preserve` keeps each heading
+ * in the notation it was written in (the written form keeps its closing
+ * marker run stripped, the underlined form is verbatim - a modifier may
+ * ride on its title line). `inline` converts underlined headings to the
+ * written form by their source marker level. `multiline` converts written
+ * headings by the RANK of their balanced level among the document's
+ * heading levels: the underlined notation has only four characters
+ * (`#`, `*`, `=`, `-`), while the written runs span six levels (`##` is
+ * the deepest), so a typical `##`/`###` document converts by rank
+ * (levels 1-2), not by written depth. A rank beyond the fourth level
+ * has no underline character and keeps the written form.
+ * @param {Object} node HeadingNode
+ * @param {string} slice the heading's verbatim source
+ * @param {string} style one of HeadingStyle
+ * @param {?Object} headingModule the Texy HeadingModule (levels, moreMeansHigher)
+ * @param {?Map<number, number>} levelRanks level => rank, the multiline base
+ * @returns {string}
+ */
+function formatHeading(node, slice, style, headingModule, levelRanks) {
+  const levels = headingModule?.levels ?? UNDERLINED_LEVELS;
+  const moreMeansHigher = headingModule?.moreMeansHigher ?? true;
+  const lines = slice.split("\n");
+
+  if (node.type === HeadingType.Underlined) {
+    if (style !== HeadingStyle.Inline) {
+      return slice;
+    }
+    const level = levels[node.marker] ?? 1;
+    return runOfLevel(level, moreMeansHigher) + " " + lines[0].trim();
+  }
+
+  // written form: rebuild from the opening marker run, without the
+  // optional closing marker run
+  const run = slice.match(/^[ \t]*([#=]+)/)?.[1] ?? node.marker ?? "##";
+  const title = slice
+    .replace(/^[ \t]*[#=]+[ \t]*/, "")
+    .replace(new RegExp(`[ \\t]${run[0]}+(?=[ \\t]*(?:$|\\.(?:\\(|\\[|\\{)|[<>^_=-]))`), " ")
+    .trim();
+  if (style !== HeadingStyle.Multiline) {
+    return run + " " + title;
+  }
+
+  // written -> underlined: by the rank of the balanced level among the
+  // document's heading levels, then the first underline character mapped
+  // to that rank
+  const underlinedLevel = (levelRanks?.get(node.level) ?? node.level - 1) + 1;
+  const glyph = Object.entries(levels).find(([, markerLevel]) => markerLevel === underlinedLevel)?.[0];
+  if (glyph === undefined) {
+    return run + " " + title; // a rank beyond the fourth underline character: keep the written form
+  }
+  return title + "\n" + glyph.repeat(Math.max(3, title.length));
+}
+
+/**
  * Formats one block node to source text.
  * @param {Object} node
  * @param {string} text the normalized source (absolute ranges)
  * @param {string} slice the node's verbatim source (its extent)
  * @param {number} width
+ * @param {string} headingStyle one of HeadingStyle
+ * @param {?Object} headingModule the Texy HeadingModule
+ * @param {?Map<number, number>} levelRanks level => rank, the multiline base
  * @returns {string}
  */
-function formatBlock(node, text, slice, width) {
+function formatBlock(node, text, slice, width, headingStyle, headingModule, levelRanks) {
   if (node instanceof HeadingNode) {
-    if (node.type === HeadingType.Underlined) {
-      // the level comes from the underline marker; the title line is kept
-      // verbatim as a modifier may ride on it
-      const lines = slice.split("\n");
-      const level = lines[1]?.trim().startsWith("-") ? 2 : 1;
-      return "#".repeat(level) + " " + lines[0].trim();
-    }
-    // written form: rebuild without the optional closing marker run
-    const level = slice.match(/^[ \t]*(#+)/)?.[1].length ?? 1;
-    const title = slice
-      .replace(/^[ \t]*#+[ \t]*/, "")
-      .replace(/[ \t]#+(?=[ \t]*(?:$|\.(?:\(|\[|\{)|[<>^_=-]))/, " ")
-      .trim();
-    return "#".repeat(level) + " " + title;
+    return formatHeading(node, slice, headingStyle, headingModule, levelRanks);
   }
 
   if (node instanceof ParagraphNode) {
@@ -199,9 +287,18 @@ function formatListItem(item, text, width) {
  * @param {Object[]} blocks nodes with absolute ranges
  * @param {string} text the normalized source (absolute ranges)
  * @param {number} width
+ * @param {string} headingStyle one of HeadingStyle
+ * @param {?Object} headingModule the Texy HeadingModule
  * @returns {Array<{ range: { offset: number, length: number }, text: string }>}
  */
-export function formatBlocks(blocks, text, width) {
+export function formatBlocks(
+  blocks,
+  text,
+  width,
+  headingStyle = HeadingStyle.Preserve,
+  headingModule = null,
+  levelRanks = null,
+) {
   const edits = [];
   for (const node of blocks) {
     if (node.range === null) {
@@ -212,7 +309,7 @@ export function formatBlocks(blocks, text, width) {
       continue;
     }
     const slice = text.slice(extent.offset, extent.offset + extent.length);
-    const formatted = formatBlock(node, text, slice, width);
+    const formatted = formatBlock(node, text, slice, width, headingStyle, headingModule, levelRanks);
     if (formatted !== slice) {
       edits.push({ range: extent, text: formatted });
     }
@@ -255,10 +352,19 @@ function frontMatterEnd(text) {
  * @param {import("@gryphoon/texy/nodes.js").DocumentNode} document
  * @param {string} text the normalized source the document was parsed from
  * @param {number} lineWidth maximum line width, default 80
+ * @param {string} [headingStyle] one of HeadingStyle, default Preserve
+ * @param {?Object} [headingModule] the Texy HeadingModule, for the levels map
  * @returns {Array<{ range: { offset: number, length: number }, text: string }>} edits in normalized coordinates
  */
-export function formatDocument(document, text, lineWidth = 80) {
-  const edits = formatBlocks(document.content.children, text, lineWidth);
+export function formatDocument(
+  document,
+  text,
+  lineWidth = 80,
+  headingStyle = HeadingStyle.Preserve,
+  headingModule = null,
+) {
+  const levelRanks = headingStyle === HeadingStyle.Multiline ? headingLevelRanks(document) : null;
+  const edits = formatBlocks(document.content.children, text, lineWidth, headingStyle, headingModule, levelRanks);
   const fmEnd = frontMatterEnd(text);
   return fmEnd === 0 ? edits : edits.filter(edit => edit.range.offset >= fmEnd);
 }

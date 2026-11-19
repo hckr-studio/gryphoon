@@ -6,18 +6,22 @@ DocumentNode
     HeadingNode [13,29] textRange[13,14] level=3 marker==
       ContentNode
         TextNode [13,14] "subtitle * 123"
-    TexySourceNode [44,46] codeMap@58
+    ParagraphNode [44,13]
       ContentNode
-        HeadingNode [58,13] textRange[58,6] level=3 marker==
+        TextNode [44,13] "/--texysource"
+    HeadingNode [58,13] textRange[58,6] level=3 marker==
+      ContentNode
+        PhraseNode [58,6] phrase/strong
           ContentNode
-            PhraseNode [58,6] phrase/strong
-              ContentNode
-                TextNode [60,2] "aa"
-        HeadingNode [73,13] textRange[73,6] level=4 marker=-
+            TextNode [60,2] "aa"
+    HeadingNode [73,13] textRange[73,6] level=4 marker=-
+      ContentNode
+        PhraseNode [73,6] phrase/strong
           ContentNode
-            PhraseNode [73,6] phrase/strong
-              ContentNode
-                TextNode [75,2] "bb"
+            TextNode [75,2] "bb"
+    ParagraphNode [87,3]
+      ContentNode
+        TextNode [87,3] "\\--"
     HeadingNode [93,29] mod[100,15] textRange[93,5] level=2 marker=*
       ContentNode
         TextNode [93,5] "Title"

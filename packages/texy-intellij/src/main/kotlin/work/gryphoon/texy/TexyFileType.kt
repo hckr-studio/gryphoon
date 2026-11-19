@@ -1,6 +1,6 @@
 package work.gryphoon.texy
 
-import com.intellij.icons.AllIcons
+import com.intellij.openapi.util.IconLoader
 import com.intellij.openapi.fileTypes.LanguageFileType
 
 object TexyFileType : LanguageFileType(TexyLanguage) {
@@ -11,5 +11,5 @@ object TexyFileType : LanguageFileType(TexyLanguage) {
 
     override fun getDefaultExtension(): String = "texy"
 
-    override fun getIcon() = AllIcons.FileTypes.Any_type
+    override fun getIcon() = IconLoader.getIcon("/icons/texy.svg", TexyFileType::class.java)
 }

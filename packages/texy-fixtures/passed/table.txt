@@ -205,21 +205,18 @@ DocumentNode
           ContentNode
             TextNode [781,14] "Table in table"
       TableRowNode [818,35]
-        TableCellNode [819,23]
+        TableCellNode [819,25]
           ContentNode
-            ParagraphNode [821,19]
+            ParagraphNode [822,56]
               ContentNode
-                TextNode [821,19] "| inner A | inner B"
-            ParagraphNode [857,19]
-              ContentNode
-                TextNode [857,19] "| inner C | inner D"
-        TableCellNode [843,8]
+                TextNode [822,56] "| inner A | inner B | inner C | inner D"
+        TableCellNode [845,8]
           ContentNode
-            TextNode [844,7] "outer 1"
+            TextNode [846,7] "outer 1"
       TableRowNode [854,35]
-        TableCellNode [879,8]
+        TableCellNode [881,8]
           ContentNode
-            TextNode [880,7] "outer 2"
+            TextNode [882,7] "outer 2"
     ParagraphNode [892,21]
       ContentNode
         TextNode [892,21] "List block collapses:"

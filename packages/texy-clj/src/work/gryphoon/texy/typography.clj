@@ -332,7 +332,7 @@
           [:content :items :caption :image :rows :cells]))
 
 (defn- walk
-  [node {:keys [transformers title-transformer]}]
+  [node {:keys [transformers title-transformer] :as opts}]
   (let [node (transform-titles node title-transformer)]
     (if (= :code-block (:type node))
       node ; code blocks are protected from typography
@@ -342,8 +342,16 @@
           (assoc node :content
                  (process-content (mapv #(transform-titles-deep % title-transformer) content)
                                   transformers))
-          (walk-children node {:transformers transformers
-                               :title-transformer title-transformer}))))))
+          ;; captions (figure, table) are inline containers too: typography
+          ;; applies to them as one text run, like the reference's ContentNode
+          (let [caption (:caption node)
+                node (if (and (sequential? caption) (seq caption)
+                              (every? (comp inline-types :type) caption))
+                       (assoc node :caption
+                              (process-content (mapv #(transform-titles-deep % title-transformer) caption)
+                                               transformers))
+                       node)]
+            (walk-children node opts)))))))
 
 (defn text-run-pass
   "Runs the text transformers over every inline container of the

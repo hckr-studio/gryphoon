@@ -2,7 +2,7 @@
     <id>work.gryphoon.texy</id>
     <name>Texy</name>
     <vendor>gryphoon</vendor>
-    <version>0.2.0</version>
+    <version>0.4.0</version>
     <description><![CDATA[
         Texy! support for IntelliJ-based IDEs.
         <p>
@@ -48,6 +48,6 @@
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij.platform.lsp">
-        <serverSupportProvider implementation="work.gryphoon.texy.lsp.TexyLspServerSupportProvider"/>
+        <integrationProvider implementation="work.gryphoon.texy.lsp.TexyLspServerSupportProvider"/>
     </extensions>
 </idea-plugin>

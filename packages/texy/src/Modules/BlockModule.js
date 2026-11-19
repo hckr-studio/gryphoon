@@ -12,6 +12,7 @@ import {
   PreformattedNode,
   TexySourceNode,
   TextBlockNode,
+  UnknownDelimitedNode,
 } from "../nodes.js";
 import { OffsetMap } from "../Parsing/OffsetMap.js";
 import { ModifierHAlign, Modifier as ModifierPattern } from "../Patterns.js";
@@ -47,7 +48,7 @@ export class BlockModule extends Module {
     texy.allowed[Syntax.BlockCode] = true;
     texy.allowed[Syntax.BlockHtml] = true;
     texy.allowed[Syntax.BlockText] = true;
-    texy.allowed[Syntax.BlockTexySource] = true;
+    texy.allowed[Syntax.BlockTexySource] = false; // block/texysource is opt-in in the reference
     texy.allowed[Syntax.BlockComment] = true;
     texy.allowed[Syntax.BlockDiv] = true;
     texy.allowed[Syntax.CodeFenced] = true;
@@ -213,12 +214,13 @@ export class BlockModule extends Module {
       return new TexySourceNode(content, parsed, mod, range, map);
     }
 
-    // /--php and friends: a code block in that language. Anything that
-    // does not look like a language name stays refused and degrades to
-    // visible text.
-    return match(parts[0], String.raw`~^[a-z][a-z0-9_+#-]*$~i`)
-      ? new CodeBlockNode(content, parts[0], mod, range, map)
-      : null;
+    // a type the reference does not know: the whole source as written
+    return new UnknownDelimitedNode(
+      matches[0],
+      parts[0].toLowerCase(),
+      range,
+      OffsetMap.fromLines(OffsetMap.linesOf(matches[0], offsets[0])),
+    );
   }
 
   /**

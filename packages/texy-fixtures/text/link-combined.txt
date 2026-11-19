@@ -56,7 +56,7 @@ Referenční odkaz
 
 Obrázek s popiskou
 
- * popiska s plným formátováním
+popiska s plným formátováním
 
 Rel nofollow
 

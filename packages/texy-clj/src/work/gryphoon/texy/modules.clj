@@ -74,9 +74,12 @@
 (def ^:private phrase-escaped-asterix-re (re-pattern "\\\\\\*"))
 
 ;; Autolink patterns
+(def ^:private autolink-url-char (str "[/\\d" p/letter "+.~%&?@=_:;#$!,*-]"))
+;; a ) is taken only to close its own (
+(def ^:private autolink-url-paren (str "(?:\\(" autolink-url-char "{0,1000}+\\)|\\()" autolink-url-char "{0,1000}"))
 (def ^:private autolink-url-re (re-pattern (str "(?<=^|[\\s(\\[<:])(?:https?://|www\\.|ftp://)[0-9." p/letter "-]"
-                                                "[/\\d" p/letter "+.~%&?@=_:;#$!,*()\\x{ad}-]{1,1000}"
-                                                "[/\\d" p/letter "+~?@=_#$*]")))
+                                                autolink-url-char "(?:" autolink-url-char "{1,1000}(?:" autolink-url-paren "){0,10}|(?:" autolink-url-paren "){1,10})"
+                                                "(?<=[/\\d" p/letter "+~@=_#$*)])")))
 (def ^:private autolink-email-re (re-pattern (str "(?<=^|[\\s(\\[<])" p/email)))
 
 ;; Directive and emoticon
@@ -451,6 +454,7 @@
 (defn- parse-slash-block [ctx groups]
   (let [[_ m-param m-mod-parts] groups
         parser (:block-parser ctx)
+        block-start (- (:offset @parser) (count (first groups)) 1)
         any-line (compile-m "^(.*)$")
         ;; scan content lines, tracking the block nesting depth
         lines (loop [depth 1 lines []]
@@ -469,6 +473,10 @@
         [type-name param] (str/split (str/trim (or m-param "")) whitespace-split-re 2)
         param (when-not (str/blank? (or param "")) param)
         blocktype (if (str/blank? type-name) "block/default" (str "block/" (norm/lower-case type-name)))]
+    (if (and (contains? #{"block/code" "block/default" "block/pre" "block/comment"
+                         "block/html" "block/text" "block/texysource" "block/div"} blocktype)
+             (false? (get (:allowed ctx) blocktype)))
+      nil
     (letfn [(code-block [style code language]
               (when-not (and (= style :texysource) (= code ""))
                 {:type :code-block :style style :code code
@@ -492,12 +500,12 @@
                                {:type :code-block :style :texysource :code code
                                 :language nil :modifier (mod/parse m-mod-parts)
                                 :content (vec (engine/parse-block ctx code))}))
-        ;; /--php and friends: a code block in that language; anything
-        ;; that does not look like a language name refuses and degrades
-        ;; to visible text
-        (if (re-matches language-check-re type-name)
-          (code-block :code (outdent content) type-name)
-          nil)))))
+        ;; a type the reference does not know: the whole source as written
+        {:type :unknown-delimited
+         :code (let [end (:offset @parser)
+                              raw (subs (engine/block-text parser) block-start end)]
+                           (if (str/ends-with? raw "\n") (subs raw 0 (dec (count raw))) raw))
+         :type-name (norm/lower-case type-name)})))))
 
 (defn slash-block-syntax []
   {:name "block/slash"
@@ -1067,7 +1075,8 @@
   (let [;; the reference's allowed[] defaults: ins/del/sup/sub are
         ;; opt-in; a caller's :allowed map merges per key over them
         allowed (merge {"phrase/ins" false "phrase/del" false
-                        "phrase/sup" false "phrase/sub" false}
+                        "phrase/sup" false "phrase/sub" false
+                        "block/texysource" false}
                        (:allowed options {}))]
     (engine/make-context
      (-> (merge {:gap-handler gap-handler

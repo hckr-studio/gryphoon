@@ -272,6 +272,24 @@ export class TexySourceNode extends VerbatimBlockNode {
   }
 }
 
+/** Delimited block of a type Texy does not know, its whole source as written. */
+export class UnknownDelimitedNode extends VerbatimBlockNode {
+  /**
+   * @param {string} code
+   * @param {string} type lower-case
+   * @param {?Range} range
+   * @param {?OffsetMap} codeMap
+   */
+  constructor(code, type, range = null, codeMap = null) {
+    super(code, null, range, codeMap);
+    this.type = type;
+  }
+
+  getChildren() {
+    return [];
+  }
+}
+
 /** Div written /--div; the content is parsed as blocks. */
 export class DivNode extends BlockNode {
   /**

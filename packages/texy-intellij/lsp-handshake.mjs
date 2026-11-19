@@ -1,10 +1,16 @@
 // CLI LSP handshake test: speaks the protocol to the given script and
 // asserts the lifecycle replies. Usage: node lsp-handshake.mjs <script.js>
+// [headingStyle] - the heading style is passed to the server as
+// TEXY_LSP_HEADING_STYLE, exactly like TexyLspServerDescriptor does.
 import process from "node:process";
 import { spawn } from "node:child_process";
 
 const script = process.argv[2];
-const child = spawn("node", [script], { stdio: ["pipe", "pipe", "inherit"] });
+const headingStyle = process.argv[3] ?? "inline";
+const child = spawn("node", [script], {
+  stdio: ["pipe", "pipe", "inherit"],
+  env: { ...process.env, TEXY_LSP_HEADING_STYLE: headingStyle },
+});
 
 const pending = new Map();
 let nextId = 1;
@@ -65,7 +71,13 @@ try {
   send("initialized", {});
 
   send("textDocument/didOpen", {
-    textDocument: { uri: "file:///tmp/sample.texy", languageId: "texy", version: 1, text: "# Heading\n\nSee [ref] here\n\n[ref]: https://example.com\n" },
+    textDocument: {
+      uri: "file:///tmp/sample.texy",
+      languageId: "texy",
+      version: 1,
+      // an underlined heading (level 3: "=" maps to 3 in the levels table)
+      text: "Heading\n====\n\nSee [ref] here\n\n[ref]: https://example.com\n",
+    },
   });
   await new Promise(r => setTimeout(r, 400));
 
@@ -83,9 +95,26 @@ try {
   });
   assert(Array.isArray(symbols) && symbols.length >= 1, `documentSymbol -> ${symbols.length} symbols`);
 
+  // the heading style the server was spawned with, exercised before the
+  // didChange below replaces the document with a paragraph-only one
+  const headingEdits = await request("textDocument/formatting", {
+    textDocument: { uri: "file:///tmp/sample.texy" },
+    options: { tabSize: 2, insertSpaces: true },
+  });
+  assert(Array.isArray(headingEdits), `formatting -> ${JSON.stringify(headingEdits).slice(0, 120)}`);
+  if (headingStyle === "inline") {
+    const heading = headingEdits.find(e => e.newText === "##### Heading");
+    // inline rewrites the underlined heading to its written form
+    // (8 - 3 hashes: "=" maps to level 3 in the levels table)
+    assert(heading, `the underlined heading converts to the written form -> ${JSON.stringify(headingEdits)}`);
+    assert(heading.range.start.line === 0 && heading.range.end.line === 1, "the heading edit covers the title line and the marker line");
+  } else if (headingStyle === "preserve") {
+    assert(headingEdits.length === 0, `preserve formats nothing in this document -> ${JSON.stringify(headingEdits)}`);
+  }
+
   send("textDocument/didChange", {
     textDocument: { uri: "file:///tmp/sample.texy", version: 2 },
-    contentChanges: [{ text: "#  Heading\n\n\nFoo bar baz,     lorem   ipsum dolor sit  amet set aside consetetur.\n" }],
+    contentChanges: [{ text: "Foo bar baz,     lorem   ipsum dolor sit  amet set aside consetetur.\n" }],
   });
   await new Promise(r => setTimeout(r, 400));
   const edits = await request("textDocument/formatting", {

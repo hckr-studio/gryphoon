@@ -32,6 +32,7 @@ import {
   DivNode,
   TableNode,
   TextNode,
+  UnknownDelimitedNode,
   UrlNode,
 } from "../src/nodes.js";
 import { Syntax } from "../src/Syntax.js";
@@ -301,9 +302,11 @@ describe("blocks", () => {
     assert.ok(blocks[0] instanceof CommentNode);
   });
 
-  it("unknown block type that is not a language is refused", () => {
+  it("unknown block type keeps its whole source as written", () => {
     const blocks = parse("/--@@@\nrefused\n\\--");
-    assert.ok(blocks[0].constructor.name === "ParagraphNode");
+    assert.ok(blocks[0] instanceof UnknownDelimitedNode);
+    assert.equal(blocks[0].code, "/--@@@\nrefused\n\\--");
+    assert.equal(blocks[0].type, "@@@");
   });
 
   it("fenced code", () => {

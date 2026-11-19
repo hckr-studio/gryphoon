@@ -223,6 +223,20 @@ describe("texy-lsp over stdio", { timeout: 15000 }, () => {
       assert.deepEqual(response.result.range.start, { line: 0, character: 0 });
     });
 
+    it("on a definition line answers with the definition itself", async () => {
+      const onDefinition = await definitionAt(107, 3, 0); // on [home]: ...
+      assert.deepEqual(onDefinition.result, {
+        uri: "file:///refs.texy",
+        range: { start: { line: 0, character: 0 }, end: { line: 0, character: 27 } },
+      });
+
+      const onImageDefinition = await definitionAt(108, 2, 4); // on [*pic*]: ...
+      assert.deepEqual(onImageDefinition.result, {
+        uri: "file:///refs.texy",
+        range: { start: { line: 4, character: 0 }, end: { line: 4, character: 18 } },
+      });
+    });
+
     it("bridges CRLF documents", async () => {
       await server.send({
         jsonrpc: "2.0",
@@ -453,15 +467,17 @@ describe("texy-lsp over stdio", { timeout: 15000 }, () => {
     ].join("\n") + "\n";
 
     // the formatter's output for the source above at width 80: the paragraph
-    // rewraps with the link token unbroken, both heading styles normalize to
-    // the written form (the closing ## run disappears), the list item wraps
-    // with continuation indent, the quote re-prefixes, code and table stay
+    // rewraps with the link token unbroken, each heading keeps the notation it
+    // was written in (the underlined one verbatim, the written one loses its
+    // closing ## run), the list item wraps with continuation indent, the
+    // quote re-prefixes, code and table stay
     const formatted = [
       "Intro: \"Application Shell\":[https://developer.chrome.com/blog/app-shell] is the",
       "pattern we use, the main script loads modules dynamically according to the",
       "current need of the application.",
       "",
-      "# Title",
+      "Title",
+      "=====",
       "",
       "## Old ## style",
       "",
@@ -500,7 +516,7 @@ describe("texy-lsp over stdio", { timeout: 15000 }, () => {
     const formatRequest = (id, uri) =>
       server.send({ jsonrpc: "2.0", id, method: "textDocument/formatting", params: { textDocument: { uri }, options: { tabSize: 4, insertSpaces: true } } });
 
-    it("rewraps paragraphs and normalizes headings; verbatim blocks are untouched", async () => {
+    it("rewraps paragraphs and preserves each heading's notation; verbatim blocks are untouched", async () => {
       await server.send({
         jsonrpc: "2.0",
         method: "textDocument/didOpen",
@@ -564,7 +580,7 @@ describe("texy-lsp over stdio", { timeout: 15000 }, () => {
       const response = await formatRequest(603, uri);
 
       // the front matter (lines 0-3) is data: no edit may start inside it
-      assert.ok(response.result.length >= 2); // the heading and the body paragraph still format
+      assert.equal(response.result.length, 1); // the body paragraph; the underlined heading is untouched
       assert.ok(response.result.every(edit => edit.range.start.line >= 4));
       const applied = applyEdits(source, response.result);
       // the whole fence block survives byte-identically
@@ -575,7 +591,8 @@ describe("texy-lsp over stdio", { timeout: 15000 }, () => {
         "---",
       ]);
       assert.equal(applied.includes("## tags: texy, lsp"), false); // never a heading rewrite of a fence line
-      assert.equal(applied.split("\n")[5], "# Post heading"); // the body heading normalizes
+      assert.equal(applied.split("\n")[5], "Post heading"); // the body heading keeps its notation
+      assert.equal(applied.split("\n")[6], "============"); // its underline stays untouched too
     });
 
     it("a lone --- rule without a closing fence is not front matter", async () => {
@@ -1036,7 +1053,7 @@ describe("texy-lsp over stdio", { timeout: 15000 }, () => {
         method: "textDocument/formatting",
         params: { textDocument: { uri }, options: { tabSize: 4, insertSpaces: true } },
       });
-      assert.equal(full.result.length, 2);
+      assert.equal(full.result.length, 1); // the paragraph; the underlined heading keeps its notation
       assert.deepEqual(ranged.result[0], full.result.find(edit => edit.range.start.line === 0));
     });
   });
@@ -1086,6 +1103,123 @@ describe("texy-lsp over stdio", { timeout: 15000 }, () => {
         params: { textDocument: { uri }, options: { tabSize: 4, insertSpaces: true } },
       });
       assert.deepEqual(restored.result, []);
+    });
+
+    it("headingStyle converts to the requested notation, by rank for multiline", async () => {
+      const uri = "file:///work/heading-style.texy";
+      const source = [
+        "Tercie", //  = underlined: marker level 3 (levels: # 1, * 2, = 3, - 4)
+        "======",
+        "",
+        "#### Kvarta", // written: level 4, balances to 1; rank 0
+        "",
+        "## Six", // written: level 6, balances to 3; rank 1
+      ].join("\n");
+      await server.send({
+        jsonrpc: "2.0",
+        method: "textDocument/didOpen",
+        params: { textDocument: { uri, languageId: "texy", version: 1, text: source } },
+      });
+      await server.next("textDocument/publishDiagnostics");
+
+      const editsOf = result => result.map(edit => ({ line: edit.range.start.line, text: edit.newText }));
+
+      // inline: the underlined heading becomes the written form, level kept
+      await server.send({
+        jsonrpc: "2.0",
+        method: "workspace/didChangeConfiguration",
+        params: { settings: { texy: { headingStyle: "inline" } } },
+      });
+      const inline = await server.send({
+        jsonrpc: "2.0",
+        id: 797,
+        method: "textDocument/formatting",
+        params: { textDocument: { uri }, options: { tabSize: 4, insertSpaces: true } },
+      });
+      assert.deepEqual(editsOf(inline.result), [{ line: 0, text: "##### Tercie" }]); // 8 - 3 hashes
+      // idempotent: the written form of the same level
+      assert.equal(inline.result.some(edit => edit.newText.includes("#### Kvarta")), false);
+      assert.equal(inline.result.some(edit => edit.newText.includes("## Six")), false);
+
+      // multiline: the written headings convert by their balanced-level rank
+      // (the underlined notation has four characters: # * = -), the
+      // underlined heading is already in the requested notation
+      await server.send({
+        jsonrpc: "2.0",
+        method: "workspace/didChangeConfiguration",
+        params: { settings: { texy: { headingStyle: "multiline" } } },
+      });
+      const multiline = await server.send({
+        jsonrpc: "2.0",
+        id: 798,
+        method: "textDocument/formatting",
+        params: { textDocument: { uri }, options: { tabSize: 4, insertSpaces: true } },
+      });
+      assert.deepEqual(editsOf(multiline.result), [
+        { line: 3, text: "Kvarta\n######" }, // rank 0 -> # charset
+        { line: 5, text: "Six\n***" }, // rank 1 -> * charset
+      ]);
+      assert.equal(multiline.result.some(edit => edit.newText.includes("======")), false); // Tercie stays
+
+      // restore, so later requests see the default again
+      await server.send({
+        jsonrpc: "2.0",
+        method: "workspace/didChangeConfiguration",
+        params: { settings: { texy: { headingStyle: "preserve" } } },
+      });
+      const preserved = await server.send({
+        jsonrpc: "2.0",
+        id: 799,
+        method: "textDocument/formatting",
+        params: { textDocument: { uri }, options: { tabSize: 4, insertSpaces: true } },
+      });
+      assert.deepEqual(preserved.result, []);
+    });
+
+    it("multiline keeps the written form for a fifth distinct heading level", async () => {
+      const uri = "file:///work/heading-five-levels.texy";
+      const source = [
+        "## First", // balances to level 5: rank 4, beyond the four underline characters
+        "",
+        "### Second", // level 4: rank 3 -> -
+        "",
+        "#### Third", // level 3: rank 2 -> =
+        "",
+        "##### Fourth", // level 2: rank 1 -> *
+        "",
+        "###### Fifth", // level 1: rank 0 -> #
+      ].join("\n");
+      await server.send({
+        jsonrpc: "2.0",
+        method: "textDocument/didOpen",
+        params: { textDocument: { uri, languageId: "texy", version: 1, text: source } },
+      });
+      await server.next("textDocument/publishDiagnostics");
+      await server.send({
+        jsonrpc: "2.0",
+        method: "workspace/didChangeConfiguration",
+        params: { settings: { texy: { headingStyle: "multiline" } } },
+      });
+      const response = await server.send({
+        jsonrpc: "2.0",
+        id: 805,
+        method: "textDocument/formatting",
+        params: { textDocument: { uri }, options: { tabSize: 4, insertSpaces: true } },
+      });
+      const editsOf = result => result.map(edit => ({ line: edit.range.start.line, text: edit.newText }));
+      assert.deepEqual(editsOf(response.result), [
+        { line: 2, text: "Second\n------" }, // rank 3 -> - charset
+        { line: 4, text: "Third\n=====" }, // rank 2 -> =
+        { line: 6, text: "Fourth\n******" }, // rank 1 -> *
+        { line: 8, text: "Fifth\n#####" }, // rank 0 -> #
+      ]);
+      // the fifth rank has no underline character: the written form stays
+      assert.equal(response.result.some(edit => edit.newText.includes("First")), false);
+      await server.send({
+        jsonrpc: "2.0",
+        method: "workspace/didChangeConfiguration",
+        params: { settings: { texy: { headingStyle: "preserve" } } },
+      });
     });
 
     it("legacyReferences toggles bare [ref] uses live, with fresh diagnostics", async () => {
@@ -1184,5 +1318,41 @@ describe("texy-lsp TEXY_LSP_LINE_WIDTH env", { timeout: 15000 }, () => {
       response.result[0].newText.split("\n").every(line => line.length <= 40),
       "every wrapped line stays within 40 columns"
     );
+  });
+});
+
+describe("texy-lsp TEXY_LSP_HEADING_STYLE env", { timeout: 15000 }, () => {
+  const server = startServer({ ...process.env, TEXY_LSP_HEADING_STYLE: "inline" });
+  after(() => server.close());
+
+  it("converts headings to the written form out of the box", async () => {
+    await server.send({
+      jsonrpc: "2.0",
+      id: 910,
+      method: "initialize",
+      params: { capabilities: {}, initializationOptions: { debounceMs: 0 } },
+    });
+    const uri = "file:///work/heading-env.texy";
+    await server.send({
+      jsonrpc: "2.0",
+      method: "textDocument/didOpen",
+      params: {
+        textDocument: { uri, languageId: "texy", version: 1, text: "Prvni\n=====\n\n##### Pata" },
+      },
+    });
+    await server.next("textDocument/publishDiagnostics");
+
+    const response = await server.send({
+      jsonrpc: "2.0",
+      id: 911,
+      method: "textDocument/formatting",
+      params: { textDocument: { uri }, options: { tabSize: 4, insertSpaces: true } },
+    });
+    assert.equal(response.result.length, 1); // only the underlined heading converts
+    assert.deepEqual(
+      { line: response.result[0].range.start.line, text: response.result[0].newText },
+      { line: 0, text: "##### Prvni" } // level 3 (=) -> 8 - 3 hashes
+    );
+    assert.equal(response.result[0].newText.includes("\n"), false); // one line per heading
   });
 });
