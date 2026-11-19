@@ -14,7 +14,7 @@ dependencies {
         // the IDE home on macOS is the .app bundle's Contents directory
         local("/Users/rarous/Applications/WebStorm.app/Contents")
     }
-    testImplementation("org.junit.jupiter:junit-jupiter:5.13.4")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.14.4")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
