@@ -103,3 +103,10 @@ variable at spawn time (used by the IntelliJ extension).
 ```bash
 npm test          # node --test tests/ - protocol tests over real stdio
 ```
+
+# Publish to npm
+
+```bash
+yarn npm login
+yarn npm publish --access public --tag latest
+```

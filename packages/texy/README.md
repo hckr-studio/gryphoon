@@ -2,6 +2,12 @@ Gryphoon Texy!
 =============
 
 A Node.js port of [Texy](https://texy.nette.org).
+
+`npm install @gryphoon/texy`
+
+`yarn add @gryphoon/texy`
+
+
 This implementation covers the full pipeline:
 
 ```

@@ -1,7 +1,9 @@
 # Texy for Clojure
 
-A Clojure port of [Texy](https://texy.nette.org), driven by
-docs/porting.md of the reference implementation (the Texy PHP repository) as the requirements document.
+A Clojure port of [Texy](https://texy.nette.org).
+
+
+
 It covers a well-defined subset of the pipeline:
 
 ```
