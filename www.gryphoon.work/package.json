@@ -2,7 +2,7 @@
   "name": "@gryphoon/web",
   "packageManager": "yarn@4.19.0",
   "devDependencies": {
-    "@hckr_/blendid": "9.6.16"
+    "@hckr_/blendid": "9.9.3"
   },
   "scripts": {
     "start": "blendid",
