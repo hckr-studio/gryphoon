@@ -114,7 +114,7 @@ class Translator {
    * @returns {string} JS RegExp source
    */
   translate(body, flags) {
-    const f = { x: false, U: false, ...flags };
+    const f = { x: false, U: false, n: false, ...flags };
     let out = "";
     let i = 0;
     let atomStart = 0; // start of the last completed atom in `out`
@@ -293,8 +293,24 @@ class Translator {
   group(body, i, f) {
     let j = i + 1;
 
+    if (body[j] === "*") {
+      // PCRE verbs: (*SKIP), (*SKIP:name), (*MARK:name) are zero-width markers;
+      // the translator never auto-possessifies and retries every start offset,
+      // which matches the reference results (the reference uses (*SKIP) to resume
+      // the search behind text it has already scanned, not to change matches).
+      // (*FAIL)/(*F) always fails: an empty negative lookahead.
+      const end = body.indexOf(")", j + 1);
+      if (end === -1) throw new Error("Unterminated verb");
+      const verb = body.slice(j + 1, end);
+      if (verb === "SKIP" || verb.startsWith("SKIP:") || verb.startsWith("MARK:")) return ["", end + 1, false, null];
+      if (verb === "FAIL" || verb === "F") return ["(?!)", end + 1, false, null];
+      throw new Error("Unsupported verb: (*" + verb + ")");
+    }
+
     if (body[j] !== "?") {
-      // capturing group
+      // capturing group - unless the n (NO_AUTO_POSSESS) flag is in scope: PCRE
+      // then treats every group inside as non-capturing, consuming no group number
+      if (f.n) return ["(?:", j, true, null];
       const n = ++this.state.captureCount;
       return ["(?<" + this.namePrefix + "c" + n + ">", j, true, null];
     }
@@ -328,8 +344,8 @@ class Translator {
       return [RECURSION, j + 2, false, null];
     }
 
-    // (?flags:...) scoped flag group
-    const m = /^([a-zA-Z-]+):/.exec(body.slice(j));
+    // (?flags:...) scoped flag group, or (?flags) inline flags to the group end
+    const m = /^([a-zA-Z-]+)(:)?/.exec(body.slice(j));
     if (!m) throw new Error("Unsupported group: " + body.slice(i, i + 12));
 
     const saved = { ...f };
@@ -337,12 +353,21 @@ class Translator {
       if (fc === "-") {
         f.x = false;
         f.U = false;
+        f.n = false;
       } else if (fc === "x") f.x = true;
       else if (fc === "U") f.U = true;
+      else if (fc === "n")
+        f.n = true; // also makes groups in scope non-capturing
       else throw new Error("Unsupported inline flag: " + fc);
     }
 
-    return ["(?:", j + m[0].length, true, saved];
+    if (m[2] === ":") return ["(?:", j + m[0].length, true, saved];
+
+    // inline flags (?flags): apply to the rest of the enclosing group; the `)`
+    // is consumed here so no close frame is pushed - the enclosing group's own
+    // frame restores the flags when it closes
+    if (body[j + m[0].length] !== ")") throw new Error("Unsupported group: " + body.slice(i, i + 12));
+    return ["", j + m[0].length + 1, false, null];
   }
 
   /** Translates a quantifier (`*`, `+`, `?`, `{n,m}`) with lazy/possessive suffixes. */
@@ -420,7 +445,7 @@ function isSyntaxChar(ch) {
 
 function compileInner(pattern) {
   const [body, flagStr] = splitPattern(pattern);
-  const flags = { x: flagStr.includes("x"), U: flagStr.includes("U") };
+  const flags = { x: flagStr.includes("x"), U: flagStr.includes("U"), n: false };
 
   const jsFlagList = ["u", "d"];
   for (const f of ["i", "m", "s"]) {

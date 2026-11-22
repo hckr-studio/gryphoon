@@ -63,9 +63,16 @@
 
 ;; Phrase patterns - pre-compiled from p/ patterns
 (def ^:private modifier-end-full-re (re-pattern (str "(?:" p/modifier ")$")))
-(def ^:private phrase-notexy-re (re-pattern "(?<!')''(?![\\s'])((?:[^\\r\\n']++|')+?)(?<![\\s'])''(?!')"))
-(def ^:private phrase-code-re (re-pattern (str "`(\\S(?:[^\\r\\n `]++|[ `])*?)(?:" p/modifier ")?"
-                                               "(?<!\\s)`(?::(" p/link-url "))?")))
+(def ^:private phrase-notexy-re
+  (re-pattern (str "(?<!')''(?![\\s'])"
+                   (p/build-content-pattern "(?:[^\\r\\n']++|')" "(?<![\\s'])''(?!')" "(?<![\\s'])''(?!')" nil))))
+(def ^:private phrase-code-re
+  (re-pattern (str "`"
+                   (p/build-content-pattern "(?:[^\\r\\n `]++|[ `])"
+                                            (str "(?:" p/modifier ")?(?<!\\s)`")
+                                            (str "(?:" p/modifier-nc ")?(?<!\\s)`")
+                                            "\\S")
+                   "(?::(" p/link-url "))?")))
 (def ^:private phrase-quicklink-re (re-pattern (str "([" p/letter "0-9@#$%&.,_-]++):(?=\\[)(" p/link-url ")")))
 (def ^:private phrase-wikilink-re (re-pattern (str "(?<!\\[)\\[(?![\\s*])([^|\\r\\n\\]]++)\\|"
                                                    "((?:[^|\\r\\n \\]]++|[ ])+?)(?:" p/modifier ")?(?<!\\s)](?!])")))
@@ -529,10 +536,8 @@
    {:syntax "phrase/del" :open "--" :char "\\-" :guard "<" :guard-after ">"}
    {:syntax "phrase/sup" :open "\\^\\^" :char "\\^"}
    {:syntax "phrase/sub" :open "__" :char "_"}
-   {:syntax "phrase/span" :open "\"" :char "\"" :link true
-    :after-open "\\s" :before-close "\\s" :content "\\r \"" :content-pair " "}
-   {:syntax "phrase/span-alt" :open "\\~" :char "\\~" :link true
-    :after-open "\\s" :before-close "\\s" :content "\\r \\~" :content-pair " "}
+   {:syntax "phrase/span" :open "\"" :char "\"" :link true :multiline true :no-delimiter true}
+   {:syntax "phrase/span-alt" :open "\\~" :char "\\~" :link true :multiline true :no-delimiter true}
    {:syntax "phrase/quote" :open ">>" :close "<<" :char ">" :close-char "<" :link true}])
 
 (defn- parse-phrase [syntax ctx groups]

@@ -49,13 +49,15 @@ export const ModifierHVAlign = String.raw`(?x:
 	){1,5}?)
 )`;
 
-// links, url - does not end by :;,.!? and takes ) only to close its own (, used with the U flag
+// links, url - does not end by :;,.!? and takes ) only to close its own (
 export const LinkUrl = String.raw`(?x:
 	\[ [^]\n]++ ]                    # link text in brackets
 	|
-	(?= [\w/+.\~%&?@=_#$] )         # URL must start with these chars
-	(?: [^\s()] | \( [^\s()]{0,100}+ \) | \( )+?  # URL body, parentheses balanced
-	(?<! [:;,.!?] )                  # URL must not end with these chars
+	(?= [\w/+.\~%&?@=_#$] )          # URL must start with these chars
+	(?:
+		[:;,.!?]*+                   # URL must not end with these chars
+		(?: [^\s():;,.!?]++ | \( [^\s()]{0,100}+ \) | \( )  # URL body, parentheses balanced
+	)++
 )`;
 
 export const Email =
@@ -65,13 +67,13 @@ export const Email =
   String.raw`]                 # first char
 	[0-9.+_` +
   Letter +
-  String.raw`\x{ad}-]{0,63}  # local part
+  String.raw`-]{0,63}    # local part
 	@
 	[0-9.+_` +
   Letter +
-  String.raw`\x{ad}-]{1,252} # domain
+  String.raw`-]{1,252}   # domain
 	\.
 	[` +
   Letter +
-  String.raw`\x{ad}]{2,19}     # TLD
+  String.raw`]{2,19}           # TLD
 )`;

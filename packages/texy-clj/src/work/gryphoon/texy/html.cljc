@@ -126,7 +126,7 @@
 ;; Tag/comment syntaxes
 
 (def ^:private tag-pattern
-  (re-pattern (str "(?i)<(/?)([a-z][a-z0-9_:-]{0,50})"
+  (re-pattern (str "(?i)<(/?)([a-z][a-z0-9_:-]{0,50})(?=[\\s/>])"
                    "((?:\\s++[a-z0-9_:-]++|=\\s*+\\x22[^\\x22]*+\\x22|=\\s*+'[^']*+'|=[^\\s>]++)*)"
                    "\\s*+(/?)>")))
 

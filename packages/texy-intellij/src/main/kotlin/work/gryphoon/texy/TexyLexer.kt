@@ -343,7 +343,9 @@ class TexyLexer : Lexer() {
         private val RE_LIST_MARK = Regex("^[ \\t]*(?:[-*+]|\\d{1,3}[.)])[ \\t]*")
         private val RE_QUOTE = Regex("^>[ \\t]*")
 
-        private val RE_HTML_TAG = Regex("^</?[a-zA-Z][^>\\n]{0,500}>")
+        // tag name must be followed by whitespace, "/" or ">" - the parser's
+        // lookahead, so e.g. <foo=bar> highlights as plain text, not a tag
+        private val RE_HTML_TAG = Regex("^</?[a-zA-Z][a-zA-Z0-9_:-]{0,50}(?=[\\s/>])[^>\\n]{0,500}>")
         private val RE_MODIFIER = Regex("^\\.\\([^()\\n]*\\)|^\\.\\[[^\\]\\n]*\\]|^\\.\\{[^}\\n]*\\}")
         private val RE_DIRECTIVE = Regex("^\\{\\{[^}\\n]*\\}\\}")
         private val RE_LINK = Regex("^\"[^\"\\n]{0,200}\":\\S{0,2000}")

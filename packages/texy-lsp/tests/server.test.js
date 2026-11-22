@@ -7,10 +7,13 @@
 import { describe, it, before, after } from "node:test";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
+import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
-const bin = join(dirname(dirname(fileURLToPath(import.meta.url))), "bin", "texy-lsp.js");
+const packageRoot = dirname(dirname(fileURLToPath(import.meta.url)));
+const bin = join(packageRoot, "bin", "texy-lsp.js");
+const { version: packageVersion } = JSON.parse(readFileSync(join(packageRoot, "package.json"), "utf8"));
 
 function frame(message) {
   const body = Buffer.from(JSON.stringify(message), "utf8");
@@ -94,6 +97,7 @@ describe("texy-lsp over stdio", { timeout: 15000 }, () => {
     });
     assert.equal(response.result.capabilities.textDocumentSync.change, 1);
     assert.equal(response.result.serverInfo.name, "@gryphoon/texy-lsp");
+    assert.equal(response.result.serverInfo.version, packageVersion);
 
     const unknown = await server.send({ jsonrpc: "2.0", id: 2, method: "textDocument/typeDefinition", params: {} });
     assert.equal(unknown.error.code, -32601); // MethodNotFound

@@ -63,19 +63,15 @@ const Phrases = {
     open: String.raw`"`,
     char: String.raw`"`,
     link: true,
-    afterOpen: String.raw`\s`,
-    beforeClose: String.raw`\s`, // the delimiter may touch itself: ""quoted""
-    content: String.raw`\r "`,
-    contentPair: " ", // and the content may span lines
+    multiline: true,
+    noDelimiter: true, // the content holds no " at all
   },
   [Syntax.SpanTilde]: {
     open: String.raw`\~`,
     char: String.raw`\~`,
     link: true,
-    afterOpen: String.raw`\s`,
-    beforeClose: String.raw`\s`,
-    content: String.raw`\r \~`,
-    contentPair: " ",
+    multiline: true,
+    noDelimiter: true,
   },
   [Syntax.Quote]: {
     open: String.raw`>>`,
@@ -89,6 +85,29 @@ const Phrases = {
 /** Wraps characters in a class, unless a single (possibly escaped) one speaks for itself. */
 function charClass(chars) {
   return /^(\\.|[^\\])$/.test(chars) ? chars : "[" + chars + "]";
+}
+
+/**
+ * Builds the content (1), which runs by step to the first place where end
+ * matches, and end behind it. The loop is possessive, so a long content
+ * takes no stack, and where it finds no end, no delimiter it passed over
+ * would find one either: (*SKIP) resumes the search behind them. The
+ * translator drops the verb - it only skips start offsets, never changes
+ * matches - and (?n:...) makes the end copy inside the lookahead
+ * non-capturing, exactly as in PCRE.
+ */
+function buildContentPattern(step, end, first = null) {
+  return (
+    "( " +
+    (first ?? step) +
+    " (?: (?! (?n: " +
+    end +
+    "\n\t\t) ) " +
+    step +
+    " )*+ )  # content (1)\n" +
+    "\t\t(*SKIP)\n\t\t" +
+    end
+  );
 }
 
 /**
@@ -106,22 +125,24 @@ function buildPhrasePattern(spec) {
   const beforeClose = spec.beforeClose ?? charClass(String.raw`\s` + closeChar + guard);
   const afterClose = spec.afterClose ?? charClass(closeChar + guardAfter);
   const content = spec.content ?? (spec.multiline ? "" : String.raw`\r\n`) + " " + closeChar;
-  const contentPair = spec.contentPair ?? " " + closeChar;
+  const contentPair = spec.contentPair ?? " " + (spec.noDelimiter ? "" : closeChar);
+
+  const step = `(?: [^${content}]++ | [${contentPair}] )`;
+  const end =
+    ModifierPattern +
+    "?  # modifier (2)\n" +
+    `\t\t(?<! ${beforeClose} ) ${spec.close ?? spec.open} (?! ${afterClose} )  # closing delimiter`;
 
   return (
     String.raw`
 		(?<! ${beforeOpen} ) ${spec.open} (?! ${afterOpen} )  # opening delimiter
-		( (?: [^${content}]++ | [${contentPair}] )+ )  # content (1)
-		${ModifierPattern}?  # modifier (2)
-		(?<! ${beforeClose} ) ${spec.close ?? spec.open} (?! ${afterClose} )  # closing delimiter` +
+		` +
+    buildContentPattern(step, end) +
     (spec.link
       ? String.raw`
 		(?: :(${LinkUrl}) )??  # optional link (3)`
       : "") +
-    `
-	~U` +
-    (spec.multiline ? "s" : "") +
-    "x"
+    `\n\t~Ux`
   );
 }
 
@@ -209,10 +230,10 @@ export class PhraseModule extends Module {
 				(?<! ' )                         # not preceded by quote
 				''
 				(?! [\s'] )                      # not followed by space or quote
-				( (?: [^\r\n']++ | ' )+ )       # content (1)
-				(?<! [\s'] )                     # not preceded by space or quote
-				''
-				(?! ' )                          # not followed by quote
+				` +
+        // content (1), then quotes not preceded by space or quote and not followed by quote
+        buildContentPattern(String.raw`(?: [^\r\n']++ | ' )`, String.raw`(?<! [\s'] ) '' (?! ' )`) +
+        String.raw`
 			~Ux`,
       (context, matches, offsets) => this.parseNoTexy(context, matches, offsets),
     );
@@ -223,15 +244,12 @@ export class PhraseModule extends Module {
       "~" +
         bt +
         "\n" +
-        " ( \\S (?: [^\\r\\n " +
-        bt +
-        "]++ | [ " +
-        bt +
-        "] )* )         # content (1)\n" +
-        ModifierPattern +
-        "?             # modifier (2)\n" +
-        "(?<! \\s )                               # not preceded by space\n" +
-        bt +
+        // content (1), then modifier (2) and a backtick not preceded by space
+        buildContentPattern(
+          "(?: [^\\r\\n " + bt + "]++ | [ " + bt + "] )",
+          ModifierPattern + "? (?<! \\s ) " + bt,
+          "\\S",
+        ) +
         "\n" +
         "(?: :(" +
         LinkUrl +

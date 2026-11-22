@@ -86,7 +86,7 @@ This is description under image (or photo)
 
 using references
 
-What a beautiful logo alternative text 🙂
+What a beautiful logo alternative text :-)
 
 with modifiers
 
@@ -214,7 +214,7 @@ quickCorrects like this™ this® or ©this
 arrows ←  and → and ↔ ;
 ellipsis…
 preserve HTML entities
-and many others 🙂
+and many others :-)
 
 Tables
 

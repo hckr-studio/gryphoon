@@ -83,6 +83,13 @@ object LexerSmoke {
         checkTile(blankDoc)
         check(blankToks.count { it.first == "TEXY_PLAIN" && it.second == "\n" } == 4) { "empty lines as plain newlines" }
 
+        // 5) a tag name not followed by whitespace, "/" or ">" is not a tag
+        // (the parser's lookahead): <foo=bar> stays plain text
+        val noTagDoc = "x <foo=bar> y\n"
+        val noTagToks = tokens(noTagDoc)
+        checkTile(noTagDoc)
+        check(noTagToks.none { it.first == "TEXY_HTML_TAG" }) { "tag name glued to '=' is not highlighted as a tag" }
+
         println("ALL CHECKS PASSED")
     }
 

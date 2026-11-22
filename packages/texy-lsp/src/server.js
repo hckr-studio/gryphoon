@@ -14,6 +14,7 @@
  * Protocol error codes are JSON-RPC 2.0 reserved codes.
  */
 
+import { readFileSync } from "node:fs";
 import { Texy } from "@gryphoon/texy/Texy.js";
 import { Syntax } from "@gryphoon/texy/Syntax.js";
 import { normalizeWithMap } from "@gryphoon/texy/normalize.js";
@@ -34,6 +35,9 @@ import { collectFoldings, toFoldingRanges } from "./folding.js";
 const MethodNotFound = -32601;
 const InvalidParams = -32602;
 const InternalError = -32603;
+
+// the reported server version is the package version, so the two never drift
+const { version: packageVersion } = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
 
 /** Valid headingStyle values for options and configuration. */
 const HeadingStyles = new Set([HeadingStyle.Preserve, HeadingStyle.Inline, HeadingStyle.Multiline]);
@@ -273,7 +277,7 @@ export class TexyLanguageServer {
         documentFormattingProvider: true,
         documentRangeFormattingProvider: true,
       },
-      serverInfo: { name: "@gryphoon/texy-lsp", version: "0.3.0" },
+      serverInfo: { name: "@gryphoon/texy-lsp", version: packageVersion },
     };
   }
 

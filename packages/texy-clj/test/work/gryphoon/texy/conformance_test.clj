@@ -134,6 +134,8 @@
             expected (slurp (str "../texy-fixtures/render-full/" (.getName f)))]
         (is (= (canonicalize-wrapped-tags expected)
                ;; the full default configuration: typography,
-               ;; hyphenation, indentation and wrapping all ON
-               (canonicalize-wrapped-tags (core/process (core/->texy {:emoticons true}) source)))
+               ;; hyphenation, indentation and wrapping all ON;
+               ;; emoticons only for the emoticon-on fixture (the
+               ;; reference default keeps them off)
+               (canonicalize-wrapped-tags (core/process (core/->texy (if emoticon? {:emoticons true} {})) source)))
              (str "formatted conformance: " name ".texy"))))))
