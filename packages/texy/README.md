@@ -1,5 +1,7 @@
-Gryphoon Texy!
-=============
+# Gryphoon Texy!
+
+![NPM Version](https://img.shields.io/npm/v/%40gryphoon%2Ftexy)
+
 
 A Node.js port of [Texy](https://texy.nette.org).
 

@@ -1,5 +1,6 @@
-Gryphoon Texy! LSP
-=================
+# Gryphoon Texy! LSP
+
+![NPM Version](https://img.shields.io/npm/v/%40gryphoon%2Ftexy)
 
 Language server for the [Texy!](https://texy.nette.org) markup
 language ([@gryphoon/texy](../texy)): JSON-RPC over stdio, built on
