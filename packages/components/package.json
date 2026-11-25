@@ -2,6 +2,8 @@
   "name": "@gryphoon/components",
   "version": "1.0.10",
   "type": "module",
+  "author": "Aleš Roubíček <ales@roubicek.name>",
+  "funding": "https://github.com/sponsors/rarous",
   "dependencies": {
     "@gryphoon/texy": "1.0.0"
   },

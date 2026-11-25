@@ -3,6 +3,8 @@
   "version": "0.4.1",
   "description": "IntelliJ/WebStorm plugin: the Texy file type with language injection into code blocks and front matter",
   "private": true,
+  "author": "Aleš Roubíček <ales@roubicek.name>",
+  "funding": "https://github.com/sponsors/rarous",
   "scripts": {
     "build": "JAVA_HOME=/Users/rarous/Applications/WebStorm.app/Contents/jbr/Contents/Home ./gradlew buildPlugin --no-daemon",
     "verify": "JAVA_HOME=/Users/rarous/Applications/WebStorm.app/Contents/jbr/Contents/Home ./gradlew verifyPlugin --no-daemon"

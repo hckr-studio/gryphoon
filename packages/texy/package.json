@@ -3,7 +3,8 @@
   "description": "Node.js port of the Texy text-to-HTML converter",
   "version": "4.0.2",
   "license": "EUPL-1.2",
-  "author": "",
+  "author": "Aleš Roubíček <ales@roubicek.name>",
+  "funding": "https://github.com/sponsors/rarous",
   "type": "module",
   "engines": {
     "node": ">=24"

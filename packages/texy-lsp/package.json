@@ -3,6 +3,8 @@
   "description": "Language server for the Texy! markup language (LSP over stdio)",
   "version": "0.4.1",
   "license": "EUPL-1.2",
+  "author": "Aleš Roubíček <ales@roubicek.name>",
+  "funding": "https://github.com/sponsors/rarous",
   "type": "module",
   "bin": "bin/texy-lsp.js",
   "exports": {
